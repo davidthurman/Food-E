@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "132894851064",
+    "firebase_url": "https://food-e-50102.firebaseio.com",
+    "project_id": "food-e-50102",
+    "storage_bucket": "food-e-50102.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:132894851064:android:e843a88d043c4f674da00d",
+        "android_client_info": {
+          "package_name": "com.thurman.foode"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "132894851064-hd1340v5p2va019o6e1h9k6as7h36eic.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCyMRUMFciuOhvLFdWp-FrxapIkPMY-JI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "132894851064-hd1340v5p2va019o6e1h9k6as7h36eic.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
