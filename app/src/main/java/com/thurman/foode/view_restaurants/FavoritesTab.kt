@@ -25,6 +25,7 @@ import com.thurman.foode.models.Restaurant
 class FavoritesTab : Fragment() {
 
     var restaurants = ArrayList<Restaurant>()
+    lateinit var recyclerAdapter: FavoriteRestaurantListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,7 +38,7 @@ class FavoritesTab : Fragment() {
     }
 
     private fun setupRecyclerView(view: View){
-        var recyclerAdapter = FavoriteRestaurantListAdapter(restaurants, context!!)
+        recyclerAdapter = FavoriteRestaurantListAdapter(restaurants, context!!)
         getUserRestaurantData(recyclerAdapter)
         var favRestaurantsList = view.findViewById<RecyclerView>(R.id.favorite_restaurants_list)
         favRestaurantsList.layoutManager = LinearLayoutManager(activity)
@@ -74,6 +75,10 @@ class FavoritesTab : Fragment() {
 
         }
         FirebaseDatabase.getInstance().reference.child("users").child(FirebaseAuth.getInstance().currentUser!!.uid).child("restaurants").addListenerForSingleValueEvent(restaurantsListener)
+    }
+
+    fun updateResults(){
+        getUserRestaurantData(recyclerAdapter)
     }
 
 }

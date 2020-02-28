@@ -1,16 +1,28 @@
 package com.thurman.foode.Utility
 
 import android.app.Activity
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
+import android.provider.MediaStore
+import android.widget.ImageView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
+import com.squareup.picasso.Picasso
+import com.thurman.foode.R
 import com.thurman.foode.models.FoodItem
 import com.thurman.foode.models.Restaurant
 import com.thurman.foode.view_restaurants.FavoriteRestaurantListAdapter
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.IOException
+import java.net.HttpURLConnection
+import java.net.URL
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -61,7 +73,20 @@ class FirebaseUtil {
             }.addOnFailureListener{ exception -> System.out.println("DOWNLOAD FAIL: " + exception.localizedMessage) }
         }
 
-        fun submitRestaurant(name: String, address: String, rating: Int, restaurantUri: Uri?, activity: Activity){
+        fun getRestaurantDetailImage(restaurant: Restaurant, imageView: ImageView, context: Context){
+            val userID = FirebaseAuth.getInstance().getCurrentUser()!!.uid
+            var storageReference = FirebaseStorage.getInstance().reference
+
+            storageReference.child("images/users/" + userID + "/" + restaurant.uuid + ".jpg").downloadUrl.addOnSuccessListener  {
+                    uri ->
+                run {
+                    restaurant.imageUri = uri
+                    Picasso.with(context).load(restaurant.imageUri).into(imageView)
+                }
+            }.addOnFailureListener{ exception -> imageView.setImageDrawable(context.resources.getDrawable(R.drawable.question_mark_icon)) }
+        }
+
+        fun submitRestaurant(name: String, address: String, rating: Int, restaurantUri: Uri?, searchImage: Boolean, activity: Activity){
             val userID = FirebaseAuth.getInstance().getCurrentUser()!!.uid
             val ref = FirebaseDatabase.getInstance().getReference("users").child(userID).child("restaurants")
             val resKeyId = ref.push().key
@@ -69,7 +94,7 @@ class FirebaseUtil {
             if (resKeyId != null){
                 ref.child(resKeyId).setValue(restaurant).addOnCompleteListener{
                     if (restaurantUri != null){
-                        uploadRestaurantImage(userID, resKeyId, restaurantUri, activity)
+                        uploadRestaurantImage(userID, searchImage, resKeyId, restaurantUri, activity)
                     } else {
                         activity?.finish()
                     }
@@ -77,14 +102,52 @@ class FirebaseUtil {
             }
         }
 
-        private fun uploadRestaurantImage(userID: String, resKeyId: String, restaurantUri: Uri, activity: Activity){
+        private fun uploadRestaurantImage(userID: String, searchImage: Boolean, resKeyId: String, restaurantUri: Uri, activity: Activity){
+            var restUri = restaurantUri
             var storageReference = FirebaseStorage.getInstance().reference.child("images/users/" + userID + "/" + resKeyId + ".jpg")
-            storageReference.putFile(restaurantUri).addOnSuccessListener {
+            if (searchImage){
+                var bitmap = getBitmapFromURL(restUri.toString())
+                if (bitmap != null) {
+                    restUri = getImageUri(activity.applicationContext!!, bitmap!!)
+                }
+            }
+            storageReference.putFile(restUri).addOnSuccessListener {
+                deleteUploadedImage(restUri)
                 activity?.finish()
             }.addOnFailureListener{
                 //TODO Handle image upload fail
+                deleteUploadedImage(restUri)
                 activity?.finish()
             }
+        }
+
+        fun getBitmapFromURL(src: String): Bitmap? {
+            try {
+                var url = URL(src)
+                var connection = url.openConnection() as HttpURLConnection
+                connection.doInput = true
+                connection.connect()
+                var input = connection.inputStream
+                var myBitmap = BitmapFactory.decodeStream(input)
+                return myBitmap
+            } catch (e: IOException) {
+                e.printStackTrace()
+                return null
+            }
+        }
+
+        fun getImageUri(inContext: Context, inImage: Bitmap): Uri {
+            val bytes = ByteArrayOutputStream()
+            inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+            val path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "tempFoodEImage", null)
+            return Uri.parse(path)
+        }
+
+        fun deleteUploadedImage(uri: Uri){
+            var file = File(uri.path)
+            var exists = file.exists()
+            var deleted = file.delete()
+            System.out.println("DELETED: " + deleted)
         }
 
         fun submitFoodItemToRestaurant(restaurantUuid: String, name: String, rating: Int, foodUri: Uri?, activity: Activity){

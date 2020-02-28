@@ -65,6 +65,7 @@ class ManualEntryFragment : Fragment() {
                                       addressTextfield.text.toString(),
                                       ratingBar.numStars,
                                       currentUri,
+                                      false,
                                       activity!!)
     }
 

@@ -22,25 +22,26 @@ import com.thurman.foode.models.Restaurant
 
 class RestaurantDetailFragment : Fragment() {
 
+    lateinit var currentView: View
+    lateinit var restaurantUuid: String
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.restaurant_detail_fragment,container,false)
-        var restaurantUuid = arguments!!.getString("restaurantUuid")
-        getRestaurantFromUuid(restaurantUuid!!, view)
-
-        return view
+        currentView = inflater.inflate(R.layout.restaurant_detail_fragment,container,false)
+        restaurantUuid = arguments!!.getString("restaurantUuid")!!
+        getRestaurantFromUuid()
+        return currentView
     }
 
-    private fun getRestaurantFromUuid(restaurantUuid: String, view: View){
-
+    private fun getRestaurantFromUuid(){
         val restaurantListener = object : ValueEventListener {
 
             override fun onDataChange(restaurantSnapshot: DataSnapshot) {
                 var restaurant = FirebaseUtil.getRestaurantFromSnapshot(restaurantSnapshot)
-                setupFields(view, restaurant)
+                setupFields(currentView, restaurant)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {}
@@ -62,17 +63,13 @@ class RestaurantDetailFragment : Fragment() {
             var addFoodItemActivity = AddFoodItemActivity()
             val intent = Intent(activity, addFoodItemActivity.javaClass)
             intent.putExtra("restaurantUuid", restaurant.uuid)
-            startActivity(intent)
+            startActivityForResult(intent, 200)
         }
     }
 
     private fun setupRestaurantImage(view: View, restaurant: Restaurant){
         var imageView = view.findViewById<ImageView>(R.id.image_view)
-        if (restaurant.imageUri != null){
-            Picasso.with(context).load(restaurant.imageUri).into(imageView)
-        } else {
-            imageView.setImageDrawable(context!!.resources.getDrawable(R.drawable.question_mark_icon))
-        }
+        FirebaseUtil.getRestaurantDetailImage(restaurant, imageView, context!!)
     }
 
     private fun setupRestaurantTextFields(view: View, restaurant: Restaurant){
@@ -105,6 +102,10 @@ class RestaurantDetailFragment : Fragment() {
 
     private fun onFoodItemClick(foodItem: FoodItem){
 
+    }
+
+    fun refreshData(){
+        getRestaurantFromUuid()
     }
 
 }

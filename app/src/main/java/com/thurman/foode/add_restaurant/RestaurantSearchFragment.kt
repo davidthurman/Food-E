@@ -20,6 +20,16 @@ import com.thurman.foode.Utility.FirebaseUtil
 import com.thurman.foode.Utility.ZomatoUtil
 import com.thurman.foode.models.Restaurant
 import org.json.JSONObject
+import android.graphics.Bitmap
+import android.content.Context
+import android.graphics.BitmapFactory
+import android.provider.MediaStore
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.URL
+
 
 class RestaurantSearchFragment : Fragment() {
 
@@ -84,6 +94,7 @@ class RestaurantSearchFragment : Fragment() {
                                       restaurant.address,
                                0,
                                       restaurant.imageUri,
+                                      true,
                                       activity!!)
     }
 

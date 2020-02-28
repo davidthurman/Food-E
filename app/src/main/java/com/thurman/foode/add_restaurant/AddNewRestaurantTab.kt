@@ -57,6 +57,6 @@ class AddNewRestaurantTab : Fragment() {
         val intent = Intent(activity, AddRestaurantActivity::class.java)
         intent.putExtra("type", type)
         intent.putExtra("searchText", restaurantSearchBar.text.toString())
-        startActivity(intent)
+        startActivityForResult(intent, 200)
     }
 }

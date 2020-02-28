@@ -1,5 +1,6 @@
 package com.thurman.foode
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.viewpager.widget.ViewPager
@@ -12,11 +13,13 @@ import com.google.android.material.tabs.TabLayout
 
 class MainActivity : AppCompatActivity() {
 
+    lateinit var fragmentAdapter: TabsPagerAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val fragmentAdapter = TabsPagerAdapter(supportFragmentManager)
+        fragmentAdapter = TabsPagerAdapter(supportFragmentManager)
 
         var viewPager = findViewById<ViewPager>(R.id.viewpager_main)
         viewPager.adapter = fragmentAdapter
@@ -29,5 +32,10 @@ class MainActivity : AppCompatActivity() {
 
         var tab2 = tabsMain.getTabAt(1)
         tab2?.setIcon(R.drawable.plus_icon)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        fragmentAdapter.updateFavorites()
     }
 }

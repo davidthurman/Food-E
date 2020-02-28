@@ -8,14 +8,17 @@ import com.thurman.foode.view_restaurants.FavoritesTab
 
 class TabsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
+    var favoritesTab = FavoritesTab()
+    var addNewRestaurantTab = AddNewRestaurantTab()
+
     override fun getCount(): Int {
         return 2
     }
 
     override fun getItem(position: Int): Fragment {
         when (position){
-            0 -> return FavoritesTab()
-            1 -> return AddNewRestaurantTab()
+            0 -> return favoritesTab
+            1 -> return addNewRestaurantTab
             else -> {
                 return FavoritesTab()
             }
@@ -30,6 +33,10 @@ class TabsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
                 return "Add New Restaurant"
             }
         }
+    }
+
+    fun updateFavorites(){
+        favoritesTab.updateResults()
     }
 
 }

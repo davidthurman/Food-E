@@ -23,7 +23,6 @@ class FavoriteRestaurantListAdapter(val items: ArrayList<Restaurant>, val contex
                 false
             )
         )
-
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -39,14 +38,11 @@ class FavoriteRestaurantListAdapter(val items: ArrayList<Restaurant>, val contex
         }
     }
 
-
-    // Gets the number of animals in the list
     override fun getItemCount(): Int {
         return items.size
     }
 
     inner class RestaurantViewHolder (view: View) : RecyclerView.ViewHolder(view) {
-        // Holds the TextView that will add each animal to
         var restaurantNameTextView = view.restaurant_name
         var restaurantAddressTextView = view.restaurant_address
         var ratingBar = view.rating_bar

@@ -2,17 +2,24 @@ package com.thurman.foode.signin
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.View
 import android.widget.Button
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.thurman.foode.MainActivity
 import com.thurman.foode.R
+import com.tuyenmonkey.mkloader.MKLoader
 
 class SignInActivity : FragmentActivity() {
 
     lateinit var usernameInput: TextInputEditText
     lateinit var passwordInput: TextInputEditText
+    lateinit var signInButton: Button
+    lateinit var signUpButton: Button
+    lateinit var loader: MKLoader
 
     private lateinit var auth: FirebaseAuth
 
@@ -20,34 +27,75 @@ class SignInActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.sign_in_layout)
         auth = FirebaseAuth.getInstance()
-        usernameInput = findViewById(R.id.username_textfield)
-        passwordInput = findViewById(R.id.password_textfield)
-        var signInButton = findViewById<Button>(R.id.sign_in_button)
-        signInButton.setOnClickListener { signIn() }
-        var signUpButton = findViewById<Button>(R.id.sign_up_button)
-        signUpButton.setOnClickListener{
-            signUp()
-        }
-        val currentUser = auth.currentUser
+        setupTextfields()
+        setupButtons()
+        loader = findViewById(R.id.sign_in_loader)
     }
 
+    private fun validLoginFields(): Boolean{
+        var isValid = true
+        if (usernameInput.text == null || usernameInput.text!!.toString().equals("")){
+            isValid = false
+            usernameInput.error = "Please enter a valid username"
+        }
+        if (passwordInput.text == null || passwordInput.text!!.toString().equals("")){
+            isValid = false
+            passwordInput.error = "Please enter a valid password"
+        }
+        return isValid
+    }
+
+    private fun setupButtons(){
+        signInButton = findViewById(R.id.sign_in_button)
+        signInButton.setOnClickListener {
+            if (validLoginFields()){
+                setLoading(true)
+                signIn()
+            }
+        }
+        signUpButton = findViewById(R.id.sign_up_button)
+        signUpButton.setOnClickListener{
+            if (validLoginFields()){
+                setLoading(true)
+                signUp()
+            }
+        }
+    }
+
+    private fun setupTextfields(){
+        usernameInput = findViewById(R.id.username_textfield)
+        usernameInput.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                usernameInput.setError(null)
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+        })
+        passwordInput = findViewById(R.id.password_textfield)
+        passwordInput.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                passwordInput.setError(null)
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+        })
+    }
 
     private fun signUp(){
-        System.out.println("1")
+        setLoading(true)
         auth.createUserWithEmailAndPassword(usernameInput.text.toString(), passwordInput.text.toString())
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    System.out.println("2")
-                    // Sign in success, update UI with the signed-in user's information
-                    System.out.println("Success user")
-                    val user = auth.currentUser
-
-
                     proceedToLogin()
                 } else {
-                    System.out.println("3")
+                    setLoading(false)
                     //TODO Sign up fail
-                    System.out.println("ERROR: " + task.exception.toString())
                 }
             }
     }
@@ -56,21 +104,33 @@ class SignInActivity : FragmentActivity() {
         auth.signInWithEmailAndPassword(usernameInput.text.toString(), passwordInput.text.toString())
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    val user = auth.currentUser
                     proceedToLogin()
                 } else {
-                    // If sign in fails, display a message to the user.
-                    //TODO Sign in fail
-                    System.out.println("ERROR: " + task.exception.toString())
+                    setLoading(false)
+                    //TODO Sign up fail
                 }
-
-                // ...
             }
     }
 
     private fun proceedToLogin(){
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
+        setLoading(false)
+    }
+
+    private fun setLoading(loading: Boolean){
+        if (loading){
+            loader.visibility = View.VISIBLE
+            usernameInput.isEnabled = false
+            passwordInput.isEnabled = false
+            signInButton.visibility = View.GONE
+            signUpButton.visibility = View.GONE
+        } else {
+            loader.visibility = View.GONE
+            usernameInput.isEnabled = true
+            passwordInput.isEnabled = true
+            signInButton.visibility = View.VISIBLE
+            signUpButton.visibility = View.VISIBLE
+        }
     }
 }

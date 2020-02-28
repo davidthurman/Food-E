@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.thurman.foode.models.Restaurant
 import kotlinx.android.synthetic.main.favorite_restaurant_list_item.view.*
-import kotlinx.android.synthetic.main.favorite_restaurant_list_item.view.rating_bar
 
 class SearchRestaurantListAdapter(val items: ArrayList<Restaurant>, val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -34,14 +33,11 @@ class SearchRestaurantListAdapter(val items: ArrayList<Restaurant>, val context:
         }
     }
 
-
-    // Gets the number of animals in the list
     override fun getItemCount(): Int {
         return items.size
     }
 
     inner class RestaurantViewHolder (view: View) : RecyclerView.ViewHolder(view) {
-        // Holds the TextView that will add each animal to
         var restaurantNameTextView = view.restaurant_name
         var restaurantAddressTextView = view.restaurant_address
         var imageView = view.restaurant_image
