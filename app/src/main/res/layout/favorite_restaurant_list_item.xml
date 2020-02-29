@@ -13,7 +13,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <TextView
@@ -21,12 +21,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Name"
+            android:textColor="@color/seaBlue"
+            android:textSize="20sp"
             android:layout_marginBottom="3dp"/>
 
         <TextView
             android:id="@+id/restaurant_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/seaBlue"
+            android:textSize="16sp"
             android:text="Address"/>
 
         <RatingBar
@@ -35,6 +39,8 @@
             android:id="@+id/rating_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:scaleX=".8"
+            android:scaleY=".8"
             android:numStars="5"/>
 
     </LinearLayout>

@@ -3,26 +3,49 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:background="@color/mainGrey"
     android:layout_height="match_parent"
-    android:gravity="center">
+    android:gravity="center_horizontal">
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="20sp">
+        android:orientation="vertical"
+        android:background="@drawable/search_input_background"
+        android:padding="20dp"
+        android:layout_margin="20dp"
+        >
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_weight=".25"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:padding="10dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="20dp"
             android:hint="Enter Restaurant Name"
-            app:counterEnabled="true"
-            app:counterMaxLength="20">
+            android:background="@drawable/search_edittext_background">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/restaurant_search_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Address"
+            android:layout_marginLeft="20dp"
+            android:padding="10dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/search_edittext_background"
+            app:boxBackgroundColor="@color/white">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/address_search_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -33,21 +56,42 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight=".75"
-            android:textSize="16sp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/search_button_background"
+            android:textSize="14sp"
+            android:textColor="@color/persianGreen"
             android:text="Search"/>
 
     </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="OR"/>
 
-    <Button
-        android:layout_marginTop="10dp"
-        android:id="@+id/manual_entry_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Enter restaurant manually"/>
+<!--    <TextView-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="OR"-->
+<!--        android:textColor="@color/persianGreen"/>-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom">
+
+        <Button
+            android:layout_marginTop="30dp"
+            android:id="@+id/manual_entry_btn"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_height="65dp"
+            android:textSize="14sp"
+            android:textColor="@color/white"
+            android:background="@drawable/enter_restaurant_manually_button_background"
+            android:text="Enter restaurant manually"/>
+
+    </LinearLayout>
+
+
 
 </LinearLayout>

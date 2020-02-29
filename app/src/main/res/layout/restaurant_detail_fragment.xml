@@ -1,12 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/loading_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        >
+
+        <com.tuyenmonkey.mkloader.MKLoader
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:mk_type="TwinFishesSpinner"
+            app:mk_color="@color/persianGreen"/>
+
+    </LinearLayout>
+
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/content_scroll">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -14,22 +33,50 @@
             android:orientation="vertical"
             android:gravity="center_horizontal">
 
-            <ImageView
-                android:id="@+id/image_view"
-                android:layout_width="300dp"
-                android:layout_height="300dp"/>
-
-            <TextView
-                android:id="@+id/name_textfield"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Name"/>
+                android:orientation="vertical"
+                android:background="@color/persianGreen"
+                android:gravity="center_horizontal">
 
-            <TextView
-                android:id="@+id/address_textfield"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Address"/>
+                <ImageView
+                    android:id="@+id/image_view"
+                    android:layout_width="300dp"
+                    android:layout_height="300dp"
+                    android:layout_marginTop="20dp"/>
+
+                <TextView
+                    android:id="@+id/name_textfield"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Name"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:layout_marginTop="10dp"/>
+
+                <TextView
+                    android:id="@+id/address_textfield"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Address"
+                    android:textColor="@color/white"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:textSize="14sp"/>
+
+                <RatingBar
+                    android:isIndicator="true"
+                    android:theme="@style/RatingBar"
+                    android:id="@+id/restaurant_rating_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleX=".8"
+                    android:scaleY=".8"
+                    android:numStars="5"
+                    android:layout_marginBottom="5dp"/>
+
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/food_ratings_list"

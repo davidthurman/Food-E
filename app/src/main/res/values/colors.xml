@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorPrimary">@color/carribeanGreen</color>
+    <color name="colorPrimaryDark">@color/seaBlue</color>
     <color name="colorAccent">#D81B60</color>
     <color name="duskYellow">#F8FB42</color>
     <color name="lightGrey">#DEDEDE</color>
     
-    
+    <color name="white">#FFFFFF</color>
     <color name="mainGrey">#B8C5D6</color>
     <color name="blue">#3993DD</color>
     <color name="beige">#F4EBE8</color>
     <color name="lightGreen">#96BDC6</color>
+
+    <color name="seaBlue">#05668D</color>
+    <color name="metallicSeaweed">#028090</color>
+    <color name="persianGreen">#00A896</color>
+    <color name="carribeanGreen">#02C39A</color>
+    <color name="paleSpringBud">#F0F3BD</color>
 </resources>

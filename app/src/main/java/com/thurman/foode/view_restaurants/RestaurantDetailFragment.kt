@@ -1,6 +1,7 @@
 package com.thurman.foode.view_restaurants
 
 import android.content.Intent
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,6 +25,8 @@ class RestaurantDetailFragment : Fragment() {
 
     lateinit var currentView: View
     lateinit var restaurantUuid: String
+    lateinit var contentScroll: ScrollView
+    lateinit var loadingContainer: LinearLayout
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,6 +34,8 @@ class RestaurantDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         currentView = inflater.inflate(R.layout.restaurant_detail_fragment,container,false)
+        contentScroll = currentView.findViewById(R.id.content_scroll)
+        loadingContainer = currentView.findViewById(R.id.loading_container)
         restaurantUuid = arguments!!.getString("restaurantUuid")!!
         getRestaurantFromUuid()
         return currentView
@@ -42,6 +47,7 @@ class RestaurantDetailFragment : Fragment() {
             override fun onDataChange(restaurantSnapshot: DataSnapshot) {
                 var restaurant = FirebaseUtil.getRestaurantFromSnapshot(restaurantSnapshot)
                 setupFields(currentView, restaurant)
+                setLoading(false)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {}
@@ -83,20 +89,22 @@ class RestaurantDetailFragment : Fragment() {
         if (restaurant.foodItems != null){
             var foodRatingsList = view.findViewById<LinearLayout>(R.id.food_ratings_list)
             for (index in 0 until restaurant.foodItems!!.size) {
-                addFoodItemToListview(restaurant.foodItems!!.get(index), foodRatingsList)
+                addFoodItemToListview(restaurant.foodItems!!.get(index), restaurant, foodRatingsList)
             }
         }
     }
 
-    private fun addFoodItemToListview(foodItem: FoodItem, foodRatingsList: LinearLayout){
+    private fun addFoodItemToListview(foodItem: FoodItem, restaurant: Restaurant, foodRatingsList: LinearLayout){
         var foodItemLayout = LayoutInflater.from(context!!).inflate(resources.getLayout(R.layout.food_item_layout), null)
         var foodItemName = foodItemLayout.findViewById<TextView>(R.id.food_item_name)
         foodItemName.text = foodItem.name
-        var foodItemRatingBar = foodItemLayout.findViewById<RatingBar>(R.id.food_item_rating_bar)
+        var foodItemRatingBar = foodItemLayout.findViewById<RatingBar>(R.id.rating_bar)
         foodItemRatingBar.numStars = foodItem.rating
         foodItemLayout.setOnClickListener(View.OnClickListener {
             onFoodItemClick(foodItem)
         })
+        var foodItemImage = foodItemLayout.findViewById<ImageView>(R.id.food_item_image)
+        FirebaseUtil.setFoodItemImage(restaurant, foodItem, foodItemImage, context!!)
         foodRatingsList.addView(foodItemLayout)
     }
 
@@ -106,6 +114,16 @@ class RestaurantDetailFragment : Fragment() {
 
     fun refreshData(){
         getRestaurantFromUuid()
+    }
+
+    private fun setLoading(loading: Boolean){
+        if (loading){
+            contentScroll.visibility = View.GONE
+            loadingContainer.visibility = View.VISIBLE
+        } else {
+            contentScroll.visibility = View.VISIBLE
+            loadingContainer.visibility = View.GONE
+        }
     }
 
 }

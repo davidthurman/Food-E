@@ -15,6 +15,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import com.thurman.foode.R
+import com.thurman.foode.add_restaurant.AddFoodItemFragment
 import com.thurman.foode.models.FoodItem
 import com.thurman.foode.models.Restaurant
 import com.thurman.foode.view_restaurants.FavoriteRestaurantListAdapter
@@ -150,7 +151,7 @@ class FirebaseUtil {
             System.out.println("DELETED: " + deleted)
         }
 
-        fun submitFoodItemToRestaurant(restaurantUuid: String, name: String, rating: Int, foodUri: Uri?, activity: Activity){
+        fun submitFoodItemToRestaurant(restaurantUuid: String, name: String, rating: Int, foodUri: Uri?, activity: Activity, fragment: AddFoodItemFragment){
             val userID = FirebaseAuth.getInstance().getCurrentUser()!!.uid
             val ref = FirebaseDatabase.getInstance().getReference("users").child(userID).child("restaurants").child(restaurantUuid).child("foodItems")
             val foodKeyId = ref.push().key
@@ -158,12 +159,27 @@ class FirebaseUtil {
                 val foodItem = FoodItem(name, rating, foodKeyId)
                 ref.child(foodKeyId).setValue(foodItem).addOnCompleteListener{
                     if (foodUri != null){
-                        uploadFoodItemImage(userID, foodKeyId, restaurantUuid, foodUri, activity)
+                        uploadFoodItemImage(userID, restaurantUuid, foodKeyId, foodUri, activity)
+                        fragment.setLoading(false)
                     } else {
+                        fragment.setLoading(false)
                         activity?.finish()
                     }
                 }
             }
+        }
+
+        fun setFoodItemImage(restaurant: Restaurant, foodItem: FoodItem, imageView: ImageView, context: Context){
+            val userID = FirebaseAuth.getInstance().getCurrentUser()!!.uid
+            var storageReference = FirebaseStorage.getInstance().reference
+
+            storageReference.child("images/users/" + userID + "/" + restaurant.uuid + "/" + foodItem.uuid +  ".jpg").downloadUrl.addOnSuccessListener  {
+                    uri ->
+                run {
+                    foodItem.imageUri = uri
+                    Picasso.with(context).load(foodItem.imageUri).into(imageView)
+                }
+            }.addOnFailureListener{ exception -> imageView.setImageDrawable(context.resources.getDrawable(R.drawable.question_mark_icon)) }
         }
 
         private fun uploadFoodItemImage(userID: String, restaurantUuid: String, foodKeyId: String, restaurantUri: Uri, activity: Activity){

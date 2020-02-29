@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.widget.Button
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.textfield.TextInputEditText
@@ -25,6 +27,8 @@ class SignInActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
         setContentView(R.layout.sign_in_layout)
         auth = FirebaseAuth.getInstance()
         setupTextfields()

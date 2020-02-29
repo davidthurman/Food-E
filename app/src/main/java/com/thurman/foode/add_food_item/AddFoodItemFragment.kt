@@ -6,21 +6,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.RatingBar
+import android.widget.*
 import androidx.fragment.app.Fragment
 import com.google.android.material.textfield.TextInputEditText
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
-import com.thurman.foode.models.Restaurant
-import android.widget.ImageView
-import android.widget.Toast
 import com.github.dhaval2404.imagepicker.ImagePicker
-import com.google.firebase.storage.FirebaseStorage
 import java.io.File
 import com.thurman.foode.R
 import com.thurman.foode.Utility.FirebaseUtil
-import com.thurman.foode.models.FoodItem
 
 
 class AddFoodItemFragment : Fragment() {
@@ -30,6 +22,8 @@ class AddFoodItemFragment : Fragment() {
     lateinit var imageView: ImageView
     lateinit var restaurantUuid: String
     var currentUri: Uri? = null
+    lateinit var contentView: LinearLayout
+    lateinit var loadingContainer: LinearLayout
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,6 +35,8 @@ class AddFoodItemFragment : Fragment() {
         nameTextfield = view.findViewById(R.id.name_textfield)
         ratingBar = view.findViewById(R.id.rating_bar)
         imageView = view.findViewById(R.id.image_view)
+        contentView = view.findViewById(R.id.content_container)
+        loadingContainer = view.findViewById(R.id.loading_container)
         var submitBtn = view.findViewById<Button>(R.id.submit_button)
         submitBtn.setOnClickListener{ checkIfFieldsAreValid() }
         var uploadImageBtn = view.findViewById<Button>(R.id.upload_image_btn)
@@ -54,7 +50,9 @@ class AddFoodItemFragment : Fragment() {
     }
 
     private fun submit(){
-        FirebaseUtil.submitFoodItemToRestaurant(restaurantUuid, nameTextfield.text.toString(), ratingBar.numStars, currentUri, activity!!)
+        setLoading(true)
+        FirebaseUtil.submitFoodItemToRestaurant(restaurantUuid, nameTextfield.text.toString(), ratingBar.numStars, currentUri, activity!!, this)
+
     }
 
     private fun uploadImageClicked(){
@@ -80,7 +78,16 @@ class AddFoodItemFragment : Fragment() {
                     Toast.makeText(context, "Task Cancelled", Toast.LENGTH_SHORT).show()
                 }
             }
+    }
 
+    fun setLoading(loading: Boolean){
+        if (loading){
+            contentView.visibility = View.GONE
+            loadingContainer.visibility = View.VISIBLE
+        } else {
+            contentView.visibility = View.VISIBLE
+            loadingContainer.visibility = View.GONE
+        }
     }
 
 }
