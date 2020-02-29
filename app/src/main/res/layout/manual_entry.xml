@@ -1,60 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_margin="20dp" android:gravity="center_horizontal">
+    android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"  >
 
-    <com.google.android.material.textfield.TextInputLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Restaurant Name"
-        app:counterEnabled="true"
-        app:counterMaxLength="20">
+        android:layout_height="wrap_content">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/name_textfield"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_margin="20dp"
+            android:paddingBottom="20dp">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Restaurant Name"
+                app:counterEnabled="true"
+                app:counterMaxLength="40">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Address"
-        app:counterEnabled="true"
-        app:counterMaxLength="20">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/name_textfield"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/address_textfield"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Address"
+                app:counterEnabled="true"
+                app:counterMaxLength="50">
 
-    <RatingBar
-        android:id="@+id/rating_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:numStars="5"
-        android:stepSize="1"
-        android:rating="3"/>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/address_textfield"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
 
-    <ImageView
-        android:id="@+id/image_view"
-        android:layout_width="300dp"
-        android:layout_height="300dp"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
-        android:id="@+id/upload_image_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Upload Image"/>
+            <RatingBar
+                android:id="@+id/rating_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:stepSize="1"
+                android:rating="3"
+                android:layout_marginBottom="20dp"/>
 
-    <Button
-        android:layout_marginTop="20dp"
-        android:id="@+id/submit_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Submit"/>
+            <ImageView
+                android:id="@+id/image_view"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:src="@drawable/question_mark_icon"
+                android:layout_marginBottom="20dp"/>
+
+            <Button
+                android:id="@+id/upload_image_btn"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/upload_image_background"
+                android:textSize="14sp"
+                android:textColor="@color/white"
+                android:text="Upload Image"/>
+
+            <Button
+                android:layout_marginTop="40dp"
+                android:id="@+id/submit_button"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="20dp"
+                android:layout_height="50dp"
+                android:textSize="14sp"
+                android:textColor="@color/white"
+                android:background="@drawable/enter_restaurant_manually_button_background"
+                android:text="Submit" />
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

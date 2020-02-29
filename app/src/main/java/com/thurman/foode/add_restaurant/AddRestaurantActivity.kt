@@ -8,6 +8,8 @@ import com.thurman.foode.models.Restaurant
 
 class AddRestaurantActivity : FragmentActivity() {
 
+    var tempRestaurant: Restaurant? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -22,10 +24,23 @@ class AddRestaurantActivity : FragmentActivity() {
             fragment.arguments = bundle
         }
 
+        transitionFragment(fragment)
+    }
+
+    fun transitionFragment(fragment: Fragment){
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(android.R.id.content, fragment)
         fragmentTransaction.commit()
+    }
+
+    fun SearchRestaurantChosen(restaurant: Restaurant){
+        tempRestaurant = restaurant
+        var fragment = ManualEntryFragment()
+        var bundle = Bundle()
+        bundle.putBoolean("fromSearch", true)
+        fragment.arguments = bundle
+        transitionFragment(fragment)
     }
 
 }

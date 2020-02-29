@@ -22,7 +22,7 @@ class AddFoodItemFragment : Fragment() {
     lateinit var imageView: ImageView
     lateinit var restaurantUuid: String
     var currentUri: Uri? = null
-    lateinit var contentView: LinearLayout
+    lateinit var contentView: ScrollView
     lateinit var loadingContainer: LinearLayout
 
     override fun onCreateView(
@@ -51,7 +51,7 @@ class AddFoodItemFragment : Fragment() {
 
     private fun submit(){
         setLoading(true)
-        FirebaseUtil.submitFoodItemToRestaurant(restaurantUuid, nameTextfield.text.toString(), ratingBar.numStars, currentUri, activity!!, this)
+        FirebaseUtil.submitFoodItemToRestaurant(restaurantUuid, nameTextfield.text.toString(), ratingBar.rating.toInt(), currentUri, activity!!, this)
 
     }
 

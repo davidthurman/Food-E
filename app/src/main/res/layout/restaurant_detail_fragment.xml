@@ -44,15 +44,17 @@
                     android:id="@+id/image_view"
                     android:layout_width="300dp"
                     android:layout_height="300dp"
-                    android:layout_marginTop="20dp"/>
+                    android:layout_marginTop="30dp"/>
 
                 <TextView
                     android:id="@+id/name_textfield"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Name"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
                     android:textColor="@color/white"
-                    android:textSize="18sp"
+                    android:textSize="22sp"
                     android:layout_marginTop="10dp"/>
 
                 <TextView
@@ -63,11 +65,13 @@
                     android:textColor="@color/white"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
-                    android:textSize="14sp"/>
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
+                    android:textSize="18sp"/>
 
                 <RatingBar
                     android:isIndicator="true"
-                    android:theme="@style/RatingBar"
+                    android:theme="@style/RatingBarRestaurantDetail"
                     android:id="@+id/restaurant_rating_bar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -87,9 +91,16 @@
             </LinearLayout>
 
             <Button
+                android:layout_marginTop="10dp"
                 android:id="@+id/add_food_item_btn"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="20dp"
+                android:layout_height="50dp"
+                android:textSize="14sp"
+                android:textColor="@color/white"
+                android:background="@drawable/enter_restaurant_manually_button_background"
                 android:text="Add Food Item"/>
 
         </LinearLayout>

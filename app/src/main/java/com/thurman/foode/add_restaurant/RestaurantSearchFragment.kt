@@ -90,12 +90,13 @@ class RestaurantSearchFragment : Fragment() {
     }
 
     private fun submit(restaurant: Restaurant){
-        FirebaseUtil.submitRestaurant(restaurant.name,
-                                      restaurant.address,
-                               0,
-                                      restaurant.imageUri,
-                                      true,
-                                      activity!!)
+        (activity as AddRestaurantActivity).SearchRestaurantChosen(restaurant)
+//        FirebaseUtil.submitRestaurant(restaurant.name,
+//                                      restaurant.address,
+//                               5,
+//                                      restaurant.imageUri,
+//                                      true,
+//                                      activity!!)
     }
 
 }

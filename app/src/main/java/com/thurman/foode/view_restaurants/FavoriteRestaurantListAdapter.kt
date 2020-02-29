@@ -30,7 +30,7 @@ class FavoriteRestaurantListAdapter(val items: ArrayList<Restaurant>, val contex
         var restaurant = items.get(position)
         restaurantViewHolder.restaurantNameTextView.text = restaurant.name
         restaurantViewHolder.restaurantAddressTextView.text = restaurant.address
-        restaurantViewHolder.ratingBar.numStars = restaurant.rating
+        restaurantViewHolder.ratingBar.rating = restaurant.rating.toFloat()
         if (restaurant.imageUri != null){
             Picasso.with(context).load(restaurant.imageUri).into(restaurantViewHolder.imageView)
         } else {

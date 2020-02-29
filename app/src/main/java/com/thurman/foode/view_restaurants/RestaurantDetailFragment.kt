@@ -61,6 +61,7 @@ class RestaurantDetailFragment : Fragment() {
         setupRestaurantImage(view, restaurant)
         setupRestaurantTextFields(view, restaurant)
         setupRestaurantFoodItems(view, restaurant)
+        setupRatingBar(view, restaurant)
     }
 
     private fun setupAddFoodItemBtn(view: View, restaurant: Restaurant){
@@ -85,27 +86,45 @@ class RestaurantDetailFragment : Fragment() {
         addressTextField.text = restaurant.address
     }
 
+    private fun setupRatingBar(view: View, restaurant: Restaurant){
+        var ratingBar = view.findViewById<RatingBar>(R.id.restaurant_rating_bar)
+        ratingBar.rating = restaurant.rating.toFloat()
+    }
+
     private fun setupRestaurantFoodItems(view: View, restaurant: Restaurant){
         if (restaurant.foodItems != null){
             var foodRatingsList = view.findViewById<LinearLayout>(R.id.food_ratings_list)
+            foodRatingsList.removeAllViews()
             for (index in 0 until restaurant.foodItems!!.size) {
-                addFoodItemToListview(restaurant.foodItems!!.get(index), restaurant, foodRatingsList)
+                var dividerBar = true
+                if (index == (restaurant.foodItems!!.size - 1)){
+                    dividerBar = false
+                }
+                addFoodItemToListview(restaurant.foodItems!!.get(index), restaurant, foodRatingsList, dividerBar)
             }
         }
     }
 
-    private fun addFoodItemToListview(foodItem: FoodItem, restaurant: Restaurant, foodRatingsList: LinearLayout){
+    private fun addFoodItemToListview(foodItem: FoodItem, restaurant: Restaurant, foodRatingsList: LinearLayout, dividerBar: Boolean){
         var foodItemLayout = LayoutInflater.from(context!!).inflate(resources.getLayout(R.layout.food_item_layout), null)
         var foodItemName = foodItemLayout.findViewById<TextView>(R.id.food_item_name)
         foodItemName.text = foodItem.name
         var foodItemRatingBar = foodItemLayout.findViewById<RatingBar>(R.id.rating_bar)
-        foodItemRatingBar.numStars = foodItem.rating
+        foodItemRatingBar.rating = foodItem.rating.toFloat()
         foodItemLayout.setOnClickListener(View.OnClickListener {
             onFoodItemClick(foodItem)
         })
         var foodItemImage = foodItemLayout.findViewById<ImageView>(R.id.food_item_image)
         FirebaseUtil.setFoodItemImage(restaurant, foodItem, foodItemImage, context!!)
         foodRatingsList.addView(foodItemLayout)
+        if (dividerBar){
+            addDividerBar(foodRatingsList)
+        }
+    }
+
+    private fun addDividerBar(foodRatingsList: LinearLayout){
+        var dividerBar = LayoutInflater.from(context!!).inflate(resources.getLayout(R.layout.divider_bar), null)
+        foodRatingsList.addView(dividerBar)
     }
 
     private fun onFoodItemClick(foodItem: FoodItem){
