@@ -1,10 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp">
 
+    <com.tuyenmonkey.mkloader.MKLoader
+        android:id="@+id/fav_restaurant_image_loader"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_margin="10dp"
+        android:layout_marginRight="5dp"
+        app:mk_type="TwinFishesSpinner"
+        app:mk_color="@color/persianGreen"
+        />
+
     <ImageView
+        android:visibility="gone"
         android:layout_marginRight="5dp"
         android:id="@+id/restaurant_image"
         android:layout_width="100dp"

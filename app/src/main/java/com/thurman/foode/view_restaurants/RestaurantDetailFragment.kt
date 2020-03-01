@@ -19,6 +19,7 @@ import com.thurman.foode.Utility.FirebaseUtil
 import com.thurman.foode.add_restaurant.AddFoodItemActivity
 import com.thurman.foode.models.FoodItem
 import com.thurman.foode.models.Restaurant
+import com.tuyenmonkey.mkloader.MKLoader
 
 
 class RestaurantDetailFragment : Fragment() {
@@ -76,7 +77,8 @@ class RestaurantDetailFragment : Fragment() {
 
     private fun setupRestaurantImage(view: View, restaurant: Restaurant){
         var imageView = view.findViewById<ImageView>(R.id.image_view)
-        FirebaseUtil.getRestaurantDetailImage(restaurant, imageView, context!!)
+        var loaderContainer = view.findViewById<LinearLayout>(R.id.res_detail_loader_container)
+        FirebaseUtil.getRestaurantDetailImage(restaurant, imageView, loaderContainer, context!!)
     }
 
     private fun setupRestaurantTextFields(view: View, restaurant: Restaurant){
@@ -111,11 +113,18 @@ class RestaurantDetailFragment : Fragment() {
         foodItemName.text = foodItem.name
         var foodItemRatingBar = foodItemLayout.findViewById<RatingBar>(R.id.rating_bar)
         foodItemRatingBar.rating = foodItem.rating.toFloat()
+        if (foodItem.comments != ""){
+            var foodItemComments = foodItemLayout.findViewById<TextView>(R.id.comments_textfield)
+            foodItemComments.visibility = View.VISIBLE
+            foodItemComments.text = "Comments: " + foodItem.comments
+        }
+
         foodItemLayout.setOnClickListener(View.OnClickListener {
             onFoodItemClick(foodItem)
         })
         var foodItemImage = foodItemLayout.findViewById<ImageView>(R.id.food_item_image)
-        FirebaseUtil.setFoodItemImage(restaurant, foodItem, foodItemImage, context!!)
+        var foodItemLoader = foodItemLayout.findViewById<MKLoader>(R.id.image_loader)
+        FirebaseUtil.setFoodItemImage(restaurant, foodItem, foodItemImage, foodItemLoader, context!!)
         foodRatingsList.addView(foodItemLayout)
         if (dividerBar){
             addDividerBar(foodRatingsList)

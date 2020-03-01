@@ -4,9 +4,16 @@
     android:layout_height="wrap_content"
     android:layout_margin="10dp">
 
+    <com.tuyenmonkey.mkloader.MKLoader
+        android:id="@+id/image_loader"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_margin="10dp"
+        android:layout_marginRight="5dp"
+        />
+
     <ImageView
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
+        android:visibility="gone"
         android:layout_marginRight="5dp"
         android:id="@+id/food_item_image"
         android:layout_width="100dp"
@@ -30,13 +37,14 @@
             android:textSize="20sp"
             android:layout_marginBottom="3dp"/>
 
-<!--        <TextView-->
-<!--            android:id="@+id/restaurant_address"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:textColor="@color/seaBlue"-->
-<!--            android:textSize="16sp"-->
-<!--            android:text="Address"/>-->
+        <TextView
+            android:id="@+id/comments_textfield"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/seaBlue"
+            android:textSize="16sp"
+            android:text="Comments"/>
 
         <RatingBar
             android:isIndicator="true"

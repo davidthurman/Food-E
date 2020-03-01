@@ -24,6 +24,7 @@ class AddFoodItemFragment : Fragment() {
     var currentUri: Uri? = null
     lateinit var contentView: ScrollView
     lateinit var loadingContainer: LinearLayout
+    lateinit var commentsTextfield: TextInputEditText
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,6 +38,7 @@ class AddFoodItemFragment : Fragment() {
         imageView = view.findViewById(R.id.image_view)
         contentView = view.findViewById(R.id.content_container)
         loadingContainer = view.findViewById(R.id.loading_container)
+        commentsTextfield = view.findViewById(R.id.comments_textfield)
         var submitBtn = view.findViewById<Button>(R.id.submit_button)
         submitBtn.setOnClickListener{ checkIfFieldsAreValid() }
         var uploadImageBtn = view.findViewById<Button>(R.id.upload_image_btn)
@@ -51,7 +53,7 @@ class AddFoodItemFragment : Fragment() {
 
     private fun submit(){
         setLoading(true)
-        FirebaseUtil.submitFoodItemToRestaurant(restaurantUuid, nameTextfield.text.toString(), ratingBar.rating.toInt(), currentUri, activity!!, this)
+        FirebaseUtil.submitFoodItemToRestaurant(restaurantUuid, nameTextfield.text.toString(), ratingBar.rating.toInt(), commentsTextfield.text.toString(), currentUri, activity!!, this)
 
     }
 

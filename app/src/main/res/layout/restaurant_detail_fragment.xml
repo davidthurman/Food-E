@@ -40,7 +40,23 @@
                 android:background="@color/persianGreen"
                 android:gravity="center_horizontal">
 
+                <LinearLayout
+                    android:id="@+id/res_detail_loader_container"
+                    android:layout_width="300dp"
+                    android:layout_height="300dp"
+                    android:gravity="center">
+
+                    <com.tuyenmonkey.mkloader.MKLoader
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        app:mk_type="TwinFishesSpinner"
+                        app:mk_color="@color/white"/>
+
+                </LinearLayout>
+
+
                 <ImageView
+                    android:visibility="gone"
                     android:id="@+id/image_view"
                     android:layout_width="300dp"
                     android:layout_height="300dp"

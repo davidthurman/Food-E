@@ -51,20 +51,20 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
-            android:id="@+id/search_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight=".75"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/search_button_background"
-            android:textSize="14sp"
-            android:textColor="@color/persianGreen"
-            android:text="Search"/>
+
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/search_btn"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:background="@drawable/search_button_background"
+        android:textSize="14sp"
+        android:textColor="@color/white"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:text="Search"/>
 
 <!--    <TextView-->
 <!--        android:layout_marginTop="10dp"-->

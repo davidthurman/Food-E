@@ -6,7 +6,9 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.MediaStore
+import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -19,6 +21,7 @@ import com.thurman.foode.add_restaurant.AddFoodItemFragment
 import com.thurman.foode.models.FoodItem
 import com.thurman.foode.models.Restaurant
 import com.thurman.foode.view_restaurants.FavoriteRestaurantListAdapter
+import com.tuyenmonkey.mkloader.MKLoader
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
@@ -56,6 +59,10 @@ class FirebaseUtil {
                 var foodItemRating = (foodItemHash.get("rating") as Long).toInt()
                 var foodItemUuid = foodItemHash.get("uuid") as String
                 var foodItemObject = FoodItem(foodItemName, foodItemRating, foodItemUuid)
+                if (foodItemHash.get("comments") != null){
+                    var foodItemComments = foodItemHash.get("comments") as String
+                    foodItemObject.comments = foodItemComments
+                }
                 foodItemList.add(foodItemObject)
             }
             return foodItemList
@@ -74,7 +81,7 @@ class FirebaseUtil {
             }.addOnFailureListener{ exception -> System.out.println("DOWNLOAD FAIL: " + exception.localizedMessage) }
         }
 
-        fun getRestaurantDetailImage(restaurant: Restaurant, imageView: ImageView, context: Context){
+        fun getRestaurantDetailImage(restaurant: Restaurant, imageView: ImageView, loaderContainer: LinearLayout, context: Context){
             val userID = FirebaseAuth.getInstance().getCurrentUser()!!.uid
             var storageReference = FirebaseStorage.getInstance().reference
 
@@ -82,7 +89,7 @@ class FirebaseUtil {
                     uri ->
                 run {
                     restaurant.imageUri = uri
-                    Picasso.with(context).load(restaurant.imageUri).into(imageView)
+                    PicassoUtil.loadUriIntoImageview(restaurant.imageUri, imageView, loaderContainer, context)
                 }
             }.addOnFailureListener{ exception -> imageView.setImageDrawable(context.resources.getDrawable(R.drawable.question_mark_icon)) }
         }
@@ -151,12 +158,13 @@ class FirebaseUtil {
             System.out.println("DELETED: " + deleted)
         }
 
-        fun submitFoodItemToRestaurant(restaurantUuid: String, name: String, rating: Int, foodUri: Uri?, activity: Activity, fragment: AddFoodItemFragment){
+        fun submitFoodItemToRestaurant(restaurantUuid: String, name: String, rating: Int, comments: String, foodUri: Uri?, activity: Activity, fragment: AddFoodItemFragment){
             val userID = FirebaseAuth.getInstance().getCurrentUser()!!.uid
             val ref = FirebaseDatabase.getInstance().getReference("users").child(userID).child("restaurants").child(restaurantUuid).child("foodItems")
             val foodKeyId = ref.push().key
             if (foodKeyId != null){
                 val foodItem = FoodItem(name, rating, foodKeyId)
+                foodItem.comments = comments
                 ref.child(foodKeyId).setValue(foodItem).addOnCompleteListener{
                     if (foodUri != null){
                         uploadFoodItemImage(userID, restaurantUuid, foodKeyId, foodUri, activity)
@@ -169,7 +177,7 @@ class FirebaseUtil {
             }
         }
 
-        fun setFoodItemImage(restaurant: Restaurant, foodItem: FoodItem, imageView: ImageView, context: Context){
+        fun setFoodItemImage(restaurant: Restaurant, foodItem: FoodItem, imageView: ImageView, imageLoader: MKLoader, context: Context){
             val userID = FirebaseAuth.getInstance().getCurrentUser()!!.uid
             var storageReference = FirebaseStorage.getInstance().reference
 
@@ -177,9 +185,13 @@ class FirebaseUtil {
                     uri ->
                 run {
                     foodItem.imageUri = uri
-                    Picasso.with(context).load(foodItem.imageUri).into(imageView)
+                    PicassoUtil.loadUriIntoImageview(foodItem.imageUri, imageView, imageLoader, context)
                 }
-            }.addOnFailureListener{ exception -> imageView.setImageDrawable(context.resources.getDrawable(R.drawable.question_mark_icon)) }
+            }.addOnFailureListener{ exception -> run {
+                imageView.setImageDrawable(context.resources.getDrawable(R.drawable.question_mark_icon))
+                imageView.visibility = View.VISIBLE
+                imageLoader.visibility = View.GONE
+            } }
         }
 
         private fun uploadFoodItemImage(userID: String, restaurantUuid: String, foodKeyId: String, restaurantUri: Uri, activity: Activity){

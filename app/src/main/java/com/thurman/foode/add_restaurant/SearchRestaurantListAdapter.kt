@@ -27,9 +27,22 @@ class SearchRestaurantListAdapter(val items: ArrayList<Restaurant>, val context:
         restaurantViewHolder.restaurantNameTextView.text = restaurant.name
         restaurantViewHolder.restaurantAddressTextView.text = restaurant.address
         if (restaurant.imageUri != null){
-            Picasso.with(context).load(restaurant.imageUri).into(restaurantViewHolder.imageView)
+            Picasso.with(context).load(restaurant.imageUri).into(restaurantViewHolder.imageView, object: com.squareup.picasso.Callback {
+                override fun onSuccess() {
+                    restaurantViewHolder.imageView.visibility = View.VISIBLE
+                    restaurantViewHolder.imageLoader.visibility = View.GONE
+                }
+
+                override fun onError() {
+                    restaurantViewHolder.imageView.setImageDrawable(context.resources.getDrawable(R.drawable.question_mark_icon))
+                    restaurantViewHolder.imageView.visibility = View.VISIBLE
+                    restaurantViewHolder.imageLoader.visibility = View.GONE
+                }
+            })
         } else {
             restaurantViewHolder.imageView.setImageDrawable(context.resources.getDrawable(R.drawable.question_mark_icon))
+            restaurantViewHolder.imageView.visibility = View.VISIBLE
+            restaurantViewHolder.imageLoader.visibility = View.GONE
         }
     }
 
@@ -41,6 +54,8 @@ class SearchRestaurantListAdapter(val items: ArrayList<Restaurant>, val context:
         var restaurantNameTextView = view.restaurant_name
         var restaurantAddressTextView = view.restaurant_address
         var imageView = view.restaurant_image
+        var imageLoader = view.fav_restaurant_image_loader
+
 
         init {
             itemView.setOnClickListener {

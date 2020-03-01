@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -67,6 +69,7 @@ class FavoritesTab : Fragment() {
                     FirebaseUtil.getRestaurantImage(restaurant, recyclerAdapter)
                 }
                 recyclerAdapter.notifyDataSetChanged()
+                setLoading(false)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -75,6 +78,15 @@ class FavoritesTab : Fragment() {
 
         }
         FirebaseDatabase.getInstance().reference.child("users").child(FirebaseAuth.getInstance().currentUser!!.uid).child("restaurants").addListenerForSingleValueEvent(restaurantsListener)
+    }
+
+    fun setLoading(loading: Boolean){
+        var loadingContainer = view!!.findViewById<LinearLayout>(R.id.loading_container)
+        var contentContainer = view!!.findViewById<FrameLayout>(R.id.content_container)
+        if (!loading){
+            loadingContainer.visibility = View.GONE
+            contentContainer.visibility = View.VISIBLE
+        }
     }
 
     fun updateResults(){
