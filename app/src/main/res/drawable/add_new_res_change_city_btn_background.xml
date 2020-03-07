@@ -2,9 +2,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle"   >
 
-    <solid android:color="@color/white"/>
+    <solid
+        android:color="@color/seaBlue" >
+    </solid>
+
     <corners
-        android:radius="50dp"   >
+        android:radius="5dp"   >
     </corners>
 
 </shape>

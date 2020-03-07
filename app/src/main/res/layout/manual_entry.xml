@@ -59,6 +59,13 @@
                 android:src="@drawable/question_mark_icon"
                 android:layout_marginBottom="20dp"/>
 
+            <com.tuyenmonkey.mkloader.MKLoader
+                android:id="@+id/image_loader"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:visibility="gone"
+                android:layout_marginBottom="20dp"/>
+
             <Button
                 android:id="@+id/upload_image_btn"
                 android:layout_width="200dp"

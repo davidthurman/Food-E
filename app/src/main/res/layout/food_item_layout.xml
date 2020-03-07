@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp">
 
     <com.tuyenmonkey.mkloader.MKLoader
         android:id="@+id/image_loader"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_margin="10dp"
+        app:mk_color="@color/persianGreen"
         android:layout_marginRight="5dp"
         />
 
@@ -16,15 +19,16 @@
         android:visibility="gone"
         android:layout_marginRight="5dp"
         android:id="@+id/food_item_image"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_margin="10dp"
         android:src="@drawable/ic_launcher_background"/>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
+        android:layout_gravity="center_vertical"
         android:layout_marginTop="10dp"
         android:layout_margin="10dp">
 
@@ -33,8 +37,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Name"
-            android:textColor="@color/seaBlue"
-            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:textSize="16sp"
             android:layout_marginBottom="3dp"/>
 
         <TextView
@@ -42,19 +46,21 @@
             android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/seaBlue"
+            android:textColor="@color/black"
             android:textSize="16sp"
             android:text="Comments"/>
 
         <RatingBar
             android:isIndicator="true"
             android:theme="@style/RatingBar"
+            style="?android:attr/ratingBarStyleSmall"
             android:id="@+id/rating_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:numStars="5"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"/>
 
-            android:numStars="5"/>
-
-    </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>

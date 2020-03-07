@@ -7,6 +7,7 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.thurman.foode.models.City
 import com.thurman.foode.models.Restaurant
 import org.json.JSONObject
 
@@ -39,6 +40,25 @@ class ZomatoUtil {
                 restaurant.imageUri = Uri.parse(thumbnail)
             }
             return restaurant
+        }
+
+        fun getCitiesFromSearchResults(response: JSONObject): ArrayList<City>{
+            var cities = ArrayList<City>()
+            var citiesJson = response.getJSONArray("location_suggestions")
+            for (index in 0 until citiesJson.length()){
+                var cityJson = citiesJson.getJSONObject(index)
+                var city = getCityFromJson(cityJson)
+                cities.add(city)
+            }
+            return cities
+        }
+
+        private fun getCityFromJson(cityJson: JSONObject): City{
+            var cityTitle = cityJson.getString("title")
+            var cityCountry = cityJson.getString("country_name")
+            var cityId = cityJson.getString("entity_id")
+            var city = City(cityTitle, cityCountry, cityId)
+            return city
         }
 
     }

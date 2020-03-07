@@ -4,9 +4,9 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/seaBlue</item>
-        <item name="colorPrimaryDark">@color/persianGreen</item>
-        <item name="colorAccent">@color/persianGreen</item>
-        <item name="android:textColorHint">@color/persianGreen</item>
+        <item name="colorPrimaryDark">@color/seaBlue</item>
+        <item name="colorAccent">@color/seaBlue</item>
+        <item name="android:textColorHint">@color/seaBlue</item>
     </style>
 
     <style name="RatingBar" parent="Theme.AppCompat">

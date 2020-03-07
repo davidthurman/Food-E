@@ -10,12 +10,14 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import com.google.android.material.textfield.TextInputEditText
 import com.github.dhaval2404.imagepicker.ImagePicker
+import com.squareup.picasso.Picasso
 import java.io.File
 import com.thurman.foode.R
 import com.thurman.foode.Utility.FirebaseUtil
+import com.thurman.foode.view_restaurants.RestaurantDetailActivity
 
 
-class AddFoodItemFragment : Fragment() {
+class AddOrEditFoodItemFragment : Fragment() {
 
     lateinit var nameTextfield: TextInputEditText
     lateinit var ratingBar: RatingBar
@@ -25,6 +27,8 @@ class AddFoodItemFragment : Fragment() {
     lateinit var contentView: ScrollView
     lateinit var loadingContainer: LinearLayout
     lateinit var commentsTextfield: TextInputEditText
+    var editing: Boolean = false
+    var editingFoodItemUuid: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,7 +36,6 @@ class AddFoodItemFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.add_food_item_fragment,container,false)
-        restaurantUuid = arguments!!.getString("restaurantUuid")!!
         nameTextfield = view.findViewById(R.id.name_textfield)
         ratingBar = view.findViewById(R.id.rating_bar)
         imageView = view.findViewById(R.id.image_view)
@@ -43,6 +46,15 @@ class AddFoodItemFragment : Fragment() {
         submitBtn.setOnClickListener{ checkIfFieldsAreValid() }
         var uploadImageBtn = view.findViewById<Button>(R.id.upload_image_btn)
         uploadImageBtn.setOnClickListener{ uploadImageClicked() }
+        if (arguments != null){
+            restaurantUuid = arguments!!.getString("restaurantUuid")!!
+            var editing = arguments!!.getBoolean("editing")
+            if (editing != null && editing){
+                this.editing = true
+                editingFoodItemUuid = arguments!!.getString("foodItemUuid")
+                setupEditing(view)
+            }
+        }
         return view
     }
 
@@ -53,7 +65,7 @@ class AddFoodItemFragment : Fragment() {
 
     private fun submit(){
         setLoading(true)
-        FirebaseUtil.submitFoodItemToRestaurant(restaurantUuid, nameTextfield.text.toString(), ratingBar.rating.toInt(), commentsTextfield.text.toString(), currentUri, activity!!, this)
+        FirebaseUtil.submitFoodItemToRestaurant(restaurantUuid, nameTextfield.text.toString(), ratingBar.rating.toInt(), commentsTextfield.text.toString(), currentUri, activity!!, this, editing, editingFoodItemUuid)
 
     }
 
@@ -89,6 +101,24 @@ class AddFoodItemFragment : Fragment() {
         } else {
             contentView.visibility = View.VISIBLE
             loadingContainer.visibility = View.GONE
+        }
+    }
+
+    private fun setupEditing(view: View){
+        var foodItem = (activity as RestaurantDetailActivity).foodItemToEdit!!
+        var removeBtn = view.findViewById<Button>(R.id.remove_button)
+        removeBtn.visibility = View.VISIBLE
+        removeBtn.setOnClickListener(View.OnClickListener {
+            FirebaseUtil.removeFoodItem(restaurantUuid, foodItem.uuid, activity!!)
+        })
+        nameTextfield.setText(foodItem.name)
+        commentsTextfield.setText(foodItem.comments)
+        ratingBar.rating = foodItem.rating.toFloat()
+        if (foodItem.imageUri != null){
+            Picasso.with(context).load(foodItem.imageUri).into(imageView)
+            currentUri = foodItem.imageUri
+        } else {
+            imageView.setImageDrawable(resources.getDrawable(R.drawable.question_mark_icon))
         }
     }
 

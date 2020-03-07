@@ -104,6 +104,20 @@
                 android:background="@drawable/enter_restaurant_manually_button_background"
                 android:text="Submit" />
 
+            <Button
+                android:visibility="gone"
+                android:layout_marginTop="10dp"
+                android:id="@+id/remove_button"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="20dp"
+                android:layout_height="50dp"
+                android:textSize="14sp"
+                android:textColor="@color/white"
+                android:background="@drawable/edit_food_item_remove_btn_background"
+                android:text="Remove" />
+
         </LinearLayout>
 
     </ScrollView>

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
+import com.thurman.foode.Utility.PicassoUtil
 import com.thurman.foode.models.Restaurant
 import kotlinx.android.synthetic.main.favorite_restaurant_list_item.view.*
 
@@ -26,20 +27,25 @@ class SearchRestaurantListAdapter(val items: ArrayList<Restaurant>, val context:
         var restaurant = items.get(position)
         restaurantViewHolder.restaurantNameTextView.text = restaurant.name
         restaurantViewHolder.restaurantAddressTextView.text = restaurant.address
-        if (restaurant.imageUri != null){
-            Picasso.with(context).load(restaurant.imageUri).into(restaurantViewHolder.imageView, object: com.squareup.picasso.Callback {
-                override fun onSuccess() {
-                    restaurantViewHolder.imageView.visibility = View.VISIBLE
-                    restaurantViewHolder.imageLoader.visibility = View.GONE
-                }
-
-                override fun onError() {
-                    restaurantViewHolder.imageView.setImageDrawable(context.resources.getDrawable(R.drawable.question_mark_icon))
-                    restaurantViewHolder.imageView.visibility = View.VISIBLE
-                    restaurantViewHolder.imageLoader.visibility = View.GONE
-                }
-            })
-        } else {
+        if (!restaurant.googlePhotoReference.equals("")){
+            PicassoUtil.loadGoogleImageIntoImageview(context, restaurant.googlePhotoReference, restaurantViewHolder.imageView, restaurantViewHolder.imageLoader)
+        }
+//        if (restaurant.imageUri != null){
+//            Picasso.with(context).load(restaurant.imageUri).into(restaurantViewHolder.imageView, object: com.squareup.picasso.Callback {
+//                override fun onSuccess() {
+//                    restaurantViewHolder.imageView.visibility = View.VISIBLE
+//                    restaurantViewHolder.imageLoader.visibility = View.GONE
+//                }
+//
+//                override fun onError() {
+//                    restaurantViewHolder.imageView.setImageDrawable(context.resources.getDrawable(R.drawable.question_mark_icon))
+//                    restaurantViewHolder.imageView.visibility = View.VISIBLE
+//                    restaurantViewHolder.imageLoader.visibility = View.GONE
+//                }
+//            })
+//        }
+        else
+        {
             restaurantViewHolder.imageView.setImageDrawable(context.resources.getDrawable(R.drawable.question_mark_icon))
             restaurantViewHolder.imageView.visibility = View.VISIBLE
             restaurantViewHolder.imageLoader.visibility = View.GONE

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -24,7 +25,7 @@ import com.thurman.foode.add_restaurant.AddRestaurantActivity
 import com.thurman.foode.models.FoodItem
 import com.thurman.foode.models.Restaurant
 
-class FavoritesTab : Fragment() {
+class FavoritesFragment : Fragment() {
 
     var restaurants = ArrayList<Restaurant>()
     lateinit var recyclerAdapter: FavoriteRestaurantListAdapter
@@ -36,7 +37,17 @@ class FavoritesTab : Fragment() {
     ): View? {
         var view = inflater!!.inflate(R.layout.favorites_tab, container, false)
         setupRecyclerView(view)
+        var addButton: FloatingActionButton = view.findViewById(R.id.add_icon)
+        addButton.setOnClickListener(View.OnClickListener {
+            val intent = Intent(activity, AddRestaurantActivity::class.java)
+            startActivityForResult(intent, 200)
+        })
         return view
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getUserRestaurantData(recyclerAdapter)
     }
 
     private fun setupRecyclerView(view: View){
@@ -89,8 +100,8 @@ class FavoritesTab : Fragment() {
         }
     }
 
-    fun updateResults(){
-        getUserRestaurantData(recyclerAdapter)
-    }
+//    fun updateResults(){
+//        getUserRestaurantData(recyclerAdapter)
+//    }
 
 }

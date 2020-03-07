@@ -17,4 +17,8 @@
     <color name="persianGreen">#00A896</color>
     <color name="carribeanGreen">#02C39A</color>
     <color name="paleSpringBud">#F0F3BD</color>
+
+    <color name="removeRed">#E63946</color>
+
+    <color name="black">#000000</color>
 </resources>

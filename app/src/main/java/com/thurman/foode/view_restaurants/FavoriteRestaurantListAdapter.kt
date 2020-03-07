@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.thurman.foode.R
+import com.thurman.foode.Utility.PicassoUtil
 import com.thurman.foode.models.Restaurant
 import kotlinx.android.synthetic.main.favorite_restaurant_list_item.view.*
 import kotlinx.android.synthetic.main.favorite_restaurant_list_item.view.rating_bar
@@ -32,7 +33,9 @@ class FavoriteRestaurantListAdapter(val items: ArrayList<Restaurant>, val contex
         restaurantViewHolder.restaurantNameTextView.text = restaurant.name
         restaurantViewHolder.restaurantAddressTextView.text = restaurant.address
         restaurantViewHolder.ratingBar.rating = restaurant.rating.toFloat()
-        if (restaurant.imageUri != null){
+        if (!restaurant.googlePhotoReference.equals("")){
+            PicassoUtil.loadGoogleImageIntoImageview(context, restaurant.googlePhotoReference, restaurantViewHolder.imageView, restaurantViewHolder.imageLoader)
+        } else if (restaurant.imageUri != null){
             Picasso.with(context).load(restaurant.imageUri).into(restaurantViewHolder.imageView, object: com.squareup.picasso.Callback {
                 override fun onSuccess() {
                     restaurantViewHolder.imageView.visibility = View.VISIBLE

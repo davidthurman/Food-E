@@ -12,19 +12,20 @@ class AddRestaurantActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        var fragment: Fragment
-        val type:String = intent.getStringExtra("type")
-        if (type.equals("manual")){
+        var bundle = Bundle()
+        var editing = intent.getBooleanExtra("editing", false)
+        bundle.putBoolean("editing", editing)
+        var fragment: Fragment? = null
+        if (editing){
             fragment = ManualEntryFragment()
         } else {
-            fragment = RestaurantSearchFragment()
-            var bundle = Bundle()
-            bundle.putString("searchText", intent.getStringExtra("searchText"))
-            fragment.arguments = bundle
+            fragment = AddRestaurantFragment()
         }
-
-        transitionFragment(fragment)
+        fragment.arguments = bundle
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(android.R.id.content, fragment!!)
+        fragmentTransaction.commit()
     }
 
     fun transitionFragment(fragment: Fragment){

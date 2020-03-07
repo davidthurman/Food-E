@@ -4,14 +4,44 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal">
-
+    android:gravity="center_horizontal"
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/restaurant_search_bar_background">
+
+        <TextView
+            android:id="@+id/city_title"
+            android:paddingLeft="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight=".3"
+            android:text="Atlanta, Georgia"
+            android:gravity="center_vertical"
+            android:textColor="@color/black">
+
+        </TextView>
+
+        <Button
+            android:id="@+id/change_city_btn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight=".7"
+            android:textColor="@color/white"
+            android:text="Change"
+            android:background="@drawable/add_new_res_change_city_btn_background"/>
+
+    </LinearLayout>
+
+
+        <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@drawable/search_input_background"
         android:padding="20dp"
         android:layout_margin="20dp"
         >
@@ -24,59 +54,60 @@
             android:layout_marginBottom="20dp"
             android:layout_marginRight="20dp"
             android:hint="Enter Restaurant Name"
-            android:background="@drawable/search_edittext_background">
+            android:textColorHint="@color/black"
+            >
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/restaurant_search_bar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter Address"
-            android:layout_marginLeft="20dp"
-            android:padding="10dp"
-            android:layout_marginBottom="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/search_edittext_background"
-            app:boxBackgroundColor="@color/white">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/address_search_bar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
 
+<!--        <com.google.android.material.textfield.TextInputLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:hint="Enter Address"-->
+<!--            android:layout_marginLeft="20dp"-->
+<!--            android:padding="10dp"-->
+<!--            android:layout_marginBottom="20dp"-->
+<!--            android:layout_marginRight="20dp"-->
+<!--            app:boxBackgroundColor="@color/white">-->
 
-    </LinearLayout>
+<!--            <com.google.android.material.textfield.TextInputEditText-->
+<!--                android:id="@+id/address_search_bar"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"/>-->
+
+<!--        </com.google.android.material.textfield.TextInputLayout>-->
+
+
+
 
     <Button
         android:id="@+id/search_btn"
         android:layout_width="match_parent"
         android:layout_height="65dp"
-        android:background="@drawable/search_button_background"
+        android:background="@color/seaBlue"
         android:textSize="14sp"
         android:textColor="@color/white"
         android:layout_marginLeft="40dp"
         android:layout_marginRight="40dp"
         android:text="Search"/>
 
-<!--    <TextView-->
-<!--        android:layout_marginTop="10dp"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="OR"-->
-<!--        android:textColor="@color/persianGreen"/>-->
+        </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="bottom">
+
+        <TextView
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="OR"
+        android:textColor="@color/black"/>
+
+
 
         <Button
             android:layout_marginTop="30dp"
@@ -87,10 +118,43 @@
             android:layout_height="65dp"
             android:textSize="14sp"
             android:textColor="@color/white"
-            android:background="@drawable/enter_restaurant_manually_button_background"
+            android:background="@color/seaBlue"
             android:text="Enter restaurant manually"/>
 
-    </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="bottom">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/black"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".1"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="20sp"
+                    android:text="Recommended restaurants"
+                    android:textColor="@color/white"/>
+
+                <TextView
+                    android:layout_weight=".9"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/white"
+                    android:gravity="center"
+                    android:text=">"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
 
 
 

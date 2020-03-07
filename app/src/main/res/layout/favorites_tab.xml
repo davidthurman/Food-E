@@ -18,6 +18,7 @@
             android:layout_height="100dp"
             app:mk_type="TwinFishesSpinner"
             app:mk_color="@color/persianGreen"
+
             />
 
     </LinearLayout>
@@ -28,20 +29,67 @@
         android:id="@+id/content_container"
         android:visibility="gone">
 
-        <androidx.recyclerview.widget.RecyclerView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/favorite_restaurants_list"/>
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Favorite Restaurants"
+                    android:textSize="24sp"
+                    android:gravity="center"
+                    android:background="@color/seaBlue"
+                    android:textColor="@color/white"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    />
+
+                <ImageButton
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="15dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/share_icon"
+                    android:background="@null"/>
+
+                <ImageButton
+                    android:layout_width="35dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="15dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/profile_icon"
+                    android:background="@null"/>
+
+            </FrameLayout>
+
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/favorite_restaurants_list"/>
+
+        </LinearLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:layout_width="75dp"
-            android:layout_height="75dp"
+            android:id="@+id/add_icon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_marginRight="10dp"
             android:layout_marginBottom="10dp"
-            android:background="@color/paleSpringBud"
+            android:background="@color/seaBlue"
             android:layout_gravity="bottom | right"
-            app:fabCustomSize="75dp"
-            android:src="@drawable/share_icon"/>
+            app:fabCustomSize="50dp"
+            android:src="@drawable/add_icon"/>
 
     </FrameLayout>
 

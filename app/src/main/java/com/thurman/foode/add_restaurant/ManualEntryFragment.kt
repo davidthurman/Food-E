@@ -17,6 +17,9 @@ import com.squareup.picasso.Picasso
 import java.io.File
 import com.thurman.foode.R
 import com.thurman.foode.Utility.FirebaseUtil
+import com.thurman.foode.Utility.PicassoUtil
+import com.thurman.foode.view_restaurants.RestaurantDetailActivity
+import com.tuyenmonkey.mkloader.MKLoader
 
 
 class ManualEntryFragment : Fragment() {
@@ -27,6 +30,10 @@ class ManualEntryFragment : Fragment() {
     lateinit var imageView: ImageView
     var currentUri: Uri? = null
     var imageFromSearchResults = false
+    var editing = false
+    var editingRestaurantUuid: String? = null
+    var imageLoader: MKLoader? = null
+    var fromSearch = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,10 +44,18 @@ class ManualEntryFragment : Fragment() {
         setupFields(view)
         setupButtons(view)
         if (arguments != null){
-            var fromSearch = arguments!!.getBoolean("fromSearch")
+            fromSearch = arguments!!.getBoolean("fromSearch")
             if (fromSearch != null && fromSearch){
                 imageFromSearchResults = true
+                imageLoader = view!!.findViewById(R.id.image_loader)
                 setupLayoutFromSearchResults()
+            }
+            var editing = arguments!!.getBoolean("editing")
+            if (editing != null && editing){
+                editingRestaurantUuid= arguments!!.getString("restaurantUuid")
+                imageLoader = view!!.findViewById(R.id.image_loader)
+                this.editing = true
+                setupEditing()
             }
         }
         return view
@@ -70,7 +85,26 @@ class ManualEntryFragment : Fragment() {
         nameTextfield.setText(restaurant.name)
         addressTextfield.setText(restaurant.address)
         ratingBar.rating = restaurant.rating.toFloat()
-        if (restaurant.imageUri != null){
+        if (!restaurant.googlePhotoReference.equals("")){
+            PicassoUtil.loadGoogleImageIntoImageview(context!!, restaurant.googlePhotoReference, imageView, imageLoader!!)
+        }
+//        if (restaurant.imageUri != null){
+//            Picasso.with(context).load(restaurant.imageUri).into(imageView)
+//            currentUri = restaurant.imageUri
+//        } else {
+//            imageView.setImageDrawable(resources.getDrawable(R.drawable.question_mark_icon))
+//        }
+    }
+
+    private fun setupEditing(){
+        var restaurant = (activity as RestaurantDetailActivity).restaurantToEdit!!
+        nameTextfield.setText(restaurant.name)
+        addressTextfield.setText(restaurant.address)
+        ratingBar.rating = restaurant.rating.toFloat()
+
+        if (!restaurant.googlePhotoReference.equals("")){
+            PicassoUtil.loadGoogleImageIntoImageview(context!!, restaurant.googlePhotoReference, imageView, imageLoader!!)
+        } else if (restaurant.imageUri != null){
             Picasso.with(context).load(restaurant.imageUri).into(imageView)
             currentUri = restaurant.imageUri
         } else {
@@ -79,12 +113,21 @@ class ManualEntryFragment : Fragment() {
     }
 
     private fun submit(){
-        FirebaseUtil.submitRestaurant(nameTextfield.text.toString(),
-                                      addressTextfield.text.toString(),
-                                      ratingBar.rating.toInt(),
-                                      currentUri,
-                                      imageFromSearchResults,
-                                      activity!!)
+        if (fromSearch){
+            var restaurantToSend = (activity as AddRestaurantActivity).tempRestaurant!!
+            restaurantToSend.rating = ratingBar.rating.toInt()
+            FirebaseUtil.submitRestaurantWithRestaurantObject(restaurantToSend, activity!!)
+        } else {
+            FirebaseUtil.submitRestaurant(nameTextfield.text.toString(),
+                addressTextfield.text.toString(),
+                ratingBar.rating.toInt(),
+                currentUri,
+                imageFromSearchResults,
+                activity!!,
+                editing,
+                editingRestaurantUuid
+            )
+        }
     }
 
 

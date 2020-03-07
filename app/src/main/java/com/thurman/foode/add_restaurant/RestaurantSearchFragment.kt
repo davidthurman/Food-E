@@ -24,6 +24,7 @@ import android.graphics.Bitmap
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.provider.MediaStore
+import com.thurman.foode.Utility.GoogleUtil
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
@@ -40,13 +41,15 @@ class RestaurantSearchFragment : Fragment() {
     ): View? {
         var view = inflater!!.inflate(R.layout.restaurant_search_fragment, container, false)
         var searchString = arguments!!.getString("searchText")!!
-        getSearchResults(view, searchString)
+        var searchCityEntityId = arguments!!.getString("searchCityId")!!
+        getSearchResults(view, searchString, searchCityEntityId)
         return view
     }
 
-    private fun getSearchResults(view: View, searchText: String){
+    private fun getSearchResults(view: View, searchText: String, searchCityEntityId: String){
         val queue = Volley.newRequestQueue(context)
-        val url = "https://developers.zomato.com/api/v2.1/search?entity_id=288&q=" + searchText
+        var url = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=" + searchText + "&inputtype=textquery&fields=formatted_address,photos,name,place_id,opening_hours,rating,geometry&locationbias=circle:2000@47.6918452,-122.2226413&key=AIzaSyDCyMRUMFciuOhvLFdWp-FrxapIkPMY-JI"
+     //   val url = "https://developers.zomato.com/api/v2.1/search?entity_id=" + searchCityEntityId + "&entity_type=city&q=" + searchText
 
         val req = object : JsonObjectRequest(
             Method.GET, url, null, Response.Listener { response ->
@@ -55,19 +58,13 @@ class RestaurantSearchFragment : Fragment() {
                 onRestaurantsReturnedError(error)
             }) {
 
-            @Throws(AuthFailureError::class)
-            override fun getHeaders(): Map<String, String> {
-                val headers = HashMap<String, String>()
-                headers["user-key"] = "1b72cd17cc73ea8fee9ef1b1ca33d3a0"
-                return headers
-            }
         }
         queue.add(req)
     }
 
     private fun onRestaurantsReturnedSuccess(response: JSONObject, view: View){
         if (response.length() > 0){
-            var restaurants = ZomatoUtil.getRestaurantsFromSearchResults(response)
+            var restaurants = GoogleUtil.getRestaurantsFromSearchResults(response)
             setupRecyclerView(view, restaurants)
         } else {
             //TODO Empty results
@@ -91,12 +88,6 @@ class RestaurantSearchFragment : Fragment() {
 
     private fun submit(restaurant: Restaurant){
         (activity as AddRestaurantActivity).SearchRestaurantChosen(restaurant)
-//        FirebaseUtil.submitRestaurant(restaurant.name,
-//                                      restaurant.address,
-//                               5,
-//                                      restaurant.imageUri,
-//                                      true,
-//                                      activity!!)
     }
 
 }
