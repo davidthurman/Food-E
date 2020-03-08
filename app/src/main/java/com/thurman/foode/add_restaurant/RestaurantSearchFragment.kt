@@ -41,14 +41,15 @@ class RestaurantSearchFragment : Fragment() {
     ): View? {
         var view = inflater!!.inflate(R.layout.restaurant_search_fragment, container, false)
         var searchString = arguments!!.getString("searchText")!!
-        var searchCityEntityId = arguments!!.getString("searchCityId")!!
-        getSearchResults(view, searchString, searchCityEntityId)
+        var searchLat = arguments!!.getDouble("lat")!!
+        var searchLng = arguments!!.getDouble("lon")!!
+        getSearchResults(view, searchString, searchLat, searchLng)
         return view
     }
 
-    private fun getSearchResults(view: View, searchText: String, searchCityEntityId: String){
+    private fun getSearchResults(view: View, searchText: String, lat: Double, lon: Double){
         val queue = Volley.newRequestQueue(context)
-        var url = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=" + searchText + "&inputtype=textquery&fields=formatted_address,photos,name,place_id,opening_hours,rating,geometry&locationbias=circle:2000@47.6918452,-122.2226413&key=AIzaSyDCyMRUMFciuOhvLFdWp-FrxapIkPMY-JI"
+        var url = "https://maps.googleapis.com/maps/api/place/textsearch/json?input=" + searchText + "&inputtype=textquery&fields=formatted_address,photos,name,place_id,opening_hours,rating,geometry&location=" + lat.toString() + "," + lon.toString() + "&radius=1000&key=AIzaSyDCyMRUMFciuOhvLFdWp-FrxapIkPMY-JI"
      //   val url = "https://developers.zomato.com/api/v2.1/search?entity_id=" + searchCityEntityId + "&entity_type=city&q=" + searchText
 
         val req = object : JsonObjectRequest(

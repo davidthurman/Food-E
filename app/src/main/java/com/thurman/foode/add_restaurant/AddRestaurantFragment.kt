@@ -1,16 +1,20 @@
 package com.thurman.foode.add_restaurant
 
+import android.content.ContentValues.TAG
 import android.content.Intent
+import android.os.AsyncTask
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
+import android.widget.*
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import com.google.android.gms.common.api.Status
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -20,12 +24,18 @@ import com.google.firebase.database.ValueEventListener
 import com.thurman.foode.R
 import com.thurman.foode.Utility.FirebaseUtil
 import com.thurman.foode.models.City
+import com.thurman.foode.models.Location
+import kotlinx.android.synthetic.main.add_new_restaurant_tab.*
+import java.util.*
 
 class AddRestaurantFragment : Fragment() {
 
     lateinit var restaurantSearchBar: TextInputEditText
     lateinit var currentView: View
-    var searchCity: City? = null
+    var searchLocation: Location? = null
+    lateinit var thisActivity: AddRestaurantActivity
+    lateinit var cityTextview: TextView
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,6 +43,8 @@ class AddRestaurantFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         currentView = inflater!!.inflate(R.layout.add_new_restaurant_tab, container, false)
+        thisActivity = activity!! as AddRestaurantActivity
+        cityTextview = currentView.findViewById(R.id.city_title)
         setupSearchBar(currentView)
         //setupCity(currentView)
         setupButtons(currentView)
@@ -56,12 +68,13 @@ class AddRestaurantFragment : Fragment() {
     }
 
     private fun setupCity(view: View){
-        var cityTextview = view.findViewById<TextView>(R.id.city_title)
         val cityListener = object : ValueEventListener {
             override fun onDataChange(citySnapshot: DataSnapshot) {
-                var city = FirebaseUtil.getCityFromSnapshot(citySnapshot)
-                cityTextview.text = city.title
-                searchCity = city
+                var location = FirebaseUtil.getLocationFromSnapshot(citySnapshot)
+                cityTextview.text = location.addressName
+                searchLocation = location
+                thisActivity.locationLng = location.lng
+                thisActivity.locationLat = location.lat
             }
             override fun onCancelled(databaseError: DatabaseError) {}
         }
@@ -75,10 +88,14 @@ class AddRestaurantFragment : Fragment() {
 
         var searchButton = view.findViewById<Button>(R.id.search_btn)
         searchButton.setOnClickListener{
-            if (restaurantSearchBar.text!!.count() > 0){
-                transitionScreen("search")
+            if (thisActivity.locationLat != null && thisActivity.locationLng != null){
+                if (restaurantSearchBar.text!!.count() > 0){
+                    transitionScreen("search")
+                } else {
+                    restaurantSearchBar.error = "Please enter a restaurant name"
+                }
             } else {
-                restaurantSearchBar.error = "Please enter a restaurant name"
+                //TODO Handle no location chosen
             }
         }
         setupChangeCityButton(view)
@@ -87,8 +104,9 @@ class AddRestaurantFragment : Fragment() {
     private fun setupChangeCityButton(view: View){
         var changeCityButton = view.findViewById<Button>(R.id.change_city_btn)
         changeCityButton.setOnClickListener(View.OnClickListener {
-            val intent = Intent(activity, SearchCityActivity::class.java)
-            startActivityForResult(intent, 200)
+            //val intent = Intent(activity, SearchCityActivity::class.java)
+            //startActivityForResult(intent, 200)
+            thisActivity.searchAutoComplete(cityTextview)
         })
     }
 
@@ -100,7 +118,8 @@ class AddRestaurantFragment : Fragment() {
             fragment = RestaurantSearchFragment()
             var bundle = Bundle()
             bundle.putString("searchText", restaurantSearchBar.text.toString())
-            bundle.putString("searchCityId", searchCity!!.id)
+            bundle.putDouble("lat", thisActivity.locationLat!!)
+            bundle.putDouble("lon", thisActivity.locationLng!!)
             fragment.arguments = bundle
         }
         (activity as AddRestaurantActivity).transitionFragment(fragment)

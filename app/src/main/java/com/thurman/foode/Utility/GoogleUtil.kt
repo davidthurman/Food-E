@@ -29,7 +29,7 @@ class GoogleUtil {
 
         fun getRestaurantsFromSearchResults(response: JSONObject): ArrayList<Restaurant>{
             var restaurants = ArrayList<Restaurant>()
-            var restaurantsJson = response.getJSONArray("candidates")
+            var restaurantsJson = response.getJSONArray("results")
             for (index in 0 until restaurantsJson.length()){
                 var restaurant = getRestaurantFromJson(restaurantsJson.getJSONObject(index))
                 restaurants.add(restaurant)
@@ -45,11 +45,12 @@ class GoogleUtil {
 //            if (thumbnail != null && thumbnail is String && !thumbnail.equals("")) {
 //                restaurant.imageUri = Uri.parse(thumbnail)
 //            }
-            var photosArray = restJson.getJSONArray("photos")
+            var photosArray = restJson.optJSONArray("photos")
             if (photosArray != null && photosArray.length() > 0){
                 var photoJson = photosArray.getJSONObject(0)
                 restaurant.googlePhotoReference = photoJson.getString("photo_reference")
             }
+
             var geometryJson = restJson.getJSONObject("geometry")
             var locationJson = geometryJson.getJSONObject("location")
             restaurant.lat = locationJson.getDouble("lat")

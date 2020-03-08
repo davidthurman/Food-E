@@ -20,6 +20,7 @@ import com.thurman.foode.R
 import com.thurman.foode.add_restaurant.AddOrEditFoodItemFragment
 import com.thurman.foode.models.City
 import com.thurman.foode.models.FoodItem
+import com.thurman.foode.models.Location
 import com.thurman.foode.models.Restaurant
 import com.thurman.foode.view_restaurants.FavoriteRestaurantListAdapter
 import com.thurman.foode.view_restaurants.RestaurantDetailActivity
@@ -287,6 +288,15 @@ class FirebaseUtil {
 
         }
 
+        fun changeUserLocation(addressName: String, lat: Double, lng: Double){
+            val userID = FirebaseAuth.getInstance().getCurrentUser()!!.uid
+            var location = Location(addressName, lat, lng)
+            val ref = FirebaseDatabase.getInstance().getReference("users").child(userID).child("city")
+            ref.setValue(location).addOnCompleteListener{
+
+            }
+        }
+
         fun changeUserCity(city: City, activity: Activity){
             val userID = FirebaseAuth.getInstance().getCurrentUser()!!.uid
             val ref = FirebaseDatabase.getInstance().getReference("users").child(userID).child("city")
@@ -306,6 +316,14 @@ class FirebaseUtil {
             var cityId = citySnapshot.child("id").getValue().toString()
             var city = City(cityTitle, cityCountry, cityId)
             return city
+        }
+
+        fun getLocationFromSnapshot(locationSnapshot: DataSnapshot): Location{
+            var locName = locationSnapshot.child("addressName").getValue().toString()
+            var locLat = locationSnapshot.child("lat").getValue() as Double
+            var locLng = locationSnapshot.child("lng").getValue() as Double
+            var location = Location(locName, locLat, locLng)
+            return location
         }
 
     }

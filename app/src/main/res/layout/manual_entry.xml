@@ -18,9 +18,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Restaurant Name"
-                app:counterEnabled="true"
-                app:counterMaxLength="40">
+                android:hint="Restaurant Name">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/name_textfield"
@@ -32,9 +30,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Address"
-                app:counterEnabled="true"
-                app:counterMaxLength="50">
+                android:hint="Address">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/address_textfield"

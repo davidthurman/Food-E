@@ -1,6 +1,7 @@
 package com.thurman.foode.add_restaurant
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -18,6 +19,7 @@ import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.google.android.libraries.places.api.Places
 import com.google.android.material.textfield.TextInputEditText
 import com.thurman.foode.R
 import com.thurman.foode.Utility.FirebaseUtil
