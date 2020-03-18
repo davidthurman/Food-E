@@ -7,7 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.widget.Toolbar
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -16,8 +20,6 @@ import com.google.firebase.database.ValueEventListener
 import com.thurman.foode.R
 import com.thurman.foode.Utility.FirebaseUtil
 import com.thurman.foode.add_restaurant.AddFoodItemActivity
-import com.thurman.foode.add_restaurant.AddRestaurantActivity
-import com.thurman.foode.add_restaurant.SearchCityActivity
 import com.thurman.foode.models.FoodItem
 import com.thurman.foode.models.Restaurant
 import com.tuyenmonkey.mkloader.MKLoader
@@ -28,8 +30,9 @@ class RestaurantDetailFragment : Fragment() {
     lateinit var currentView: View
     lateinit var restaurantUuid: String
     var restaurant: Restaurant? = null
-    lateinit var contentScroll: ScrollView
+    lateinit var contentScroll: NestedScrollView
     lateinit var loadingContainer: LinearLayout
+    lateinit var toolbar: Toolbar
     var optionsMenuOpen = false
 
     override fun onCreateView(
@@ -41,7 +44,7 @@ class RestaurantDetailFragment : Fragment() {
         contentScroll = currentView.findViewById(R.id.content_scroll)
         loadingContainer = currentView.findViewById(R.id.loading_container)
         restaurantUuid = arguments!!.getString("restaurantUuid")!!
-
+        toolbar = currentView.findViewById(R.id.toolbar)
         getRestaurantFromUuid()
         return currentView
     }
@@ -73,24 +76,37 @@ class RestaurantDetailFragment : Fragment() {
         setupRestaurantFoodItems(view, restaurant)
         setupRatingBar(view, restaurant)
         setupMoreOptions()
+        setupToolbar(restaurant.name)
+    }
+
+    private fun setupToolbar(restaurantName: String){
+        var isShow = false
+        var scrollRange = -1
+        var appBarLayout = currentView.findViewById<AppBarLayout>(R.id.appbar_layout)
+        var collapsingToolbarLayout = currentView.findViewById<CollapsingToolbarLayout>(R.id.collapsing_toolbar_layout)
+        collapsingToolbarLayout.setCollapsedTitleTextColor(resources.getColor(R.color.white))
+        appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { barLayout, verticalOffset ->
+            if (scrollRange == -1){
+                scrollRange = barLayout?.totalScrollRange!!
+            }
+            if (scrollRange + verticalOffset == 0){
+                collapsingToolbarLayout.title = restaurantName
+                isShow = true
+            } else if (isShow){
+                collapsingToolbarLayout.title = " " //careful there should a space between double quote otherwise it wont work
+                isShow = false
+            }
+        })
     }
 
     private fun setupMoreOptions(){
-        var moreIcon = currentView.findViewById<ImageButton>(R.id.more_icon)
-        val dialogBuilder = AlertDialog.Builder(context!!).create()
-        var dialogView = layoutInflater.inflate(R.layout.restaurant_detail_more_options_layout, null)
-        var editBtn = dialogView.findViewById<Button>(R.id.edit_button)
-        editBtn.setOnClickListener(View.OnClickListener {
-            dialogBuilder.dismiss()
+        var editBtn = currentView.findViewById<ImageButton>(R.id.edit_icon)
+        editBtn.setOnClickListener{
             onEditClicked()
-        })
-        var deleteBtn = dialogView.findViewById<Button>(R.id.remove_button)
-        deleteBtn.setOnClickListener(View.OnClickListener {
-            FirebaseUtil.removeRestaurant(restaurantUuid, activity!!)
-        })
-        dialogBuilder.setView(dialogView)
-        moreIcon.setOnClickListener{
-            dialogBuilder.show()
+        }
+        var trashBtn = currentView.findViewById<ImageButton>(R.id.trash_icon)
+        trashBtn.setOnClickListener{
+            onRemoveClicked()
         }
     }
 
@@ -101,6 +117,21 @@ class RestaurantDetailFragment : Fragment() {
     }
 
     private fun onRemoveClicked(){
+        val dialogBuilder = AlertDialog.Builder(context!!)
+        dialogBuilder.setMessage("Are you sure you want to delete this restaurant?")
+            .setCancelable(true)
+            .setPositiveButton("Yes", {
+                    dialog, id -> removeRestaurant()
+            })
+            .setNegativeButton("Cancel", {
+                    dialog, id -> dialog.cancel()
+            })
+        val alert = dialogBuilder.create()
+        alert.show()
+
+    }
+
+    private fun removeRestaurant(){
         FirebaseUtil.removeRestaurant(restaurantUuid, activity!!)
     }
 

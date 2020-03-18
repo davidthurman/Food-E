@@ -24,7 +24,7 @@ class AddOrEditFoodItemFragment : Fragment() {
     lateinit var imageView: ImageView
     lateinit var restaurantUuid: String
     var currentUri: Uri? = null
-    lateinit var contentView: ScrollView
+    lateinit var contentView: View
     lateinit var loadingContainer: LinearLayout
     lateinit var commentsTextfield: TextInputEditText
     var editing: Boolean = false
@@ -51,6 +51,7 @@ class AddOrEditFoodItemFragment : Fragment() {
             var editing = arguments!!.getBoolean("editing")
             if (editing != null && editing){
                 this.editing = true
+                submitBtn.setText("Update")
                 editingFoodItemUuid = arguments!!.getString("foodItemUuid")
                 setupEditing(view)
             }
@@ -106,7 +107,7 @@ class AddOrEditFoodItemFragment : Fragment() {
 
     private fun setupEditing(view: View){
         var foodItem = (activity as RestaurantDetailActivity).foodItemToEdit!!
-        var removeBtn = view.findViewById<Button>(R.id.remove_button)
+        var removeBtn = view.findViewById<ImageButton>(R.id.remove_button)
         removeBtn.visibility = View.VISIBLE
         removeBtn.setOnClickListener(View.OnClickListener {
             FirebaseUtil.removeFoodItem(restaurantUuid, foodItem.uuid, activity!!)
@@ -118,7 +119,7 @@ class AddOrEditFoodItemFragment : Fragment() {
             Picasso.with(context).load(foodItem.imageUri).into(imageView)
             currentUri = foodItem.imageUri
         } else {
-            imageView.setImageDrawable(resources.getDrawable(R.drawable.question_mark_icon))
+            imageView.setImageDrawable(resources.getDrawable(R.drawable.question_mark_icon_square))
         }
     }
 

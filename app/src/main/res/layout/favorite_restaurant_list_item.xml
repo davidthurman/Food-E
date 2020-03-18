@@ -4,61 +4,71 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp">
-
-    <com.tuyenmonkey.mkloader.MKLoader
-        android:id="@+id/fav_restaurant_image_loader"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_margin="10dp"
-        android:layout_marginRight="5dp"
-        app:mk_type="TwinFishesSpinner"
-        app:mk_color="@color/persianGreen"
-        />
-
-    <ImageView
-        android:visibility="gone"
-        android:layout_marginRight="5dp"
-        android:id="@+id/restaurant_image"
-        android:layout_width="50dp"
-        android:layout_height="50dp" />
+    android:background="@drawable/favorite_restaurant_list_item_background"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:layout_margin="10dp">
 
-        <TextView
-            android:id="@+id/restaurant_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Name"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:layout_marginBottom="3dp"/>
+        <com.tuyenmonkey.mkloader.MKLoader
+            android:id="@+id/fav_restaurant_image_loader"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:layout_marginRight="5dp"
+            app:mk_type="TwinFishesSpinner"
+            app:mk_color="@color/persianGreen"
+            />
 
-        <TextView
-            android:id="@+id/restaurant_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/seaBlue"
-            android:textSize="16sp"
+        <ImageView
             android:visibility="gone"
-            android:text="Address"/>
+            android:layout_marginRight="5dp"
+            android:id="@+id/restaurant_image"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
 
-        <RatingBar
-            android:isIndicator="true"
-            android:theme="@style/RatingBar"
-            android:id="@+id/rating_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:scaleX=".4"
-            android:layout_marginTop="-15dp"
-            android:layout_marginLeft="-70dp"
-            android:scaleY=".4"
-            android:numStars="5"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/restaurant_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Name"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:layout_marginBottom="3dp"/>
+
+            <TextView
+                android:id="@+id/restaurant_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/seaBlue"
+                android:textSize="16sp"
+                android:visibility="gone"
+                android:text="Address"/>
+
+            <RatingBar
+                android:isIndicator="true"
+                android:theme="@style/RatingBar"
+                android:id="@+id/rating_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:scaleX=".4"
+                android:layout_marginTop="-15dp"
+                android:layout_marginLeft="-70dp"
+                android:scaleY=".4"
+                android:numStars="5"/>
+
+        </LinearLayout>
 
     </LinearLayout>
-
 
 </LinearLayout>

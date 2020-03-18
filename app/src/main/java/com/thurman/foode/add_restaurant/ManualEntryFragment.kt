@@ -42,7 +42,6 @@ class ManualEntryFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.manual_entry,container,false)
         setupFields(view)
-        setupButtons(view)
         if (arguments != null){
             fromSearch = arguments!!.getBoolean("fromSearch")
             if (fromSearch != null && fromSearch){
@@ -58,6 +57,7 @@ class ManualEntryFragment : Fragment() {
                 setupEditing()
             }
         }
+        setupButtons(view)
         return view
     }
 
@@ -71,6 +71,9 @@ class ManualEntryFragment : Fragment() {
     private fun setupButtons(view: View){
         var submitBtn = view.findViewById<Button>(R.id.submit_button)
         submitBtn.setOnClickListener{ checkIfFieldsAreValid() }
+        if (editing){
+            submitBtn.text = "Update"
+        }
         var uploadImageBtn = view.findViewById<Button>(R.id.upload_image_btn)
         uploadImageBtn.setOnClickListener{ uploadImageClicked() }
     }
@@ -108,7 +111,7 @@ class ManualEntryFragment : Fragment() {
             Picasso.with(context).load(restaurant.imageUri).into(imageView)
             currentUri = restaurant.imageUri
         } else {
-            imageView.setImageDrawable(resources.getDrawable(R.drawable.question_mark_icon))
+            imageView.setImageDrawable(resources.getDrawable(R.drawable.question_mark_icon_square))
         }
     }
 
@@ -118,14 +121,14 @@ class ManualEntryFragment : Fragment() {
             restaurantToSend.rating = ratingBar.rating.toInt()
             FirebaseUtil.submitRestaurantWithRestaurantObject(restaurantToSend, activity!!)
         } else {
-            FirebaseUtil.submitRestaurant(nameTextfield.text.toString(),
-                addressTextfield.text.toString(),
-                ratingBar.rating.toInt(),
+            var restaurant = (activity as RestaurantDetailActivity).restaurantToEdit!!
+            restaurant.name = nameTextfield.text.toString()
+            restaurant.address = addressTextfield.text.toString()
+            restaurant.rating = ratingBar.rating.toInt()
+
+            FirebaseUtil.updateRestaurant(restaurant,
                 currentUri,
-                imageFromSearchResults,
-                activity!!,
-                editing,
-                editingRestaurantUuid
+                activity!!
             )
         }
     }

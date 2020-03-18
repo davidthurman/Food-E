@@ -38,10 +38,10 @@ class FirebaseUtil {
     companion object {
 
         fun getRestaurantFromSnapshot(restaurantSnapshot: DataSnapshot): Restaurant{
-            var restName = restaurantSnapshot.child("name").getValue().toString()
-            var restAddress = restaurantSnapshot.child("address").getValue().toString()
-            var restRating = (restaurantSnapshot.child("rating").getValue() as Long).toInt()
-            var restUuid = restaurantSnapshot.child("uuid").getValue().toString()
+            var restName = restaurantSnapshot.child("name").value.toString()
+            var restAddress = restaurantSnapshot.child("address").value.toString()
+            var restRating = (restaurantSnapshot.child("rating").value as Long).toInt()
+            var restUuid = restaurantSnapshot.child("uuid").value.toString()
             var foodItemsSnapshot = restaurantSnapshot.child("foodItems").getValue()
             var restaurant = Restaurant(restName, restAddress, restRating, restUuid)
             if (foodItemsSnapshot != null){
@@ -49,6 +49,16 @@ class FirebaseUtil {
             }
             if (restaurantSnapshot.child("googlePhotoReference").getValue() != null){
                 restaurant.googlePhotoReference = restaurantSnapshot.child("googlePhotoReference").getValue().toString()
+            }
+            if (restaurantSnapshot.child("lat").getValue() != null){
+                restaurant.lat = restaurantSnapshot.child("lat").getValue() as Double
+                restaurant.lng = restaurantSnapshot.child("lng").getValue() as Double
+            }
+            if (restaurantSnapshot.child("googleRating").getValue() != null){
+                var googleRating: Double? = restaurantSnapshot.child("googleRating").getValue() as? Double
+                if (googleRating != null){
+                    restaurant.googleRating = googleRating
+                }
             }
             return restaurant
         }
@@ -101,11 +111,24 @@ class FirebaseUtil {
                     loaderContainer.visibility = View.GONE
                 }
                 }.addOnFailureListener{ exception -> run {
-                    imageView.setImageDrawable(context.resources.getDrawable(R.drawable.question_mark_icon))
+                    imageView.setImageDrawable(context.resources.getDrawable(R.drawable.question_mark_icon_square))
                     imageView.visibility = View.VISIBLE
                     loaderContainer.visibility = View.GONE
                 } }
             }
+        }
+
+        fun updateRestaurant(restaurant: Restaurant, restaurantUri: Uri?, activity: Activity){
+            val userID = FirebaseAuth.getInstance().getCurrentUser()!!.uid
+            val ref = FirebaseDatabase.getInstance().getReference("users").child(userID).child("restaurants")
+            ref.child(restaurant.uuid).setValue(restaurant).addOnCompleteListener{
+                if (restaurantUri != null){
+                    uploadRestaurantImage(userID, false, restaurant.uuid, restaurantUri, activity, true)
+                } else {
+                    (activity as RestaurantDetailActivity).onEditFinished()
+                }
+            }
+
         }
 
         fun submitRestaurant(name: String, address: String, rating: Int, restaurantUri: Uri?, searchImage: Boolean, activity: Activity, editing: Boolean, restaurantUuid: String?){
@@ -240,7 +263,7 @@ class FirebaseUtil {
                     PicassoUtil.loadUriIntoImageview(foodItem.imageUri, imageView, imageLoader, context)
                 }
             }.addOnFailureListener{ exception -> run {
-                imageView.setImageDrawable(context.resources.getDrawable(R.drawable.question_mark_icon))
+                imageView.setImageDrawable(context.resources.getDrawable(R.drawable.question_mark_icon_square))
                 imageView.visibility = View.VISIBLE
                 imageLoader.visibility = View.GONE
             } }
@@ -324,6 +347,10 @@ class FirebaseUtil {
             var locLng = locationSnapshot.child("lng").getValue() as Double
             var location = Location(locName, locLat, locLng)
             return location
+        }
+
+        fun getSponsoredRestaurants(){
+
         }
 
     }

@@ -1,5 +1,7 @@
 package com.thurman.foode.signin
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -98,8 +100,7 @@ class SignInActivity : FragmentActivity() {
                 if (task.isSuccessful) {
                     proceedToLogin()
                 } else {
-                    setLoading(false)
-                    //TODO Sign up fail
+                    onError(task.exception?.message)
                 }
             }
     }
@@ -110,10 +111,22 @@ class SignInActivity : FragmentActivity() {
                 if (task.isSuccessful) {
                     proceedToLogin()
                 } else {
-                    setLoading(false)
-                    //TODO Sign up fail
+                    onError(task.exception?.message)
                 }
             }
+    }
+
+    private fun onError(errorMessage: String?){
+        var messageToDisplay = errorMessage
+        if (messageToDisplay == null){
+            messageToDisplay = "Something went wrong"
+        }
+        setLoading(false)
+        val dialogBuilder = AlertDialog.Builder(this)
+        dialogBuilder.setMessage(messageToDisplay)
+            .setPositiveButton("OK", null)
+        val alert = dialogBuilder.create()
+        alert.show()
     }
 
     private fun proceedToLogin(){

@@ -46,7 +46,7 @@ class SearchRestaurantListAdapter(val items: ArrayList<Restaurant>, val context:
 //        }
         else
         {
-            restaurantViewHolder.imageView.setImageDrawable(context.resources.getDrawable(R.drawable.question_mark_icon))
+            restaurantViewHolder.imageView.setImageDrawable(context.resources.getDrawable(R.drawable.question_mark_icon_square))
             restaurantViewHolder.imageView.visibility = View.VISIBLE
             restaurantViewHolder.imageLoader.visibility = View.GONE
         }

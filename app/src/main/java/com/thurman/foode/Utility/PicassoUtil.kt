@@ -29,7 +29,7 @@ class PicassoUtil {
                 }
 
                 override fun onError() {
-                    imageView.setImageDrawable(context.resources.getDrawable(R.drawable.question_mark_icon))
+                    imageView.setImageDrawable(context.resources.getDrawable(R.drawable.question_mark_icon_square))
                     imageView.visibility = View.VISIBLE
                     loadingView.visibility = View.GONE
                 }
@@ -55,7 +55,7 @@ class PicassoUtil {
         }
 
         private fun setQuestionMarkImage(imageView: ImageView, imageLoader: View, context: Context){
-            imageView.setImageDrawable(context.resources.getDrawable(R.drawable.question_mark_icon))
+            imageView.setImageDrawable(context.resources.getDrawable(R.drawable.question_mark_icon_square))
             imageView.visibility = View.VISIBLE
             imageLoader.visibility = View.GONE
         }

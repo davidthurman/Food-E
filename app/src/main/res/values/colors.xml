@@ -5,6 +5,7 @@
     <color name="colorAccent">#D81B60</color>
     <color name="duskYellow">#F8FB42</color>
     <color name="lightGrey">#DEDEDE</color>
+    <color name="veryLightGrey">#f2f2f2</color>
     
     <color name="white">#FFFFFF</color>
     <color name="mainGrey">#B8C5D6</color>
@@ -12,6 +13,7 @@
     <color name="beige">#F4EBE8</color>
     <color name="lightGreen">#96BDC6</color>
 
+    <color name="seaBlueTransparent">#1A05668D</color>
     <color name="seaBlue">#05668D</color>
     <color name="metallicSeaweed">#028090</color>
     <color name="persianGreen">#00A896</color>

@@ -16,6 +16,9 @@ import kotlinx.android.synthetic.main.food_item_layout.view.*
 class FavoriteRestaurantListAdapter(val items: ArrayList<Restaurant>, val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var onItemClick: ((Restaurant) -> Unit)? = null
+    private var selectedPos = RecyclerView.NO_POSITION
+    private var previouslySelectedPosition = -1
+    var restUuidToPosHash: HashMap<String, Int> = HashMap()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return RestaurantViewHolder(
@@ -30,6 +33,7 @@ class FavoriteRestaurantListAdapter(val items: ArrayList<Restaurant>, val contex
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         var restaurantViewHolder = holder as RestaurantViewHolder
         var restaurant = items.get(position)
+        holder.itemView.isSelected = (position == selectedPos)
         restaurantViewHolder.restaurantNameTextView.text = restaurant.name
         restaurantViewHolder.restaurantAddressTextView.text = restaurant.address
         restaurantViewHolder.ratingBar.rating = restaurant.rating.toFloat()
@@ -43,16 +47,21 @@ class FavoriteRestaurantListAdapter(val items: ArrayList<Restaurant>, val contex
                 }
 
                 override fun onError() {
-                    restaurantViewHolder.imageView.setImageDrawable(context.resources.getDrawable(R.drawable.question_mark_icon))
+                    restaurantViewHolder.imageView.setImageDrawable(context.resources.getDrawable(R.drawable.question_mark_icon_square))
                     restaurantViewHolder.imageView.visibility = View.VISIBLE
                     restaurantViewHolder.imageLoader.visibility = View.GONE
                 }
             })
         } else {
-            restaurantViewHolder.imageView.setImageDrawable(context.resources.getDrawable(R.drawable.question_mark_icon))
+            restaurantViewHolder.imageView.setImageDrawable(context.resources.getDrawable(R.drawable.question_mark_icon_square))
             restaurantViewHolder.imageView.visibility = View.VISIBLE
             restaurantViewHolder.imageLoader.visibility = View.GONE
         }
+    }
+
+    fun notifyRestaurantsHaveChanged(){
+        notifyDataSetChanged()
+        loadInAllRestaurantPositions()
     }
 
     override fun getItemCount(): Int {
@@ -71,6 +80,31 @@ class FavoriteRestaurantListAdapter(val items: ArrayList<Restaurant>, val contex
                 onItemClick?.invoke(items[adapterPosition])
             }
         }
+    }
+
+    private fun loadInAllRestaurantPositions(){
+        restUuidToPosHash.clear()
+        for (index in 0 until items.size){
+            restUuidToPosHash.put(items[index].uuid, index)
+        }
+    }
+
+    fun highlightRestaurant(restaurantUuid: String){
+        if (restUuidToPosHash.get(restaurantUuid) != null){
+            selectedPos = restUuidToPosHash.get(restaurantUuid)!!
+            notifyItemChanged(selectedPos)
+            if (previouslySelectedPosition != -1){
+                notifyItemChanged(previouslySelectedPosition)
+            }
+            previouslySelectedPosition = selectedPos
+        }
+    }
+
+    fun getPositionForUuid(restaurantUuid: String): Int{
+        if (restUuidToPosHash.get(restaurantUuid) != null){
+            return restUuidToPosHash.get(restaurantUuid)!!
+        }
+        return -1
     }
 
 }
