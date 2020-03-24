@@ -55,20 +55,43 @@
                 android:visibility="gone"
                 android:text="Address"/>
 
-            <RatingBar
-                android:isIndicator="true"
-                android:theme="@style/RatingBar"
-                android:id="@+id/rating_bar"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:scaleX=".4"
-                android:layout_marginTop="-15dp"
-                android:layout_marginLeft="-70dp"
-                android:scaleY=".4"
-                android:numStars="5"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RatingBar
+                    android:isIndicator="true"
+                    android:theme="@style/RatingBar"
+                    android:id="@+id/rating_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:scaleX=".4"
+                    android:layout_marginTop="-15dp"
+                    android:layout_marginLeft="-70dp"
+                    android:scaleY=".4"
+                    android:numStars="5"/>
+
+                <ImageButton
+                    android:layout_marginLeft="-60dp"
+                    android:paddingBottom="10dp"
+                    android:id="@+id/map_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_height="30dp"
+                    android:src="@drawable/map_icon_red"
+                    android:background="@android:color/transparent"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerInside" />
+
+            </LinearLayout>
+
+
 
         </LinearLayout>
 
     </LinearLayout>
+
+
 
 </LinearLayout>

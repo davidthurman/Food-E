@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.thurman.foode.R
+import com.thurman.foode.Utility.GoogleUtil
 import com.thurman.foode.Utility.PicassoUtil
 import com.thurman.foode.models.Restaurant
 import kotlinx.android.synthetic.main.favorite_restaurant_list_item.view.*
@@ -37,6 +38,9 @@ class FavoriteRestaurantListAdapter(val items: ArrayList<Restaurant>, val contex
         restaurantViewHolder.restaurantNameTextView.text = restaurant.name
         restaurantViewHolder.restaurantAddressTextView.text = restaurant.address
         restaurantViewHolder.ratingBar.rating = restaurant.rating.toFloat()
+        restaurantViewHolder.mapIcon.setOnClickListener {
+            GoogleUtil.openGoogleMaps(restaurant, context)
+        }
         if (!restaurant.googlePhotoReference.equals("")){
             PicassoUtil.loadGoogleImageIntoImageview(context, restaurant.googlePhotoReference, restaurantViewHolder.imageView, restaurantViewHolder.imageLoader)
         } else if (restaurant.imageUri != null){
@@ -74,6 +78,7 @@ class FavoriteRestaurantListAdapter(val items: ArrayList<Restaurant>, val contex
         var ratingBar = view.rating_bar
         var imageView = view.restaurant_image
         var imageLoader = view.fav_restaurant_image_loader
+        var mapIcon = view.map_icon
 
         init {
             itemView.setOnClickListener {

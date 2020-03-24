@@ -14,7 +14,7 @@
     <color name="lightGreen">#96BDC6</color>
 
     <color name="seaBlueTransparent">#1A05668D</color>
-    <color name="seaBlue">#05668D</color>
+    <color name="seaBlue">#d63447</color>
     <color name="metallicSeaweed">#028090</color>
     <color name="persianGreen">#00A896</color>
     <color name="carribeanGreen">#02C39A</color>
@@ -23,4 +23,7 @@
     <color name="removeRed">#E63946</color>
 
     <color name="black">#000000</color>
+    <color name="dark_grey">#4f4f4f</color>
+    <color name="black_transparent">#73000000</color>
+
 </resources>

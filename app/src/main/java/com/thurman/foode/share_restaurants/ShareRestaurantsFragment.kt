@@ -57,11 +57,17 @@ class ShareRestaurantsFragment : Fragment() {
         val restaurantsListener = object : ValueEventListener {
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                getCheckAllBox()
                 for (restaurantSnapshot in dataSnapshot.children){
                     restaurants.add(FirebaseUtil.getRestaurantFromSnapshot(restaurantSnapshot))
                 }
+                var index = 1
                 for (restaurant in restaurants){
                     addCheckbox(restaurant)
+                    if (index != restaurants.count()){
+                        addDividerLiner()
+                    }
+                        index += 1
                 }
             }
 
@@ -76,6 +82,27 @@ class ShareRestaurantsFragment : Fragment() {
         checkBox.text = restaurant.name
         checkboxLayout.addView(checkBox)
         checkboxList.add(checkBox)
+    }
+
+    private fun getCheckAllBox(){
+        var checkBox: CheckBox = LayoutInflater.from(context!!).inflate(resources.getLayout(R.layout.share_restaurant_checkbox_view), null) as CheckBox
+        checkBox.text = "Check all"
+        checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
+            checkOrUncheckAll(isChecked)
+            if (isChecked){
+                checkBox.text = "Uncheck all"
+            } else {
+                checkBox.text = "Check all"
+            }
+        }
+        checkboxLayout.addView(checkBox)
+        addDividerLiner()
+    }
+
+    private fun checkOrUncheckAll(checkAll: Boolean){
+        for (checkbox in checkboxList){
+            checkbox.isChecked = checkAll
+        }
     }
 
     private fun onShareClicked(){
@@ -97,6 +124,13 @@ class ShareRestaurantsFragment : Fragment() {
             }
         }
         return shareMessage
+    }
+
+    private fun addDividerLiner(){
+        var dividerView = View(context!!)
+        dividerView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1)
+        dividerView.setBackgroundColor(R.color.black)
+        checkboxLayout.addView(dividerView)
     }
 
 }

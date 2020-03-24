@@ -24,6 +24,7 @@ import android.graphics.Bitmap
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.provider.MediaStore
+import android.widget.LinearLayout
 import com.thurman.foode.Utility.GoogleUtil
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -85,10 +86,17 @@ class RestaurantSearchFragment : Fragment() {
         recyclerAdapter.onItemClick = {restaurant ->
             submit(restaurant)
         }
+        removeLoading(view, favRestaurantsList)
     }
 
     private fun submit(restaurant: Restaurant){
         (activity as AddRestaurantActivity).SearchRestaurantChosen(restaurant)
+    }
+
+    private fun removeLoading(view: View, recyclerView: RecyclerView){
+        var loadingContainer = view.findViewById<LinearLayout>(R.id.searching_loader_container)
+        loadingContainer.visibility = View.GONE
+        recyclerView.visibility = View.VISIBLE
     }
 
 }

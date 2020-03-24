@@ -54,6 +54,9 @@ class FirebaseUtil {
                 restaurant.lat = restaurantSnapshot.child("lat").getValue() as Double
                 restaurant.lng = restaurantSnapshot.child("lng").getValue() as Double
             }
+            if (restaurantSnapshot.child("comments").getValue() != null){
+                restaurant.comments = restaurantSnapshot.child("comments").value.toString()
+            }
             if (restaurantSnapshot.child("googleRating").getValue() != null){
                 var googleRating: Double? = restaurantSnapshot.child("googleRating").getValue() as? Double
                 if (googleRating != null){

@@ -139,8 +139,10 @@ class AddRestaurantFragment : Fragment() {
                 for (restaurantSnapshot in dataSnapshot.children){
                     sponsoredRestaurants.add(FirebaseUtil.getRestaurantFromSnapshot(restaurantSnapshot))
                 }
+                var index = 1
                 for (restaurant in sponsoredRestaurants){
-                    addSponsorView(restaurant)
+                    addSponsorView(restaurant, (index != sponsoredRestaurants.size))
+                    index += 1
                 }
             }
 
@@ -150,7 +152,7 @@ class AddRestaurantFragment : Fragment() {
         FirebaseDatabase.getInstance().reference.child("sponsoredRestaurants").addListenerForSingleValueEvent(restaurantsListener)
     }
 
-    private fun addSponsorView(restaurant: Restaurant){
+    private fun addSponsorView(restaurant: Restaurant, addDivider: Boolean){
         var sponsoredRestaurantView = LayoutInflater.from(context!!).inflate(resources.getLayout(R.layout.sponsored_restaurant_view), null)
         var restName = sponsoredRestaurantView.findViewById<TextView>(R.id.name)
         restName.text = restaurant.name
@@ -163,8 +165,10 @@ class AddRestaurantFragment : Fragment() {
         //imageView.clipToOutline = true
         FirebaseUtil.getRestaurantDetailImage(restaurant, imageView, loadingContainer, context!!)
 
-        var dividerView: View = View(context!!)
-        dividerView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 30)
-        sponsoredRestaurantsLayout.addView(dividerView)
+        if (addDivider){
+            var dividerView = View(context!!)
+            dividerView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 5)
+            sponsoredRestaurantsLayout.addView(dividerView)
+        }
     }
 }

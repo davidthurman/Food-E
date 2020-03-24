@@ -1,7 +1,6 @@
 package com.thurman.foode.signin
 
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -10,17 +9,21 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.thurman.foode.MainActivity
 import com.thurman.foode.R
+import com.thurman.foode.forgot_password.ForgotPasswordActivity
+import com.thurman.foode.forgot_password.ForgotPasswordFragment
 import com.tuyenmonkey.mkloader.MKLoader
 
 class SignInActivity : FragmentActivity() {
 
     lateinit var usernameInput: TextInputEditText
     lateinit var passwordInput: TextInputEditText
+    lateinit var forgotPasswordText: TextView
     lateinit var signInButton: Button
     lateinit var signUpButton: Button
     lateinit var loader: MKLoader
@@ -65,6 +68,10 @@ class SignInActivity : FragmentActivity() {
                 setLoading(true)
                 signUp()
             }
+        }
+        forgotPasswordText = findViewById(R.id.forgot_password_text)
+        forgotPasswordText.setOnClickListener {
+            forgotPassword()
         }
     }
 
@@ -114,6 +121,11 @@ class SignInActivity : FragmentActivity() {
                     onError(task.exception?.message)
                 }
             }
+    }
+
+    private fun forgotPassword(){
+        val intent = Intent(this, ForgotPasswordActivity::class.java)
+        startActivity(intent)
     }
 
     private fun onError(errorMessage: String?){

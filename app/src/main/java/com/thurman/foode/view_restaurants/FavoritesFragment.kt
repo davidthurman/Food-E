@@ -21,10 +21,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationListener
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapView
-import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
@@ -60,6 +57,7 @@ class FavoritesFragment : Fragment(), OnMapReadyCallback{
         map = googleMap
         map.uiSettings.isMyLocationButtonEnabled = false
         map.isMyLocationEnabled = true
+        map.uiSettings.isZoomControlsEnabled = true
         if (latLng != null){
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11.toFloat()))
         }

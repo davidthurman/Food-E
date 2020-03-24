@@ -4,41 +4,27 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-<!--    <LinearLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:orientation="horizontal"-->
-<!--        >-->
-
-<!--        <com.google.android.material.textfield.TextInputLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_weight=".25"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:hint="Enter Restaurant Name"-->
-<!--            app:counterEnabled="true"-->
-<!--            app:counterMaxLength="20">-->
-
-<!--            <com.google.android.material.textfield.TextInputEditText-->
-<!--                android:id="@+id/restaurant_search_bar"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"/>-->
-
-<!--        </com.google.android.material.textfield.TextInputLayout>-->
-
-<!--        <Button-->
-<!--            android:id="@+id/search_btn"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_weight=".75"-->
-<!--            android:textSize="16sp"-->
-<!--            android:text="Search"/>-->
-
-<!--    </LinearLayout>-->
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/restaurants_search_list"/>
+        android:id="@+id/restaurants_search_list"
+        android:visibility="gone"/>
+
+    <LinearLayout
+        android:id="@+id/searching_loader_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+        <com.tuyenmonkey.mkloader.MKLoader
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:mk_type="TwinFishesSpinner"
+            app:mk_color="@color/seaBlue"
+            />
+
+    </LinearLayout>
 
 
 </LinearLayout>

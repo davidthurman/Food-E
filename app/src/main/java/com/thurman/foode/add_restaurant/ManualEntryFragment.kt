@@ -18,6 +18,7 @@ import java.io.File
 import com.thurman.foode.R
 import com.thurman.foode.Utility.FirebaseUtil
 import com.thurman.foode.Utility.PicassoUtil
+import com.thurman.foode.models.Restaurant
 import com.thurman.foode.view_restaurants.RestaurantDetailActivity
 import com.tuyenmonkey.mkloader.MKLoader
 
@@ -26,6 +27,7 @@ class ManualEntryFragment : Fragment() {
 
     lateinit var nameTextfield: TextInputEditText
     lateinit var addressTextfield: TextInputEditText
+    lateinit var commentTextfield: TextInputEditText
     lateinit var ratingBar: RatingBar
     lateinit var imageView: ImageView
     var currentUri: Uri? = null
@@ -66,6 +68,7 @@ class ManualEntryFragment : Fragment() {
         addressTextfield = view.findViewById(R.id.address_textfield)
         ratingBar = view.findViewById(R.id.rating_bar)
         imageView = view.findViewById(R.id.image_view)
+        commentTextfield = view.findViewById(R.id.comments_textfield)
     }
 
     private fun setupButtons(view: View){
@@ -104,6 +107,7 @@ class ManualEntryFragment : Fragment() {
         nameTextfield.setText(restaurant.name)
         addressTextfield.setText(restaurant.address)
         ratingBar.rating = restaurant.rating.toFloat()
+        commentTextfield.setText(restaurant.comments)
 
         if (!restaurant.googlePhotoReference.equals("")){
             PicassoUtil.loadGoogleImageIntoImageview(context!!, restaurant.googlePhotoReference, imageView, imageLoader!!)
@@ -115,17 +119,20 @@ class ManualEntryFragment : Fragment() {
         }
     }
 
+    private fun getRestaurantFromFields(restaurant: Restaurant): Restaurant{
+        restaurant.name = nameTextfield.text.toString()
+        restaurant.address = addressTextfield.text.toString()
+        restaurant.rating = ratingBar.rating.toInt()
+        restaurant.comments = commentTextfield.text.toString()
+        return restaurant
+    }
+
     private fun submit(){
         if (fromSearch){
-            var restaurantToSend = (activity as AddRestaurantActivity).tempRestaurant!!
-            restaurantToSend.rating = ratingBar.rating.toInt()
+            var restaurantToSend = getRestaurantFromFields((activity as AddRestaurantActivity).tempRestaurant!!)
             FirebaseUtil.submitRestaurantWithRestaurantObject(restaurantToSend, activity!!)
         } else {
-            var restaurant = (activity as RestaurantDetailActivity).restaurantToEdit!!
-            restaurant.name = nameTextfield.text.toString()
-            restaurant.address = addressTextfield.text.toString()
-            restaurant.rating = ratingBar.rating.toInt()
-
+            var restaurant = getRestaurantFromFields((activity as RestaurantDetailActivity).restaurantToEdit!!)
             FirebaseUtil.updateRestaurant(restaurant,
                 currentUri,
                 activity!!

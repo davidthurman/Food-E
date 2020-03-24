@@ -13,7 +13,7 @@
         android:layout_margin="10dp"
         android:layout_marginRight="5dp"
         app:mk_type="TwinFishesSpinner"
-        app:mk_color="@color/persianGreen"
+        app:mk_color="@color/seaBlue"
         />
 
     <ImageView

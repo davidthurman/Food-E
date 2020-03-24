@@ -1,6 +1,7 @@
 package com.thurman.foode.Utility
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.util.LruCache
@@ -117,6 +118,14 @@ class GoogleUtil {
             var cityId = cityJson.getString("entity_id")
             var city = City(cityTitle, cityCountry, cityId)
             return city
+        }
+
+        fun openGoogleMaps(restaurant: Restaurant, context: Context){
+            val gmmIntentUri =
+                Uri.parse("https://www.google.com/maps/search/?api=1&query=" + restaurant?.name + "&query_place_id=" + restaurant?.googleId)
+            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+            mapIntent.setPackage("com.google.android.apps.maps")
+            context.startActivity(mapIntent)
         }
 
     }

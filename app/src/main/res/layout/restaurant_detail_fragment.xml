@@ -61,27 +61,44 @@
                     android:orientation="vertical">
 
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp">
+
                         <TextView
                             android:id="@+id/name_textfield"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Name"
-                            android:layout_marginLeft="30dp"
-                            android:layout_marginRight="30dp"
+
                             android:textColor="@color/white"
-                            android:textSize="16sp"
+                            android:textSize="20sp"
                             android:layout_marginTop="10dp"/>
 
                         <TextView
                             android:id="@+id/address_textfield"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Address"
                             android:textColor="@color/white"
-                            android:layout_marginBottom="10dp"
-                            android:layout_marginLeft="30dp"
-                            android:layout_marginRight="30dp"
-                            android:textSize="12sp"/>
+                            android:textSize="14sp"/>
+
+                        <TextView
+                            android:visibility="gone"
+                            android:id="@+id/comments_textfield"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Comments"
+                            android:textColor="@color/white"
+                            android:textSize="14sp"/>
+
+                    </LinearLayout>
+
+
 
                     <RatingBar
                         android:isIndicator="true"
@@ -89,10 +106,10 @@
                         android:id="@+id/restaurant_rating_bar"
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
-                        android:scaleX=".4"
+                        android:scaleX=".6"
                         android:layout_marginTop="-15dp"
-                        android:layout_marginLeft="-45dp"
-                        android:scaleY=".4"
+                        android:layout_marginLeft="-15dp"
+                        android:scaleY=".6"
                         android:numStars="5"/>
 
 
@@ -103,12 +120,23 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|right"
                     android:orientation="horizontal"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginBottom="10dp"
                     >
 
                     <ImageButton
+                        android:id="@+id/map_icon"
+                        android:layout_width="15dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="15dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/map_icon"
+
+                        android:background="@null"/>
+
+                    <ImageButton
                         android:id="@+id/share_icon"
-                        android:layout_width="20dp"
+                        android:layout_width="25dp"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="15dp"
                         android:adjustViewBounds="true"
@@ -119,7 +147,7 @@
                     <ImageButton
                         android:layout_marginTop="2dp"
                         android:id="@+id/edit_icon"
-                        android:layout_width="12dp"
+                        android:layout_width="16dp"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="15dp"
                         android:adjustViewBounds="true"
@@ -130,7 +158,7 @@
                     <ImageButton
                         android:layout_marginTop="3dp"
                         android:id="@+id/trash_icon"
-                        android:layout_width="12dp"
+                        android:layout_width="16dp"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="15dp"
                         android:adjustViewBounds="true"

@@ -3,24 +3,65 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/checkbox_layout"
-        android:orientation="vertical"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="120dp">
+        android:layout_marginBottom="110dp">
+
+        <LinearLayout
+            android:id="@+id/checkbox_layout"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/seaBlue"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Include food items"
+                android:textColor="@color/seaBlue"
+                android:layout_marginRight="5dp"/>
+
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/share_button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Share"
+            android:background="@drawable/sign_in_button_background"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:textColor="@color/white"/>
 
     </LinearLayout>
-
-    <Button
-        android:id="@+id/share_button"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_alignParentBottom="true"
-        android:text="Share"
-        android:background="@drawable/sign_in_button_background"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
-        android:textColor="@color/white"/>
 
 </RelativeLayout>

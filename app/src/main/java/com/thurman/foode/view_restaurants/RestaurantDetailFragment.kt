@@ -2,12 +2,14 @@ package com.thurman.foode.view_restaurants
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.marginBottom
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.AppBarLayout
@@ -19,10 +21,12 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.thurman.foode.R
 import com.thurman.foode.Utility.FirebaseUtil
+import com.thurman.foode.Utility.GoogleUtil
 import com.thurman.foode.add_restaurant.AddFoodItemActivity
 import com.thurman.foode.models.FoodItem
 import com.thurman.foode.models.Restaurant
 import com.tuyenmonkey.mkloader.MKLoader
+import java.util.*
 
 
 class RestaurantDetailFragment : Fragment() {
@@ -108,11 +112,21 @@ class RestaurantDetailFragment : Fragment() {
         trashBtn.setOnClickListener{
             onRemoveClicked()
         }
+        var mapBtn = currentView.findViewById<ImageButton>(R.id.map_icon)
+        mapBtn.setOnClickListener{
+            onMapClicked()
+        }
     }
 
     private fun onEditClicked(){
         if (restaurant != null){
             (activity as RestaurantDetailActivity).editRestaurant(restaurant!!)
+        }
+    }
+
+    private fun onMapClicked(){
+        if (restaurant != null && context != null){
+            GoogleUtil.openGoogleMaps(restaurant!!, context!!)
         }
     }
 
@@ -156,6 +170,11 @@ class RestaurantDetailFragment : Fragment() {
         nameTextField.text = restaurant.name
         var addressTextField = view.findViewById<TextView>(R.id.address_textfield)
         addressTextField.text = restaurant.address
+        if (restaurant.comments != ""){
+            var commentsTextField = view.findViewById<TextView>(R.id.comments_textfield)
+            commentsTextField.setText(restaurant.comments)
+            commentsTextField.visibility = View.VISIBLE
+        }
     }
 
     private fun setupRatingBar(view: View, restaurant: Restaurant){
