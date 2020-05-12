@@ -65,7 +65,7 @@ class FavoritesFragment : Fragment(), OnMapReadyCallback{
     }
 
     private fun getUserLocation(){
-
+        //TODO
     }
 
     override fun onCreateView(

@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.thurman.foode.R
+import com.thurman.foode.Utility.AlertUtil
 import com.thurman.foode.add_restaurant.AddRestaurantActivity
 import com.thurman.foode.add_restaurant.ManualEntryFragment
 import com.thurman.foode.add_restaurant.RestaurantSearchFragment
@@ -53,7 +54,7 @@ class ForgotPasswordFragment : Fragment() {
                         transitionToPasswordResetFragment()
                     } else {
                         setLoading(false)
-                        //TODO handle reset password fail
+                        AlertUtil.StandardAlert(null, "Something went wrong. Please try again.", "OK", context!!)
                     }
                 }
         }

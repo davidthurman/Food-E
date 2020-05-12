@@ -22,8 +22,15 @@ class ShareRestaurantsActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val fragmentManager = supportFragmentManager
+        var bundle = Bundle()
+        if (intent.hasExtra("restaurantUuid")){
+            var restaurantUuid = intent.getStringExtra("restaurantUuid")
+            bundle.putString("restaurantUuid", restaurantUuid)
+        }
+        var fragment = ShareRestaurantsFragment()
+        fragment.arguments = bundle
         val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(android.R.id.content, ShareRestaurantsFragment())
+        fragmentTransaction.replace(android.R.id.content, fragment)
         fragmentTransaction.commit()
     }
 

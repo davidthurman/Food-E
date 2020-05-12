@@ -23,6 +23,7 @@ import com.thurman.foode.R
 import com.thurman.foode.Utility.FirebaseUtil
 import com.thurman.foode.Utility.GoogleUtil
 import com.thurman.foode.add_restaurant.AddFoodItemActivity
+import com.thurman.foode.add_restaurant.ShareRestaurantsActivity
 import com.thurman.foode.models.FoodItem
 import com.thurman.foode.models.Restaurant
 import com.tuyenmonkey.mkloader.MKLoader
@@ -116,6 +117,15 @@ class RestaurantDetailFragment : Fragment() {
         mapBtn.setOnClickListener{
             onMapClicked()
         }
+        var shareBtn = currentView.findViewById<ImageButton>(R.id.share_btn)
+        shareBtn.setOnClickListener { onShareClicked() }
+    }
+
+    private fun onShareClicked(){
+        var shareRestaurantActivity = ShareRestaurantsActivity()
+        val intent = Intent(activity, shareRestaurantActivity.javaClass)
+        intent.putExtra("restaurantUuid", restaurantUuid)
+        startActivity(intent)
     }
 
     private fun onEditClicked(){
