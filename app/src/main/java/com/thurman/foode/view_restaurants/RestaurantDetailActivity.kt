@@ -3,8 +3,9 @@ package com.thurman.foode.view_restaurants
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
+import com.thurman.foode.add_restaurant.AddFoodItemActivity
 import com.thurman.foode.add_restaurant.AddOrEditFoodItemFragment
-import com.thurman.foode.add_restaurant.ManualEntryFragment
+import com.thurman.foode.add_restaurant.EditingRestaurantFragment
 import com.thurman.foode.models.FoodItem
 import com.thurman.foode.models.Restaurant
 
@@ -31,7 +32,7 @@ class RestaurantDetailActivity : FragmentActivity() {
         restaurantToEdit = restaurant
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        var editFragment = ManualEntryFragment()
+        var editFragment = EditingRestaurantFragment()
         var bundle = Bundle()
         bundle.putBoolean("editing", true)
         bundle.putString("restaurantUuid", restaurant.uuid)
@@ -58,6 +59,7 @@ class RestaurantDetailActivity : FragmentActivity() {
         bundle.putBoolean("editing", true)
         editFragment.arguments = bundle
         fragmentTransaction.replace(android.R.id.content, editFragment)
+        fragmentTransaction.addToBackStack(restaurantDetailFragment.javaClass.name)
         fragmentTransaction.commit()
     }
 

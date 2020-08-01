@@ -41,9 +41,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view_restaurants.RestaurantDetailActivity"/>
-        <activity android:name=".add_restaurant.AddFoodItemActivity"/>
-        <activity android:name=".add_restaurant.SearchCityActivity"/>
+        <activity android:name=".view_restaurants.RestaurantDetailActivity"
+            android:windowSoftInputMode="adjustPan|adjustResize"/>
+        <activity android:name=".add_restaurant.AddFoodItemActivity"
+            android:windowSoftInputMode="adjustPan|adjustResize"/>
         <activity android:name=".add_restaurant.ShareRestaurantsActivity"/>
         <activity android:name=".forgot_password.ForgotPasswordActivity"/>
     </application>

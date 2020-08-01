@@ -344,12 +344,16 @@ class FirebaseUtil {
             return city
         }
 
-        fun getLocationFromSnapshot(locationSnapshot: DataSnapshot): Location{
-            var locName = locationSnapshot.child("addressName").getValue().toString()
-            var locLat = locationSnapshot.child("lat").getValue() as Double
-            var locLng = locationSnapshot.child("lng").getValue() as Double
-            var location = Location(locName, locLat, locLng)
-            return location
+        fun getLocationFromSnapshot(locationSnapshot: DataSnapshot): Location?{
+            if (locationSnapshot.child("lat").exists()){
+                var locName = locationSnapshot.child("addressName").getValue().toString()
+                var locLat = locationSnapshot.child("lat").getValue() as Double
+                var locLng = locationSnapshot.child("lng").getValue() as Double
+                var location = Location(locName, locLat, locLng)
+                return location
+            } else {
+                return null
+            }
         }
 
         fun getSponsoredRestaurants(){

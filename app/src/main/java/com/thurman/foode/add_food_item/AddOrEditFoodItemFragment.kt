@@ -43,7 +43,7 @@ class AddOrEditFoodItemFragment : Fragment() {
         loadingContainer = view.findViewById(R.id.loading_container)
         commentsTextfield = view.findViewById(R.id.comments_textfield)
         var submitBtn = view.findViewById<Button>(R.id.submit_button)
-        submitBtn.setOnClickListener{ checkIfFieldsAreValid() }
+        submitBtn.setOnClickListener{ submit() }
         var uploadImageBtn = view.findViewById<Button>(R.id.upload_image_btn)
         uploadImageBtn.setOnClickListener{ uploadImageClicked() }
         if (arguments != null){
@@ -57,11 +57,6 @@ class AddOrEditFoodItemFragment : Fragment() {
             }
         }
         return view
-    }
-
-    private fun checkIfFieldsAreValid(){
-        //TODO Add validation
-        submit()
     }
 
     private fun submit(){

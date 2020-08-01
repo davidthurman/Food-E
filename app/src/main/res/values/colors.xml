@@ -6,7 +6,8 @@
     <color name="duskYellow">#F8FB42</color>
     <color name="lightGrey">#DEDEDE</color>
     <color name="veryLightGrey">#f2f2f2</color>
-    
+
+    <color name="error_red">#d63447</color>
     <color name="white">#FFFFFF</color>
     <color name="mainGrey">#B8C5D6</color>
     <color name="blue">#3993DD</color>
@@ -25,5 +26,5 @@
     <color name="black">#000000</color>
     <color name="dark_grey">#4f4f4f</color>
     <color name="black_transparent">#73000000</color>
-
+    <color name="black_less_transparent">#99000000</color>
 </resources>

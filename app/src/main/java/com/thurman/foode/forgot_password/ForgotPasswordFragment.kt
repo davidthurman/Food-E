@@ -9,10 +9,6 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.thurman.foode.R
 import com.thurman.foode.Utility.AlertUtil
-import com.thurman.foode.add_restaurant.AddRestaurantActivity
-import com.thurman.foode.add_restaurant.ManualEntryFragment
-import com.thurman.foode.add_restaurant.RestaurantSearchFragment
-import com.thurman.foode.add_restaurant.ShareRestaurantsFragment
 import com.tuyenmonkey.mkloader.MKLoader
 
 

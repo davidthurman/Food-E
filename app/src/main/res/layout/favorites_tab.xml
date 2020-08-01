@@ -62,28 +62,85 @@
                     android:src="@drawable/share_icon"
                     android:background="@null"/>
 
-                <ImageButton
-                    android:layout_width="35dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="15dp"
-                    android:adjustViewBounds="true"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/profile_icon"
-                    android:background="@null"/>
+<!--                <ImageButton-->
+<!--                    android:layout_width="35dp"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:layout_marginLeft="15dp"-->
+<!--                    android:adjustViewBounds="true"-->
+<!--                    android:scaleType="fitCenter"-->
+<!--                    android:src="@drawable/profile_icon"-->
+<!--                    android:background="@null"/>-->
 
             </FrameLayout>
 
             <com.google.android.gms.maps.MapView
                 android:id="@+id/mapview"
                 android:layout_width="match_parent"
-                android:layout_height="400dp" />
+                android:layout_height="350dp" />
+
+            <LinearLayout
+                android:id="@+id/no_restaurants_added_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:layout_marginTop="5dp"
+                    android:src="@drawable/no_restaurants_icon"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No restaurants yet!"
+                    android:gravity="center_horizontal"
+                    android:textSize="20dp"
+                    android:layout_marginTop="10dp"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Add one to get started"
+                    android:gravity="center_horizontal"
+                    android:textSize="14dp"
+                    android:layout_marginTop="5dp"
+                    />
+
+            </LinearLayout>
+
+
+
 
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/favorite_restaurants_list"/>
+                android:id="@+id/favorite_restaurants_list"
+                android:visibility="gone"/>
 
         </LinearLayout>
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="horizontal"-->
+<!--            android:layout_gravity="bottom|center_horizontal"-->
+<!--            >-->
+
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Get started ->"-->
+<!--                android:textSize="30dp"-->
+<!--                android:layout_marginBottom="20dp"/>-->
+
+
+
+<!--        </LinearLayout>-->
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_icon"

@@ -22,6 +22,8 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/name_textfield"
+                    android:maxLines="1"
+                    android:maxLength="50"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
@@ -35,6 +37,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/address_textfield"
                     android:layout_width="match_parent"
+                    android:maxLength="120"
                     android:layout_height="wrap_content"/>
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -88,6 +91,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/comments_textfield"
                     android:layout_width="match_parent"
+                    android:maxLength="80"
                     android:layout_height="wrap_content"/>
 
             </com.google.android.material.textfield.TextInputLayout>

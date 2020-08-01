@@ -125,12 +125,13 @@
 
                     <ImageButton
                         android:id="@+id/map_icon"
-                        android:layout_width="15dp"
+                        android:layout_width="13dp"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="15dp"
                         android:adjustViewBounds="true"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/map_icon"
+                        android:layout_marginTop="2dp"
+                        android:src="@drawable/location_icon"
                         android:background="@null"/>
 
                     <ImageButton
@@ -146,7 +147,7 @@
                     <ImageButton
                         android:layout_marginTop="2dp"
                         android:id="@+id/edit_icon"
-                        android:layout_width="16dp"
+                        android:layout_width="14dp"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="15dp"
                         android:adjustViewBounds="true"
@@ -216,7 +217,7 @@
                 android:textSize="14sp"
                 android:textColor="@color/white"
                 android:background="@drawable/enter_restaurant_manually_button_background"
-                android:text="Add Food Item"/>
+                android:text="Add dish"/>
 
             <LinearLayout
                 android:id="@+id/loading_container"

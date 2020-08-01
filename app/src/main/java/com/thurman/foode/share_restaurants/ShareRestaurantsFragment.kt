@@ -82,7 +82,7 @@ class ShareRestaurantsFragment : Fragment() {
     }
 
     private fun getCheckAllBox(){
-        var checkBox: CheckBox = LayoutInflater.from(context!!).inflate(resources.getLayout(R.layout.share_restaurant_checkbox_view), null) as CheckBox
+        var checkBox: CheckBox = LayoutInflater.from(context!!).inflate(resources.getLayout(R.layout.share_restaurant_checkbox_all_view), null) as CheckBox
         checkBox.text = "Check all"
         checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
             checkOrUncheckAll(isChecked)

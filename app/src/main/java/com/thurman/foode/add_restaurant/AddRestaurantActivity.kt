@@ -10,7 +10,6 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
-import com.google.android.material.textfield.TextInputEditText
 import com.thurman.foode.R
 import com.thurman.foode.Utility.FirebaseUtil
 import com.thurman.foode.models.Restaurant
@@ -32,7 +31,7 @@ class AddRestaurantActivity : FragmentActivity() {
         bundle.putBoolean("editing", editing)
         var fragment: Fragment? = null
         if (editing){
-            fragment = ManualEntryFragment()
+            fragment = EditingRestaurantFragment()
         } else {
             fragment = AddRestaurantFragment()
         }
@@ -52,7 +51,7 @@ class AddRestaurantActivity : FragmentActivity() {
 
     fun SearchRestaurantChosen(restaurant: Restaurant){
         tempRestaurant = restaurant
-        var fragment = ManualEntryFragment()
+        var fragment = EditingRestaurantFragment()
         var bundle = Bundle()
         bundle.putBoolean("fromSearch", true)
         fragment.arguments = bundle
@@ -83,7 +82,6 @@ class AddRestaurantActivity : FragmentActivity() {
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 // TODO: Handle the error.
                 val status = Autocomplete.getStatusFromIntent(data!!)
-               // Log.i(FragmentActivity.TAG, status.statusMessage)
             } else if (resultCode == AutocompleteActivity.RESULT_CANCELED) {
                 // The user canceled the operation.
             }

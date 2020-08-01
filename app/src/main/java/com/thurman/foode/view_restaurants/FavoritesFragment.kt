@@ -40,6 +40,8 @@ import com.thurman.foode.add_restaurant.AddRestaurantActivity
 import com.thurman.foode.add_restaurant.ShareRestaurantsActivity
 import com.thurman.foode.models.FoodItem
 import com.thurman.foode.models.Restaurant
+import kotlinx.android.synthetic.main.favorites_tab.*
+import kotlinx.android.synthetic.main.sponsored_restaurant_view.*
 
 class FavoritesFragment : Fragment(), OnMapReadyCallback{
 
@@ -62,10 +64,6 @@ class FavoritesFragment : Fragment(), OnMapReadyCallback{
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11.toFloat()))
         }
         getUserRestaurantData(recyclerAdapter)
-    }
-
-    private fun getUserLocation(){
-        //TODO
     }
 
     override fun onCreateView(
@@ -155,29 +153,39 @@ class FavoritesFragment : Fragment(), OnMapReadyCallback{
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 restaurants.clear()
-                map.clear()
-                for (restaurantSnapshot in dataSnapshot.children){
-                    restaurants.add(FirebaseUtil.getRestaurantFromSnapshot(restaurantSnapshot))
+                if (map != null){
+                    map.clear()
                 }
-                for (restaurant in restaurants){
-                    if (restaurant.googlePhotoReference.equals("")){
-                        FirebaseUtil.getRestaurantImage(restaurant, recyclerAdapter)
+                if (dataSnapshot.children.count() == 0){
+                    no_restaurants_added_text.visibility = View.VISIBLE
+                    favorite_restaurants_list.visibility = View.GONE
+                } else {
+                    no_restaurants_added_text.visibility = View.GONE
+                    favorite_restaurants_list.visibility = View.VISIBLE
+                    for (restaurantSnapshot in dataSnapshot.children){
+                        restaurants.add(FirebaseUtil.getRestaurantFromSnapshot(restaurantSnapshot))
                     }
-                    if (::map.isInitialized){
-                        if (restaurant.lat != 0.0){
-                            var restaurantLatLng = LatLng(restaurant.lat, restaurant.lng)
-                            var marker = map.addMarker(MarkerOptions().position(restaurantLatLng).title(restaurant.name))
-                            map.setOnMarkerClickListener(GoogleMap.OnMarkerClickListener {marker ->
-                                System.out.println(marker.title)
-                                var restaurantId = markerToIdHashmap.get(marker)
-                                System.out.println(restaurantId)
-                                recyclerAdapter.highlightRestaurant(restaurantId!!)
-                                if (recyclerAdapter.getPositionForUuid(restaurantId!!) != -1){
-                                    favRestaurantsList.scrollToPosition(recyclerAdapter.getPositionForUuid(restaurantId!!))
-                                }
-                                false
-                            })
-                            markerToIdHashmap.put(marker, restaurant.uuid)
+                    restaurants.sortBy { it.name }
+                    for (restaurant in restaurants){
+                        if (restaurant.googlePhotoReference.equals("")){
+                            FirebaseUtil.getRestaurantImage(restaurant, recyclerAdapter)
+                        }
+                        if (::map.isInitialized){
+                            if (restaurant.lat != 0.0){
+                                var restaurantLatLng = LatLng(restaurant.lat, restaurant.lng)
+                                var marker = map.addMarker(MarkerOptions().position(restaurantLatLng).title(restaurant.name))
+                                map.setOnMarkerClickListener(GoogleMap.OnMarkerClickListener {marker ->
+                                    System.out.println(marker.title)
+                                    var restaurantId = markerToIdHashmap.get(marker)
+                                    System.out.println(restaurantId)
+                                    recyclerAdapter.highlightRestaurant(restaurantId!!)
+                                    if (recyclerAdapter.getPositionForUuid(restaurantId!!) != -1){
+                                        favRestaurantsList.scrollToPosition(recyclerAdapter.getPositionForUuid(restaurantId!!))
+                                    }
+                                    false
+                                })
+                                markerToIdHashmap.put(marker, restaurant.uuid)
+                            }
                         }
                     }
                 }

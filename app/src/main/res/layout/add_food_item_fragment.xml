@@ -57,11 +57,34 @@
                 app:counterEnabled="true"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                app:counterMaxLength="40">
+                app:counterMaxLength="30">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/name_textfield"
                     android:layout_width="match_parent"
+                    android:inputType="text"
+                    android:maxLength="30"
+                    android:maxLines="1"
+                    android:layout_height="wrap_content"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:hint="Comments"
+                app:counterEnabled="true"
+                app:counterMaxLength="40">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/comments_textfield"
+                    android:layout_width="match_parent"
+                    android:maxLength="40"
+                    android:inputType="text"
+                    android:maxLines="1"
                     android:layout_height="wrap_content"/>
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -94,22 +117,7 @@
                 android:textColor="@color/seaBlue"
                 android:text="Upload Image"/>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:hint="Comments"
-                app:counterEnabled="true"
-                app:counterMaxLength="80">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/comments_textfield"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
 
 
 

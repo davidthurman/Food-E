@@ -23,7 +23,7 @@ import com.thurman.foode.view_restaurants.RestaurantDetailActivity
 import com.tuyenmonkey.mkloader.MKLoader
 
 
-class ManualEntryFragment : Fragment() {
+class EditingRestaurantFragment : Fragment() {
 
     lateinit var nameTextfield: TextInputEditText
     lateinit var addressTextfield: TextInputEditText

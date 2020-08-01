@@ -1,6 +1,5 @@
 package com.thurman.foode.add_restaurant
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,28 +8,16 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.android.volley.AuthFailureError
-import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.thurman.foode.R
-import com.thurman.foode.Utility.FirebaseUtil
-import com.thurman.foode.Utility.ZomatoUtil
 import com.thurman.foode.models.Restaurant
 import org.json.JSONObject
-import android.graphics.Bitmap
-import android.content.Context
-import android.graphics.BitmapFactory
-import android.provider.MediaStore
 import android.widget.LinearLayout
 import com.thurman.foode.Utility.GoogleUtil
-import java.io.ByteArrayOutputStream
-import java.io.IOException
-import java.io.InputStream
-import java.net.HttpURLConnection
-import java.net.URL
+import kotlinx.android.synthetic.main.restaurant_search_fragment.*
 
 
 class RestaurantSearchFragment : Fragment() {
@@ -51,8 +38,6 @@ class RestaurantSearchFragment : Fragment() {
     private fun getSearchResults(view: View, searchText: String, lat: Double, lon: Double){
         val queue = Volley.newRequestQueue(context)
         var url = "https://maps.googleapis.com/maps/api/place/textsearch/json?input=" + searchText + "&inputtype=textquery&fields=formatted_address,photos,name,place_id,opening_hours,rating,geometry&location=" + lat.toString() + "," + lon.toString() + "&radius=1000&key=AIzaSyDCyMRUMFciuOhvLFdWp-FrxapIkPMY-JI"
-     //   val url = "https://developers.zomato.com/api/v2.1/search?entity_id=" + searchCityEntityId + "&entity_type=city&q=" + searchText
-
         val req = object : JsonObjectRequest(
             Method.GET, url, null, Response.Listener { response ->
                 onRestaurantsReturnedSuccess(response, view)
@@ -65,11 +50,21 @@ class RestaurantSearchFragment : Fragment() {
     }
 
     private fun onRestaurantsReturnedSuccess(response: JSONObject, view: View){
-        if (response.length() > 0){
+        if (response.getString("status") != "ZERO_RESULTS"){
             var restaurants = GoogleUtil.getRestaurantsFromSearchResults(response)
             setupRecyclerView(view, restaurants)
         } else {
-            //TODO Empty results
+            onNoResultsReturned()
+        }
+    }
+
+    private fun onNoResultsReturned(){
+        var noResultsLayout = no_results_layout
+        noResultsLayout.visibility = View.VISIBLE
+        var returnButton = return_button
+        returnButton.setOnClickListener {
+            var fragment = AddRestaurantFragment()
+            (activity as AddRestaurantActivity)!!.transitionFragment(fragment)
         }
     }
 
