@@ -20,7 +20,7 @@
             android:layout_margin="10dp"
             android:layout_marginRight="5dp"
             app:mk_type="TwinFishesSpinner"
-            app:mk_color="@color/persianGreen"
+            app:mk_color="@color/primaryColor"
             />
 
         <ImageView
@@ -50,7 +50,7 @@
                 android:id="@+id/restaurant_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/seaBlue"
+                android:textColor="@color/primaryColor"
                 android:textSize="16sp"
                 android:visibility="gone"
                 android:text="Address"/>

@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Title"
-        android:textColor="@color/seaBlue"
+        android:textColor="@color/primaryColor"
         android:textSize="20sp"
         android:layout_marginBottom="3dp"/>
 
@@ -19,7 +19,7 @@
         android:id="@+id/city_country"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/seaBlue"
+        android:textColor="@color/primaryColor"
         android:textSize="16sp"
         android:text="Country"/>
 

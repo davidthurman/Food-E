@@ -27,6 +27,7 @@ import com.thurman.foode.add_restaurant.ShareRestaurantsActivity
 import com.thurman.foode.models.FoodItem
 import com.thurman.foode.models.Restaurant
 import com.tuyenmonkey.mkloader.MKLoader
+import kotlinx.android.synthetic.main.restaurant_detail_fragment.*
 import java.util.*
 
 
@@ -39,6 +40,7 @@ class RestaurantDetailFragment : Fragment() {
     lateinit var loadingContainer: LinearLayout
     lateinit var toolbar: Toolbar
     var optionsMenuOpen = false
+    var friendId: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,6 +52,10 @@ class RestaurantDetailFragment : Fragment() {
         loadingContainer = currentView.findViewById(R.id.loading_container)
         restaurantUuid = arguments!!.getString("restaurantUuid")!!
         toolbar = currentView.findViewById(R.id.toolbar)
+        if (arguments!!.containsKey("friendId")){
+            friendId = arguments!!.getString("friendId")
+            setupFriendLink(currentView)
+        }
         getRestaurantFromUuid()
         return currentView
     }
@@ -71,7 +77,11 @@ class RestaurantDetailFragment : Fragment() {
             override fun onCancelled(databaseError: DatabaseError) {}
 
         }
-        FirebaseDatabase.getInstance().reference.child("users").child(FirebaseAuth.getInstance().currentUser!!.uid).child("restaurants").child(restaurantUuid).addListenerForSingleValueEvent(restaurantListener)
+        if (friendId == null){
+            FirebaseDatabase.getInstance().reference.child("users").child(FirebaseAuth.getInstance().currentUser!!.uid).child("restaurants").child(restaurantUuid).addListenerForSingleValueEvent(restaurantListener)
+        } else {
+            FirebaseDatabase.getInstance().reference.child("users").child(friendId!!).child("restaurants").child(restaurantUuid).addListenerForSingleValueEvent(restaurantListener)
+        }
     }
 
     private fun setupFields(view: View, restaurant: Restaurant){
@@ -236,7 +246,9 @@ class RestaurantDetailFragment : Fragment() {
     }
 
     private fun onFoodItemClick(foodItem: FoodItem){
-        (activity as RestaurantDetailActivity).editFoodItem(foodItem, restaurantUuid)
+        if (friendId == null){
+            (activity as RestaurantDetailActivity).editFoodItem(foodItem, restaurantUuid)
+        }
     }
 
     fun refreshData(){
@@ -251,6 +263,17 @@ class RestaurantDetailFragment : Fragment() {
             contentScroll.visibility = View.VISIBLE
             loadingContainer.visibility = View.GONE
         }
+    }
+
+    private fun setupFriendLink(view: View){
+        var editIcon = view.findViewById<ImageButton>(R.id.edit_icon)
+        editIcon.visibility = View.GONE
+        var trashIcon = view.findViewById<ImageButton>(R.id.trash_icon)
+        trashIcon.visibility = View.GONE
+        var shareBtn = view.findViewById<ImageButton>(R.id.share_btn)
+        shareBtn.visibility = View.GONE
+        var addFoodItemButton = view.findViewById<Button>(R.id.add_food_item_btn)
+        addFoodItemButton.visibility = View.GONE
     }
 
 }

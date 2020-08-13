@@ -11,7 +11,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_margin="10dp"
-        app:mk_color="@color/persianGreen"
+        app:mk_color="@color/primaryColor"
         android:layout_marginRight="5dp"
         />
 

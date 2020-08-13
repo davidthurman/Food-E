@@ -29,7 +29,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:background="@color/seaBlue"/>
+            android:background="@color/primaryColor"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -41,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Include dishes"
-                android:textColor="@color/seaBlue"
+                android:textColor="@color/primaryColor"
                 android:layout_marginRight="5dp"/>
 
             <Switch

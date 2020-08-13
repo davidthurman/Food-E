@@ -1,7 +1,9 @@
 package com.thurman.foode.signin
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,6 +12,7 @@ import android.view.Window
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
@@ -27,11 +30,13 @@ class SignInActivity : FragmentActivity() {
     lateinit var signInButton: Button
     lateinit var signUpButton: Button
     lateinit var loader: MKLoader
+    var friendId: String? = null
 
     private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        checkForFriendLink()
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
         setContentView(R.layout.sign_in_layout)
@@ -39,6 +44,10 @@ class SignInActivity : FragmentActivity() {
         setupTextfields()
         setupButtons()
         loader = findViewById(R.id.sign_in_loader)
+        val currentUser = auth.currentUser
+        if (currentUser != null){
+            transitionScreen()
+        }
     }
 
     private fun validLoginFields(): Boolean{
@@ -72,6 +81,14 @@ class SignInActivity : FragmentActivity() {
         forgotPasswordText = findViewById(R.id.forgot_password_text)
         forgotPasswordText.setOnClickListener {
             forgotPassword()
+        }
+    }
+
+    private fun checkForFriendLink(){
+        if (intent.action == Intent.ACTION_VIEW){
+            var url: String = intent.data!!.path!!
+            var segments = url.split("id=")
+            friendId = segments[1]
         }
     }
 
@@ -112,6 +129,13 @@ class SignInActivity : FragmentActivity() {
             }
     }
 
+    private fun checkLocationPermission(): Boolean
+    {
+        var permission = android.Manifest.permission.ACCESS_FINE_LOCATION;
+        var res = checkCallingOrSelfPermission(permission);
+        return (res == PackageManager.PERMISSION_GRANTED);
+    }
+
     private fun signIn(){
         auth.signInWithEmailAndPassword(usernameInput.text.toString(), passwordInput.text.toString())
             .addOnCompleteListener(this) { task ->
@@ -142,7 +166,28 @@ class SignInActivity : FragmentActivity() {
     }
 
     private fun proceedToLogin(){
+        if (checkLocationPermission()){
+            transitionScreen()
+        } else {
+            val permissions = arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION)
+            ActivityCompat.requestPermissions(this, permissions,0)
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        transitionScreen()
+    }
+
+    private fun transitionScreen(){
         val intent = Intent(this, MainActivity::class.java)
+        if (friendId != null){
+            intent.putExtra("friendId", friendId)
+        }
         startActivity(intent)
         setLoading(false)
     }

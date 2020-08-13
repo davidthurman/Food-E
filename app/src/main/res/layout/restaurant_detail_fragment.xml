@@ -14,7 +14,7 @@
             android:id="@+id/collapsing_toolbar_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:contentScrim="@color/seaBlue"
+            app:contentScrim="@color/primaryColor"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:expandedTitleTextAppearance="@android:color/transparent">
 
@@ -231,7 +231,7 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     app:mk_type="TwinFishesSpinner"
-                    app:mk_color="@color/persianGreen"/>
+                    app:mk_color="@color/primaryColor"/>
 
             </LinearLayout>
 

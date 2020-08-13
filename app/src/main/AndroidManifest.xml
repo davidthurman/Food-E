@@ -29,24 +29,46 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyDCyMRUMFciuOhvLFdWp-FrxapIkPMY-JI"/>
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
 
         </activity>
-        <activity android:name=".add_restaurant.AddRestaurantActivity">
+        <activity android:name=".add_restaurant.AddRestaurantActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".signin.SignInActivity">
+        <activity android:name=".signin.SignInActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.VIEW"></action>
+
+                <category android:name="android.intent.category.DEFAULT"></category>
+                <category android:name="android.intent.category.BROWSABLE"></category>
+
+                <data
+                    android:host="www.savor.com"
+                    android:scheme="http"></data>
             </intent-filter>
         </activity>
         <activity android:name=".view_restaurants.RestaurantDetailActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|adjustResize"/>
         <activity android:name=".add_restaurant.AddFoodItemActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|adjustResize"/>
-        <activity android:name=".add_restaurant.ShareRestaurantsActivity"/>
-        <activity android:name=".forgot_password.ForgotPasswordActivity"/>
+        <activity android:name=".add_restaurant.ShareRestaurantsActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".forgot_password.ForgotPasswordActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

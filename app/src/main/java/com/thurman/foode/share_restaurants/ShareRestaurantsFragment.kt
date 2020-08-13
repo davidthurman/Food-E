@@ -127,6 +127,8 @@ class ShareRestaurantsFragment : Fragment() {
                 }
             }
         }
+        shareMessage += "\n"
+        shareMessage += "Check out all of my favorite restaurants from the Savor app: http://www.savor.com/id=" + FirebaseAuth.getInstance().currentUser!!.uid
         return shareMessage
     }
 

@@ -75,7 +75,7 @@
                 android:layout_marginRight="20dp"
                 android:background="@drawable/upload_image_background"
                 android:textSize="14sp"
-                android:textColor="@color/seaBlue"
+                android:textColor="@color/primaryColor"
                 android:text="Upload Image"/>
 
             <com.google.android.material.textfield.TextInputLayout

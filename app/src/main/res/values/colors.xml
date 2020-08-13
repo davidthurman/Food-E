@@ -1,30 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">@color/carribeanGreen</color>
-    <color name="colorPrimaryDark">@color/seaBlue</color>
-    <color name="colorAccent">#D81B60</color>
-    <color name="duskYellow">#F8FB42</color>
-    <color name="lightGrey">#DEDEDE</color>
+    <color name="primaryColor">#d63447</color>
+    <color name="favoriteRestaurantOnClickBackgroundColor">#F0F3BD</color>
     <color name="veryLightGrey">#f2f2f2</color>
-
-    <color name="error_red">#d63447</color>
     <color name="white">#FFFFFF</color>
-    <color name="mainGrey">#B8C5D6</color>
-    <color name="blue">#3993DD</color>
-    <color name="beige">#F4EBE8</color>
-    <color name="lightGreen">#96BDC6</color>
-
-    <color name="seaBlueTransparent">#1A05668D</color>
-    <color name="seaBlue">#d63447</color>
-    <color name="metallicSeaweed">#028090</color>
-    <color name="persianGreen">#00A896</color>
-    <color name="carribeanGreen">#02C39A</color>
-    <color name="paleSpringBud">#F0F3BD</color>
-
+    <color name="error_red">#d63447</color>
     <color name="removeRed">#E63946</color>
-
     <color name="black">#000000</color>
-    <color name="dark_grey">#4f4f4f</color>
     <color name="black_transparent">#73000000</color>
-    <color name="black_less_transparent">#99000000</color>
 </resources>

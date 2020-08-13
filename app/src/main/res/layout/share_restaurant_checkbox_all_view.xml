@@ -6,7 +6,7 @@
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
     android:text="Test"
-    android:textColor="@color/seaBlue"
+    android:textColor="@color/primaryColor"
     >
 
 </CheckBox>

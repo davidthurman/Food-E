@@ -23,6 +23,9 @@ class RestaurantDetailActivity : FragmentActivity() {
         val fragmentTransaction = fragmentManager.beginTransaction()
         var bundle = Bundle()
         bundle.putString("restaurantUuid", restaurantUuid)
+        if (intent.hasExtra("friendId")){
+            bundle.putString("friendId", intent.getStringExtra("friendId"))
+        }
         restaurantDetailFragment.arguments = bundle
         fragmentTransaction.replace(android.R.id.content, restaurantDetailFragment)
         fragmentTransaction.commit()

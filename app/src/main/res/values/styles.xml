@@ -3,10 +3,10 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/seaBlue</item>
-        <item name="colorPrimaryDark">@color/seaBlue</item>
-        <item name="colorAccent">@color/seaBlue</item>
-        <item name="android:textColorHint">@color/seaBlue</item>
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryDark">@color/primaryColor</item>
+        <item name="colorAccent">@color/primaryColor</item>
+        <item name="android:textColorHint">@color/primaryColor</item>
     </style>
 
     <style name="RatingBar" parent="Theme.AppCompat">

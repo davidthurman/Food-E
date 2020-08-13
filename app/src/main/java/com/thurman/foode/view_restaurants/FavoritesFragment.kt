@@ -2,6 +2,7 @@ package com.thurman.foode.view_restaurants
 
 import android.content.Context.LOCATION_SERVICE
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
@@ -33,6 +34,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
+import com.thurman.foode.MainActivity
 import com.thurman.foode.Manifest
 import com.thurman.foode.R
 import com.thurman.foode.Utility.FirebaseUtil
@@ -40,6 +42,7 @@ import com.thurman.foode.add_restaurant.AddRestaurantActivity
 import com.thurman.foode.add_restaurant.ShareRestaurantsActivity
 import com.thurman.foode.models.FoodItem
 import com.thurman.foode.models.Restaurant
+import com.thurman.foode.signin.SignInActivity
 import kotlinx.android.synthetic.main.favorites_tab.*
 import kotlinx.android.synthetic.main.sponsored_restaurant_view.*
 
@@ -54,6 +57,7 @@ class FavoritesFragment : Fragment(), OnMapReadyCallback{
     lateinit var recyclerAdapter: FavoriteRestaurantListAdapter
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     var latLng: LatLng? = null
+    var friendId: String? = null
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
@@ -73,23 +77,48 @@ class FavoritesFragment : Fragment(), OnMapReadyCallback{
     ): View? {
         var view = inflater!!.inflate(R.layout.favorites_tab, container, false)
         fragment = this
-        val permissions = arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION)
-        ActivityCompat.requestPermissions(activity!!, permissions,0)
-        mapView = view.findViewById(R.id.mapview)
-        mapView.onCreate(savedInstanceState)
+        if (arguments != null && arguments!!.containsKey("friendId")){
+            friendId = arguments!!.getString("friendId")
+        }
 
-        setupRecyclerView(view)
         var addButton: FloatingActionButton = view.findViewById(R.id.add_icon)
+        if (friendId != null){
+            addButton.hide()
+        }
         addButton.setOnClickListener(View.OnClickListener {
             val intent = Intent(activity, AddRestaurantActivity::class.java)
             startActivityForResult(intent, 200)
         })
+        var logoutButton: ImageButton = view.findViewById(R.id.logout_button)
+        logoutButton.setOnClickListener {
+            FirebaseAuth.getInstance().signOut()
+            val intent = Intent(activity, SignInActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        }
 
         var shareButton: ImageButton = view.findViewById(R.id.share_button)
         shareButton.setOnClickListener{
             onShareClicked()
         }
+        setupRecyclerView(view)
+        onLocationEstablished()
+        mapView = view.findViewById(R.id.mapview)
+        mapView.onCreate(savedInstanceState)
+        if (!checkLocationPermission()){
+            mapView.visibility = View.GONE
+        }
+        return view
+    }
 
+    private fun checkLocationPermission(): Boolean
+    {
+        var permission = android.Manifest.permission.ACCESS_FINE_LOCATION;
+        var res = activity!!.checkCallingOrSelfPermission(permission);
+        return (res == PackageManager.PERMISSION_GRANTED);
+    }
+
+    private fun onLocationEstablished(){
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity!!)
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location : Location? ->
@@ -98,16 +127,7 @@ class FavoritesFragment : Fragment(), OnMapReadyCallback{
                 }
                 mapView.getMapAsync(fragment)
             }
-        return view
-    }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        mapView.getMapAsync(this)
     }
 
     override fun onResume() {
@@ -144,6 +164,9 @@ class FavoritesFragment : Fragment(), OnMapReadyCallback{
         var restaurantDetailActivity = RestaurantDetailActivity()
         val intent = Intent(activity, restaurantDetailActivity.javaClass)
         intent.putExtra("restaurantUuid", restaurant.uuid)
+        if (friendId != null){
+            intent.putExtra("friendId", friendId)
+        }
         startActivity(intent)
     }
 
@@ -153,7 +176,7 @@ class FavoritesFragment : Fragment(), OnMapReadyCallback{
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 restaurants.clear()
-                if (map != null){
+                if (::map.isInitialized){
                     map.clear()
                 }
                 if (dataSnapshot.children.count() == 0){
@@ -199,7 +222,11 @@ class FavoritesFragment : Fragment(), OnMapReadyCallback{
             }
 
         }
-        FirebaseDatabase.getInstance().reference.child("users").child(FirebaseAuth.getInstance().currentUser!!.uid).child("restaurants").addListenerForSingleValueEvent(restaurantsListener)
+        if (friendId == null){
+            FirebaseDatabase.getInstance().reference.child("users").child(FirebaseAuth.getInstance().currentUser!!.uid).child("restaurants").addListenerForSingleValueEvent(restaurantsListener)
+        } else {
+            FirebaseDatabase.getInstance().reference.child("users").child(friendId!!).child("restaurants").addListenerForSingleValueEvent(restaurantsListener)
+        }
     }
 
     fun setLoading(loading: Boolean){

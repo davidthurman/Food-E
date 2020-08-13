@@ -56,7 +56,7 @@
             android:text="Forgot password?"
             android:id="@+id/forgot_password_text"
             android:layout_marginLeft="23dp"
-            android:textColor="@color/seaBlue"/>
+            android:textColor="@color/primaryColor"/>
 
     </LinearLayout>
 
@@ -83,7 +83,7 @@
             android:background="@drawable/sign_up_button_background"
             android:layout_height="60dp"
             android:textSize="18sp"
-            android:textColor="@color/seaBlue"
+            android:textColor="@color/primaryColor"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:text="Sign up"/>
 
@@ -95,7 +95,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:mk_type="TwinFishesSpinner"
-        app:mk_color="@color/seaBlue"
+        app:mk_color="@color/primaryColor"
     />
 
     <LinearLayout

@@ -48,7 +48,7 @@
         android:textSize="14dp"
         android:background="@color/white"
         android:rotation="-30"
-        android:textColor="@color/seaBlue"/>
+        android:textColor="@color/primaryColor"/>
 
 
         <LinearLayout
@@ -63,7 +63,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 app:mk_type="TwinFishesSpinner"
-                app:mk_color="@color/seaBlue"
+                app:mk_color="@color/primaryColor"
                 />
 
         </LinearLayout>
