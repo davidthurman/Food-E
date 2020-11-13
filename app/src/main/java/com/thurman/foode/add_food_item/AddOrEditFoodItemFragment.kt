@@ -38,12 +38,12 @@ class AddOrEditFoodItemFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         submit_button.setOnClickListener{ submit() }
         upload_image_btn.setOnClickListener{ uploadImageClicked() }
-        restaurantUuid = arguments?.getString(FireBaseKeys.restUUID) ?: ""
+        restaurantUuid = arguments?.getString(Keys.restUUID) ?: ""
         val editing = arguments?.getBoolean(Keys.editingFlag) ?: false
         if (editing){
             this.editing = true
             submit_button.text = "Update"
-            editingFoodItemUuid = arguments?.getString(FireBaseKeys.foodUUID) ?: ""
+            editingFoodItemUuid = arguments?.getString(Keys.foodUUID) ?: ""
             setupEditing()
         }
 

@@ -9,9 +9,18 @@ object Keys {
     //FLAGS
     const val editingFlag = "editing"
     const val fromSearchFlag = "fromSearch"
+
+    //VALUES
+    const val restUUID = "restUUID"
+    const val foodUUID = "foodUUID"
 }
 
 object FireBaseKeys {
+    const val users = "users"
+    const val city = "city"
+    const val restaurants = "restaurants"
+    const val addressName = "addressName"
+
     //Restaurant
     const val restUUID = "uuid"
     const val restName = "name"
@@ -24,6 +33,7 @@ object FireBaseKeys {
     const val sponsoredRestaurants = "sponsoredRestaurants"
 
     //Food Item
+    const val foodItems = "foodItems"
     const val foodName = "name"
     const val foodRating = "rating"
     const val foodUUID = "uuid"
@@ -43,6 +53,7 @@ object GoogleKeys {
     const val rating = "rating"
     const val location = "location"
 
+    //Maps
     const val googleMapsPackageName = "com.google.android.apps.maps"
     const val googleMapsStatus = "status"
     const val googleMapsZeroResults = "ZERO_RESULTS"

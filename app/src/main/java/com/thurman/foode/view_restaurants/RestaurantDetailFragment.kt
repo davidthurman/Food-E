@@ -23,6 +23,7 @@ import com.thurman.foode.R
 import com.thurman.foode.Utility.FireBaseKeys
 import com.thurman.foode.Utility.FirebaseUtil
 import com.thurman.foode.Utility.GoogleUtil
+import com.thurman.foode.Utility.Keys
 import com.thurman.foode.add_restaurant.AddFoodItemActivity
 import com.thurman.foode.add_restaurant.ShareRestaurantsActivity
 import com.thurman.foode.models.FoodItem
@@ -175,7 +176,7 @@ class RestaurantDetailFragment : Fragment() {
         addFoodItemBtn.setOnClickListener{
             var addFoodItemActivity = AddFoodItemActivity()
             val intent = Intent(activity, addFoodItemActivity.javaClass)
-            intent.putExtra(FireBaseKeys.restUUID, restaurant.uuid)
+            intent.putExtra(Keys.restUUID, restaurant.uuid)
             startActivityForResult(intent, 200)
         }
     }

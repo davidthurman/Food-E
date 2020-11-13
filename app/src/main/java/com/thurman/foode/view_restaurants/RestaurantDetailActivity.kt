@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import com.thurman.foode.Utility.FireBaseKeys
+import com.thurman.foode.Utility.Keys
 import com.thurman.foode.add_restaurant.AddFoodItemActivity
 import com.thurman.foode.add_restaurant.AddOrEditFoodItemFragment
 import com.thurman.foode.add_restaurant.EditingRestaurantFragment
@@ -58,21 +59,13 @@ class RestaurantDetailActivity : FragmentActivity() {
         val fragmentTransaction = fragmentManager.beginTransaction()
         var editFragment = AddOrEditFoodItemFragment()
         var bundle = Bundle()
-        bundle.putString(FireBaseKeys.restUUID, restaurantUuid)
-        bundle.putString(FireBaseKeys.foodUUID, foodItem.uuid)
-        bundle.putBoolean("editing", true)
+        bundle.putString(Keys.restUUID, restaurantUuid)
+        bundle.putString(Keys.foodUUID, foodItem.uuid)
+        bundle.putBoolean(Keys.editingFlag, true)
         editFragment.arguments = bundle
         fragmentTransaction.replace(android.R.id.content, editFragment)
         fragmentTransaction.addToBackStack(restaurantDetailFragment.javaClass.name)
         fragmentTransaction.commit()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        //Check if from city search
-        if (data != null){
-            var citySearchResults = data!!.getStringExtra("citySearch")
-
-        }
-    }
 }

@@ -1,21 +1,13 @@
 package com.thurman.foode.add_restaurant
 
-import android.content.ContentValues.TAG
-import android.content.Intent
-import android.os.AsyncTask
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import com.google.android.gms.common.api.Status
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
-import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -25,10 +17,7 @@ import com.thurman.foode.R
 import com.thurman.foode.Utility.FireBaseKeys
 import com.thurman.foode.Utility.FirebaseUtil
 import com.thurman.foode.Utility.Keys
-import com.thurman.foode.models.City
-import com.thurman.foode.models.Location
 import com.thurman.foode.models.Restaurant
-import com.tuyenmonkey.mkloader.model.Line
 import kotlinx.android.synthetic.main.add_new_restaurant_tab.*
 import java.util.*
 
