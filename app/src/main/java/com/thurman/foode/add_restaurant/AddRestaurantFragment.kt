@@ -22,7 +22,9 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.thurman.foode.R
+import com.thurman.foode.Utility.FireBaseKeys
 import com.thurman.foode.Utility.FirebaseUtil
+import com.thurman.foode.Utility.Keys
 import com.thurman.foode.models.City
 import com.thurman.foode.models.Location
 import com.thurman.foode.models.Restaurant
@@ -33,32 +35,33 @@ import java.util.*
 class AddRestaurantFragment : Fragment() {
 
     lateinit var restaurantSearchBar: EditText
-    lateinit var currentView: View
-    lateinit var thisActivity: AddRestaurantActivity
-    lateinit var cityTextview: TextView
-    lateinit var sponsoredRestaurantsLayout: LinearLayout
+    private lateinit var currentView: View
+    private lateinit var thisActivity: AddRestaurantActivity
+    private lateinit var sponsoredRestaurantsLayout: LinearLayout
     var sponsoredRestaurants = ArrayList<Restaurant>()
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        currentView = inflater!!.inflate(R.layout.add_new_restaurant_tab, container, false)
-        thisActivity = activity!! as AddRestaurantActivity
-        cityTextview = currentView.findViewById(R.id.city_title)
+        currentView = inflater.inflate(R.layout.add_new_restaurant_tab, container, false)
+
+        return currentView
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        thisActivity = activity as AddRestaurantActivity
         sponsoredRestaurantsLayout = currentView.findViewById(R.id.sponsored_restaurants_layout)
         setupSearchBar(currentView)
         setupButtons(currentView)
         addSponsoredRestaurants()
-        return currentView
     }
 
     override fun onResume() {
         super.onResume()
-        setupCity(currentView)
+        setupCity()
     }
 
     private fun setupSearchBar(view: View){
@@ -72,12 +75,12 @@ class AddRestaurantFragment : Fragment() {
         })
     }
 
-    private fun setupCity(view: View){
+    private fun setupCity(){
         val cityListener = object : ValueEventListener {
             override fun onDataChange(citySnapshot: DataSnapshot) {
                 var location = FirebaseUtil.getLocationFromSnapshot(citySnapshot)
                 if (location != null){
-                    cityTextview.text = location.addressName
+                    city_title.text = location.addressName
                     thisActivity.locationLng = location.lng
                     thisActivity.locationLat = location.lat
                 }
@@ -91,11 +94,9 @@ class AddRestaurantFragment : Fragment() {
     private fun setupButtons(view: View){
         var searchButton = view.findViewById<ImageButton>(R.id.search_btn)
         searchButton.setOnClickListener{
-            city_title.setTextColor(resources.getColor(R.color.black))
+            city_title.setTextColor(resources.getColor(R.color.black, null))
             if (restaurantSearchBar.text!!.count() == 0){
                 restaurantSearchBar.error = "Please enter a restaurant name"
-            } else if (thisActivity.locationLat == null || thisActivity.locationLng == null){
-                city_title.setTextColor(resources.getColor(R.color.error_red))
             } else {
                 transitionScreen()
             }
@@ -105,17 +106,15 @@ class AddRestaurantFragment : Fragment() {
 
     private fun setupChangeCityButton(view: View){
         var changeCityButton = view.findViewById<LinearLayout>(R.id.change_city_btn)
-        changeCityButton.setOnClickListener(View.OnClickListener {
-            thisActivity.searchAutoComplete(cityTextview)
-        })
+        changeCityButton.setOnClickListener{ thisActivity.searchAutoComplete(city_title) }
     }
 
     private fun transitionScreen(){
         var fragment = RestaurantSearchFragment()
         var bundle = Bundle()
-        bundle.putString("searchText", restaurantSearchBar.text.toString())
-        bundle.putDouble("lat", thisActivity.locationLat!!)
-        bundle.putDouble("lon", thisActivity.locationLng!!)
+        bundle.putString(Keys.searchText, restaurantSearchBar.text.toString())
+        bundle.putDouble(Keys.latId, thisActivity.locationLat)
+        bundle.putDouble(Keys.lngId, thisActivity.locationLng)
         fragment.arguments = bundle
         (activity as AddRestaurantActivity).transitionFragment(fragment)
     }
@@ -137,22 +136,22 @@ class AddRestaurantFragment : Fragment() {
             override fun onCancelled(databaseError: DatabaseError) {}
 
         }
-        FirebaseDatabase.getInstance().reference.child("sponsoredRestaurants").addListenerForSingleValueEvent(restaurantsListener)
+        FirebaseDatabase.getInstance().reference.child(FireBaseKeys.sponsoredRestaurants).addListenerForSingleValueEvent(restaurantsListener)
     }
 
     private fun addSponsorView(restaurant: Restaurant, addDivider: Boolean){
-        var sponsoredRestaurantView = LayoutInflater.from(context!!).inflate(resources.getLayout(R.layout.sponsored_restaurant_view), null)
-        var restName = sponsoredRestaurantView.findViewById<TextView>(R.id.name)
+        val sponsoredRestaurantView = LayoutInflater.from(context!!).inflate(resources.getLayout(R.layout.sponsored_restaurant_view), null)
+        val restName = sponsoredRestaurantView.findViewById<TextView>(R.id.name)
         restName.text = restaurant.name
-        var restRatingBar = sponsoredRestaurantView.findViewById<RatingBar>(R.id.rating_bar)
+        val restRatingBar = sponsoredRestaurantView.findViewById<RatingBar>(R.id.rating_bar)
         restRatingBar.rating = restaurant.googleRating.toFloat()
 
         sponsoredRestaurantsLayout.addView(sponsoredRestaurantView)
-        var loadingContainer = sponsoredRestaurantView.findViewById<LinearLayout>(R.id.loading_container)
-        var imageView = sponsoredRestaurantView.findViewById<ImageView>(R.id.image)
+        val loadingContainer = sponsoredRestaurantView.findViewById<LinearLayout>(R.id.loading_container)
+        val imageView = sponsoredRestaurantView.findViewById<ImageView>(R.id.image)
         FirebaseUtil.getRestaurantDetailImage(restaurant, imageView, loadingContainer, context!!)
         if (addDivider){
-            var dividerView = View(context!!)
+            val dividerView = View(context!!)
             dividerView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 5)
             sponsoredRestaurantsLayout.addView(dividerView)
         }

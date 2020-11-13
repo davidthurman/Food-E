@@ -37,6 +37,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.thurman.foode.MainActivity
 import com.thurman.foode.Manifest
 import com.thurman.foode.R
+import com.thurman.foode.Utility.FireBaseKeys
 import com.thurman.foode.Utility.FirebaseUtil
 import com.thurman.foode.add_restaurant.AddRestaurantActivity
 import com.thurman.foode.add_restaurant.ShareRestaurantsActivity
@@ -82,9 +83,7 @@ class FavoritesFragment : Fragment(), OnMapReadyCallback{
         }
 
         var addButton: FloatingActionButton = view.findViewById(R.id.add_icon)
-        if (friendId != null){
-            addButton.hide()
-        }
+
         addButton.setOnClickListener(View.OnClickListener {
             val intent = Intent(activity, AddRestaurantActivity::class.java)
             startActivityForResult(intent, 200)
@@ -100,6 +99,12 @@ class FavoritesFragment : Fragment(), OnMapReadyCallback{
         var shareButton: ImageButton = view.findViewById(R.id.share_button)
         shareButton.setOnClickListener{
             onShareClicked()
+        }
+        if (friendId != null){
+            addButton.hide()
+            shareButton.visibility = View.GONE
+            logoutButton.visibility = View.GONE
+            setupHomeButton(view)
         }
         setupRecyclerView(view)
         onLocationEstablished()
@@ -160,10 +165,16 @@ class FavoritesFragment : Fragment(), OnMapReadyCallback{
         recyclerAdapter.onItemClick = {restaurant -> onRestaurantClicked(restaurant)}
     }
 
+    private fun setupHomeButton(view: View){
+        var homeButton: ImageButton = view.findViewById(R.id.home_button)
+        homeButton.visibility = View.VISIBLE
+        homeButton.setOnClickListener { (activity as MainActivity).onHomeClicked() }
+    }
+
     private fun onRestaurantClicked(restaurant: Restaurant){
         var restaurantDetailActivity = RestaurantDetailActivity()
         val intent = Intent(activity, restaurantDetailActivity.javaClass)
-        intent.putExtra("restaurantUuid", restaurant.uuid)
+        intent.putExtra(FireBaseKeys.restUUID, restaurant.uuid)
         if (friendId != null){
             intent.putExtra("friendId", friendId)
         }

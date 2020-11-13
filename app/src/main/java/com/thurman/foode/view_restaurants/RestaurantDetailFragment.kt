@@ -20,6 +20,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.thurman.foode.R
+import com.thurman.foode.Utility.FireBaseKeys
 import com.thurman.foode.Utility.FirebaseUtil
 import com.thurman.foode.Utility.GoogleUtil
 import com.thurman.foode.add_restaurant.AddFoodItemActivity
@@ -50,7 +51,7 @@ class RestaurantDetailFragment : Fragment() {
         currentView = inflater.inflate(R.layout.restaurant_detail_fragment,container,false)
         contentScroll = currentView.findViewById(R.id.content_scroll)
         loadingContainer = currentView.findViewById(R.id.loading_container)
-        restaurantUuid = arguments!!.getString("restaurantUuid")!!
+        restaurantUuid = arguments!!.getString(FireBaseKeys.restUUID)!!
         toolbar = currentView.findViewById(R.id.toolbar)
         if (arguments!!.containsKey("friendId")){
             friendId = arguments!!.getString("friendId")
@@ -134,7 +135,7 @@ class RestaurantDetailFragment : Fragment() {
     private fun onShareClicked(){
         var shareRestaurantActivity = ShareRestaurantsActivity()
         val intent = Intent(activity, shareRestaurantActivity.javaClass)
-        intent.putExtra("restaurantUuid", restaurantUuid)
+        intent.putExtra(FireBaseKeys.restUUID, restaurantUuid)
         startActivity(intent)
     }
 
@@ -174,7 +175,7 @@ class RestaurantDetailFragment : Fragment() {
         addFoodItemBtn.setOnClickListener{
             var addFoodItemActivity = AddFoodItemActivity()
             val intent = Intent(activity, addFoodItemActivity.javaClass)
-            intent.putExtra("restaurantUuid", restaurant.uuid)
+            intent.putExtra(FireBaseKeys.restUUID, restaurant.uuid)
             startActivityForResult(intent, 200)
         }
     }

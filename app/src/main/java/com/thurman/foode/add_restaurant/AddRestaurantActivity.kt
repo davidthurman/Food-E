@@ -12,33 +12,33 @@ import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.thurman.foode.R
 import com.thurman.foode.Utility.FirebaseUtil
+import com.thurman.foode.Utility.Keys
 import com.thurman.foode.models.Restaurant
 import java.util.*
 
+const val AUTOCOMPLETE_REQUEST_CODE = 1
 
 class AddRestaurantActivity : FragmentActivity() {
 
     var tempRestaurant: Restaurant? = null
-    val AUTOCOMPLETE_REQUEST_CODE = 1
-    var locationLat: Double? = null
-    var locationLng: Double? = null
+    var locationLat: Double = 0.0
+    var locationLng: Double = 0.0
     var cityTextview: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var bundle = Bundle()
-        var editing = intent.getBooleanExtra("editing", false)
-        bundle.putBoolean("editing", editing)
-        var fragment: Fragment? = null
-        if (editing){
-            fragment = EditingRestaurantFragment()
+        val bundle = Bundle()
+        val editing = intent.getBooleanExtra(Keys.editingFlag, false)
+        bundle.putBoolean(Keys.editingFlag, editing)
+        val fragment = if (editing){
+            EditingRestaurantFragment()
         } else {
-            fragment = AddRestaurantFragment()
+            AddRestaurantFragment()
         }
         fragment.arguments = bundle
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(android.R.id.content, fragment!!)
+        fragmentTransaction.replace(android.R.id.content, fragment)
         fragmentTransaction.commit()
     }
 
@@ -49,11 +49,11 @@ class AddRestaurantActivity : FragmentActivity() {
         fragmentTransaction.commit()
     }
 
-    fun SearchRestaurantChosen(restaurant: Restaurant){
+    fun searchRestaurantChosen(restaurant: Restaurant){
         tempRestaurant = restaurant
-        var fragment = EditingRestaurantFragment()
-        var bundle = Bundle()
-        bundle.putBoolean("fromSearch", true)
+        val fragment = EditingRestaurantFragment()
+        val bundle = Bundle()
+        bundle.putBoolean(Keys.fromSearchFlag, true)
         fragment.arguments = bundle
         transitionFragment(fragment)
     }
@@ -61,10 +61,10 @@ class AddRestaurantActivity : FragmentActivity() {
     fun searchAutoComplete(searchEditText: TextView){
         cityTextview = searchEditText
         if (!Places.isInitialized()) {
-            Places.initialize(getApplicationContext(), getString(R.string.my_google_api_key), Locale.US);
+            Places.initialize(applicationContext, getString(R.string.my_google_api_key), Locale.US);
         }
-        var fields: List<Place.Field> = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
-        var intent: Intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields).build(this)
+        val fields: List<Place.Field> = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
+        val intent: Intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields).build(this)
         startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
     }
 
@@ -73,8 +73,8 @@ class AddRestaurantActivity : FragmentActivity() {
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == AutocompleteActivity.RESULT_OK) {
                 val place = Autocomplete.getPlaceFromIntent(data!!)
-                locationLat = place.latLng!!.latitude
-                locationLng = place.latLng!!.longitude
+                locationLat = place.latLng?.latitude ?: 0.0
+                locationLng = place.latLng?.longitude ?: 0.0
                 if (cityTextview != null){
                     cityTextview!!.text = place.name.toString()
                     FirebaseUtil.changeUserLocation(place.name!!, locationLat!!, locationLng!!)

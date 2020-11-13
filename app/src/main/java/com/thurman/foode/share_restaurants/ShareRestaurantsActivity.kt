@@ -12,6 +12,7 @@ import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.textfield.TextInputEditText
 import com.thurman.foode.R
+import com.thurman.foode.Utility.FireBaseKeys
 import com.thurman.foode.Utility.FirebaseUtil
 import com.thurman.foode.models.Restaurant
 import java.util.*
@@ -23,9 +24,9 @@ class ShareRestaurantsActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         val fragmentManager = supportFragmentManager
         var bundle = Bundle()
-        if (intent.hasExtra("restaurantUuid")){
-            var restaurantUuid = intent.getStringExtra("restaurantUuid")
-            bundle.putString("restaurantUuid", restaurantUuid)
+        if (intent.hasExtra(FireBaseKeys.restUUID)){
+            var restaurantUuid = intent.getStringExtra(FireBaseKeys.restUUID)
+            bundle.putString(FireBaseKeys.restUUID, restaurantUuid)
         }
         var fragment = ShareRestaurantsFragment()
         fragment.arguments = bundle

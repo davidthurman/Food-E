@@ -14,6 +14,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.thurman.foode.R
+import com.thurman.foode.Utility.FireBaseKeys
 import com.thurman.foode.Utility.FirebaseUtil
 import com.thurman.foode.models.Restaurant
 import java.util.*
@@ -34,8 +35,8 @@ class ShareRestaurantsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         thisView = inflater!!.inflate(R.layout.share_restaurants_fragment, container, false)
-        if (arguments != null && arguments!!.getString("restaurantUuid") != null){
-            specifiedRestaurantUuid = arguments!!.getString("restaurantUuid")!!
+        if (arguments != null && arguments!!.getString(FireBaseKeys.restUUID) != null){
+            specifiedRestaurantUuid = arguments!!.getString(FireBaseKeys.restUUID)!!
 
         }
         checkboxLayout = thisView.findViewById<LinearLayout>(R.id.checkbox_layout)

@@ -12,9 +12,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.thurman.foode.R
 import com.thurman.foode.add_restaurant.AddOrEditFoodItemFragment
@@ -38,27 +36,27 @@ class FirebaseUtil {
     companion object {
 
         fun getRestaurantFromSnapshot(restaurantSnapshot: DataSnapshot): Restaurant{
-            var restName = restaurantSnapshot.child("name").value.toString()
-            var restAddress = restaurantSnapshot.child("address").value.toString()
-            var restRating = (restaurantSnapshot.child("rating").value as Long).toInt()
-            var restUuid = restaurantSnapshot.child("uuid").value.toString()
-            var foodItemsSnapshot = restaurantSnapshot.child("foodItems").getValue()
+            var restName = restaurantSnapshot.child(FireBaseKeys.restName).value.toString()
+            var restAddress = restaurantSnapshot.child(FireBaseKeys.restAddress).value.toString()
+            var restRating = (restaurantSnapshot.child(FireBaseKeys.restRating).value as Long).toInt()
+            var restUuid = restaurantSnapshot.child(FireBaseKeys.restUUID).value.toString()
+            var foodItemsSnapshot = restaurantSnapshot.child(FireBaseKeys.restFoodItems).value
             var restaurant = Restaurant(restName, restAddress, restRating, restUuid)
             if (foodItemsSnapshot != null){
                 restaurant.foodItems = getFoodItemsFromSnapshot(foodItemsSnapshot)
             }
-            if (restaurantSnapshot.child("googlePhotoReference").getValue() != null){
-                restaurant.googlePhotoReference = restaurantSnapshot.child("googlePhotoReference").getValue().toString()
+            if (restaurantSnapshot.child(FireBaseKeys.restGooglePhotoReference).value != null){
+                restaurant.googlePhotoReference = restaurantSnapshot.child(FireBaseKeys.restGooglePhotoReference).value.toString()
             }
-            if (restaurantSnapshot.child("lat").getValue() != null){
-                restaurant.lat = restaurantSnapshot.child("lat").getValue() as Double
-                restaurant.lng = restaurantSnapshot.child("lng").getValue() as Double
+            if (restaurantSnapshot.child(Keys.latId).value != null){
+                restaurant.lat = restaurantSnapshot.child(Keys.latId).value as Double
+                restaurant.lng = restaurantSnapshot.child(Keys.lngId).value as Double
             }
-            if (restaurantSnapshot.child("comments").getValue() != null){
-                restaurant.comments = restaurantSnapshot.child("comments").value.toString()
+            if (restaurantSnapshot.child(FireBaseKeys.restComments).value != null){
+                restaurant.comments = restaurantSnapshot.child(FireBaseKeys.restComments).value.toString()
             }
-            if (restaurantSnapshot.child("googleRating").getValue() != null){
-                var googleRating: Double? = restaurantSnapshot.child("googleRating").getValue() as? Double
+            if (restaurantSnapshot.child(FireBaseKeys.restGoogleRating).value != null){
+                var googleRating: Double? = restaurantSnapshot.child(FireBaseKeys.restGoogleRating).value as? Double
                 if (googleRating != null){
                     restaurant.googleRating = googleRating
                 }
@@ -69,16 +67,16 @@ class FirebaseUtil {
         fun getFoodItemsFromSnapshot(foodItemsSnapshot: Any?): ArrayList<FoodItem>{
             //TODO This is janky
             var foodItemList = ArrayList<FoodItem>()
-            var foodItemsListSnapshot = foodItemsSnapshot as HashMap<String, Object>
+            var foodItemsListSnapshot = foodItemsSnapshot as HashMap<String, Any>
             for (foodItem in foodItemsListSnapshot){
-                var foodItemMap = foodItem as Map.Entry<String, Object>
-                var foodItemHash =foodItemMap.value as HashMap<String, Object>
-                var foodItemName = foodItemHash.get("name") as String
-                var foodItemRating = (foodItemHash.get("rating") as Long).toInt()
-                var foodItemUuid = foodItemHash.get("uuid") as String
+                var foodItemMap = foodItem as Map.Entry<String, Any>
+                var foodItemHash =foodItemMap.value as HashMap<String, Any>
+                var foodItemName = foodItemHash[FireBaseKeys.foodName] as String
+                var foodItemRating = (foodItemHash[FireBaseKeys.foodRating] as Long).toInt()
+                var foodItemUuid = foodItemHash[FireBaseKeys.foodUUID] as String
                 var foodItemObject = FoodItem(foodItemName, foodItemRating, foodItemUuid)
-                if (foodItemHash.get("comments") != null){
-                    var foodItemComments = foodItemHash.get("comments") as String
+                if (foodItemHash[FireBaseKeys.foodComments] != null){
+                    var foodItemComments = foodItemHash[FireBaseKeys.foodComments] as String
                     foodItemObject.comments = foodItemComments
                 }
                 foodItemList.add(foodItemObject)
@@ -87,7 +85,7 @@ class FirebaseUtil {
         }
 
         fun getRestaurantImage(restaurant: Restaurant, recyclerAdapter: FavoriteRestaurantListAdapter){
-            val userID = FirebaseAuth.getInstance().getCurrentUser()!!.uid
+            val userID = FirebaseAuth.getInstance().currentUser?.uid
             var storageReference = FirebaseStorage.getInstance().reference
 
             storageReference.child("images/users/" + userID + "/" + restaurant.uuid + ".jpg").downloadUrl.addOnSuccessListener  {
@@ -181,15 +179,12 @@ class FirebaseUtil {
                 }
             }
             storageReference.putFile(restUri).addOnSuccessListener {
-                deleteUploadedImage(restUri)
                 if (editing){
                     (activity as RestaurantDetailActivity).onEditFinished()
                 } else {
                     activity?.finish()
                 }
             }.addOnFailureListener{
-                //TODO Handle image upload fail
-                deleteUploadedImage(restUri)
                 if (editing){
                     (activity as RestaurantDetailActivity).onEditFinished()
                 } else {
@@ -220,14 +215,7 @@ class FirebaseUtil {
             return Uri.parse(path)
         }
 
-        fun deleteUploadedImage(uri: Uri){
-            var file = File(uri.path)
-            var exists = file.exists()
-            var deleted = file.delete()
-            System.out.println("DELETED: " + deleted)
-        }
-
-        fun submitFoodItemToRestaurant(restaurantUuid: String, name: String, rating: Int, comments: String, foodUri: Uri?, activity: Activity, fragment: AddOrEditFoodItemFragment, editing: Boolean, foodItemUuid: String?){
+        fun submitFoodItemToRestaurant(restaurantUuid: String, name: String, rating: Int, comments: String, foodUri: Uri?, activity: Activity, fragment: AddOrEditFoodItemFragment, editing: Boolean, foodItemUuid: String){
             val userID = FirebaseAuth.getInstance().getCurrentUser()!!.uid
             val ref = FirebaseDatabase.getInstance().getReference("users").child(userID).child("restaurants").child(restaurantUuid).child("foodItems")
             var foodKeyId: String?
@@ -310,10 +298,6 @@ class FirebaseUtil {
             }
         }
 
-        fun getRestaurantFromUuid(restaurantUuid: String){
-
-        }
-
         fun changeUserLocation(addressName: String, lat: Double, lng: Double){
             val userID = FirebaseAuth.getInstance().getCurrentUser()!!.uid
             var location = Location(addressName, lat, lng)
@@ -323,41 +307,16 @@ class FirebaseUtil {
             }
         }
 
-        fun changeUserCity(city: City, activity: Activity){
-            val userID = FirebaseAuth.getInstance().getCurrentUser()!!.uid
-            val ref = FirebaseDatabase.getInstance().getReference("users").child(userID).child("city")
-            ref.setValue(city).addOnCompleteListener{
-                val returnIntent = Intent()
-                returnIntent.putExtra("cityId", city.id)
-                returnIntent.putExtra("cityTitle", city.title)
-                returnIntent.putExtra("cityCountry", city.country)
-                activity!!.setResult(Activity.RESULT_OK, returnIntent)
-                activity!!.finish()
-            }
-        }
-
-        fun getCityFromSnapshot(citySnapshot: DataSnapshot): City{
-            var cityTitle = citySnapshot.child("title").getValue().toString()
-            var cityCountry = citySnapshot.child("country").getValue().toString()
-            var cityId = citySnapshot.child("id").getValue().toString()
-            var city = City(cityTitle, cityCountry, cityId)
-            return city
-        }
-
         fun getLocationFromSnapshot(locationSnapshot: DataSnapshot): Location?{
-            if (locationSnapshot.child("lat").exists()){
-                var locName = locationSnapshot.child("addressName").getValue().toString()
-                var locLat = locationSnapshot.child("lat").getValue() as Double
-                var locLng = locationSnapshot.child("lng").getValue() as Double
+            if (locationSnapshot.child(Keys.latId).exists()){
+                var locName = locationSnapshot.child("addressName").value.toString()
+                var locLat = locationSnapshot.child(Keys.latId).value as Double
+                var locLng = locationSnapshot.child(Keys.lngId).value as Double
                 var location = Location(locName, locLat, locLng)
                 return location
             } else {
                 return null
             }
-        }
-
-        fun getSponsoredRestaurants(){
-
         }
 
     }

@@ -44,8 +44,17 @@ class SignInActivity : FragmentActivity() {
         setupTextfields()
         setupButtons()
         loader = findViewById(R.id.sign_in_loader)
+        checkIfUserIsLoggedIn()
+    }
+
+    private fun checkIfUserIsLoggedIn(){
         val currentUser = auth.currentUser
         if (currentUser != null){
+            if (friendId != null){
+                if (currentUser.uid == friendId){
+                    friendId = null
+                }
+            }
             transitionScreen()
         }
     }

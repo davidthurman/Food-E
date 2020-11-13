@@ -16,7 +16,9 @@ import com.thurman.foode.R
 import com.thurman.foode.models.Restaurant
 import org.json.JSONObject
 import android.widget.LinearLayout
+import com.thurman.foode.Utility.GoogleKeys
 import com.thurman.foode.Utility.GoogleUtil
+import com.thurman.foode.Utility.Keys
 import kotlinx.android.synthetic.main.restaurant_search_fragment.*
 
 
@@ -27,17 +29,17 @@ class RestaurantSearchFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        var view = inflater!!.inflate(R.layout.restaurant_search_fragment, container, false)
-        var searchString = arguments!!.getString("searchText")!!
-        var searchLat = arguments!!.getDouble("lat")!!
-        var searchLng = arguments!!.getDouble("lon")!!
+        val view = inflater.inflate(R.layout.restaurant_search_fragment, container, false)
+        val searchString = arguments!!.getString(Keys.searchText)!!
+        val searchLat = arguments!!.getDouble(Keys.latId)
+        val searchLng = arguments!!.getDouble(Keys.lngId)
         getSearchResults(view, searchString, searchLat, searchLng)
         return view
     }
 
     private fun getSearchResults(view: View, searchText: String, lat: Double, lon: Double){
         val queue = Volley.newRequestQueue(context)
-        var url = "https://maps.googleapis.com/maps/api/place/textsearch/json?input=" + searchText + "&inputtype=textquery&fields=formatted_address,photos,name,place_id,opening_hours,rating,geometry&location=" + lat.toString() + "," + lon.toString() + "&radius=1000&key=AIzaSyDCyMRUMFciuOhvLFdWp-FrxapIkPMY-JI"
+        val url = "https://maps.googleapis.com/maps/api/place/textsearch/json?input=" + searchText + "&inputtype=textquery&fields=formatted_address,photos,name,place_id,opening_hours,rating,geometry&location=" + lat.toString() + "," + lon.toString() + "&radius=1000&key=AIzaSyDCyMRUMFciuOhvLFdWp-FrxapIkPMY-JI"
         val req = object : JsonObjectRequest(
             Method.GET, url, null, Response.Listener { response ->
                 onRestaurantsReturnedSuccess(response, view)
@@ -50,8 +52,8 @@ class RestaurantSearchFragment : Fragment() {
     }
 
     private fun onRestaurantsReturnedSuccess(response: JSONObject, view: View){
-        if (response.getString("status") != "ZERO_RESULTS"){
-            var restaurants = GoogleUtil.getRestaurantsFromSearchResults(response)
+        if (response.getString(GoogleKeys.googleMapsStatus) != GoogleKeys.googleMapsZeroResults){
+            val restaurants = GoogleUtil.getRestaurantsFromSearchResults(response)
             setupRecyclerView(view, restaurants)
         } else {
             onNoResultsReturned()
@@ -59,22 +61,22 @@ class RestaurantSearchFragment : Fragment() {
     }
 
     private fun onNoResultsReturned(){
-        var noResultsLayout = no_results_layout
+        val noResultsLayout = no_results_layout
         noResultsLayout.visibility = View.VISIBLE
-        var returnButton = return_button
+        val returnButton = return_button
         returnButton.setOnClickListener {
-            var fragment = AddRestaurantFragment()
-            (activity as AddRestaurantActivity)!!.transitionFragment(fragment)
+            val fragment = AddRestaurantFragment()
+            (activity as AddRestaurantActivity).transitionFragment(fragment)
         }
     }
 
     private fun onRestaurantsReturnedError(error: VolleyError){
-        System.out.println(error.toString())
+        println(error.toString())
     }
 
     private fun setupRecyclerView(view: View, restaurants: ArrayList<Restaurant>){
-        var recyclerAdapter = SearchRestaurantListAdapter(restaurants, context!!)
-        var favRestaurantsList = view.findViewById<RecyclerView>(R.id.restaurants_search_list)
+        val recyclerAdapter = SearchRestaurantListAdapter(restaurants, context!!)
+        val favRestaurantsList = view.findViewById<RecyclerView>(R.id.restaurants_search_list)
         favRestaurantsList.layoutManager = LinearLayoutManager(activity)
         favRestaurantsList.adapter = recyclerAdapter
         favRestaurantsList.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
@@ -85,11 +87,11 @@ class RestaurantSearchFragment : Fragment() {
     }
 
     private fun submit(restaurant: Restaurant){
-        (activity as AddRestaurantActivity).SearchRestaurantChosen(restaurant)
+        (activity as AddRestaurantActivity).searchRestaurantChosen(restaurant)
     }
 
     private fun removeLoading(view: View, recyclerView: RecyclerView){
-        var loadingContainer = view.findViewById<LinearLayout>(R.id.searching_loader_container)
+        val loadingContainer = view.findViewById<LinearLayout>(R.id.searching_loader_container)
         loadingContainer.visibility = View.GONE
         recyclerView.visibility = View.VISIBLE
     }
