@@ -20,13 +20,13 @@ class RestaurantDetailActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var restaurantUuid = intent.getStringExtra(FireBaseKeys.restUUID)
+        val restaurantUuid = intent.getStringExtra(FireBaseKeys.restUUID)
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        var bundle = Bundle()
+        val bundle = Bundle()
         bundle.putString(FireBaseKeys.restUUID, restaurantUuid)
-        if (intent.hasExtra("friendId")){
-            bundle.putString("friendId", intent.getStringExtra("friendId"))
+        if (intent.hasExtra(Keys.friendId)){
+            bundle.putString(Keys.friendId, intent.getStringExtra(Keys.friendId))
         }
         restaurantDetailFragment.arguments = bundle
         fragmentTransaction.replace(android.R.id.content, restaurantDetailFragment)
@@ -35,11 +35,10 @@ class RestaurantDetailActivity : FragmentActivity() {
 
     fun editRestaurant(restaurant: Restaurant){
         restaurantToEdit = restaurant
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        var editFragment = EditingRestaurantFragment()
-        var bundle = Bundle()
-        bundle.putBoolean("editing", true)
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        val editFragment = EditingRestaurantFragment()
+        val bundle = Bundle()
+        bundle.putBoolean(Keys.editingFlag, true)
         bundle.putString(FireBaseKeys.restUUID, restaurant.uuid)
         editFragment.arguments = bundle
         fragmentTransaction.replace(android.R.id.content, editFragment)
@@ -57,8 +56,8 @@ class RestaurantDetailActivity : FragmentActivity() {
         foodItemToEdit = foodItem
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        var editFragment = AddOrEditFoodItemFragment()
-        var bundle = Bundle()
+        val editFragment = AddOrEditFoodItemFragment()
+        val bundle = Bundle()
         bundle.putString(Keys.restUUID, restaurantUuid)
         bundle.putString(Keys.foodUUID, foodItem.uuid)
         bundle.putBoolean(Keys.editingFlag, true)

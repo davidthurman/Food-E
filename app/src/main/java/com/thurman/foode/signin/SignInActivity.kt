@@ -18,18 +18,14 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.thurman.foode.MainActivity
 import com.thurman.foode.R
+import com.thurman.foode.Utility.Keys
 import com.thurman.foode.forgot_password.ForgotPasswordActivity
 import com.thurman.foode.forgot_password.ForgotPasswordFragment
 import com.tuyenmonkey.mkloader.MKLoader
+import kotlinx.android.synthetic.main.sign_in_layout.*
 
 class SignInActivity : FragmentActivity() {
 
-    lateinit var usernameInput: TextInputEditText
-    lateinit var passwordInput: TextInputEditText
-    lateinit var forgotPasswordText: TextView
-    lateinit var signInButton: Button
-    lateinit var signUpButton: Button
-    lateinit var loader: MKLoader
     var friendId: String? = null
 
     private lateinit var auth: FirebaseAuth
@@ -43,14 +39,13 @@ class SignInActivity : FragmentActivity() {
         auth = FirebaseAuth.getInstance()
         setupTextfields()
         setupButtons()
-        loader = findViewById(R.id.sign_in_loader)
         checkIfUserIsLoggedIn()
     }
 
     private fun checkIfUserIsLoggedIn(){
         val currentUser = auth.currentUser
-        if (currentUser != null){
-            if (friendId != null){
+        currentUser?.let {
+            friendId?.let {
                 if (currentUser.uid == friendId){
                     friendId = null
                 }
@@ -61,51 +56,47 @@ class SignInActivity : FragmentActivity() {
 
     private fun validLoginFields(): Boolean{
         var isValid = true
-        if (usernameInput.text == null || usernameInput.text!!.toString().equals("")){
+        if (username_textfield.text == null || username_textfield.text!!.toString() == ""){
             isValid = false
-            usernameInput.error = "Please enter a valid username"
+            username_textfield.error = getString(R.string.sign_in_username_error)
         }
-        if (passwordInput.text == null || passwordInput.text!!.toString().equals("")){
+        if (password_textfield.text == null || password_textfield.text!!.toString() == ""){
             isValid = false
-            passwordInput.error = "Please enter a valid password"
+            password_textfield.error = getString(R.string.sign_in_password_error)
         }
         return isValid
     }
 
     private fun setupButtons(){
-        signInButton = findViewById(R.id.sign_in_button)
-        signInButton.setOnClickListener {
+        sign_in_button.setOnClickListener {
             if (validLoginFields()){
                 setLoading(true)
                 signIn()
             }
         }
-        signUpButton = findViewById(R.id.sign_up_button)
-        signUpButton.setOnClickListener{
+        sign_up_button.setOnClickListener{
             if (validLoginFields()){
                 setLoading(true)
                 signUp()
             }
         }
-        forgotPasswordText = findViewById(R.id.forgot_password_text)
-        forgotPasswordText.setOnClickListener {
+        forgot_password_text.setOnClickListener {
             forgotPassword()
         }
     }
 
     private fun checkForFriendLink(){
         if (intent.action == Intent.ACTION_VIEW){
-            var url: String = intent.data!!.path!!
-            var segments = url.split("id=")
+            val url: String = intent.data!!.path!!
+            val segments = url.split("id=")
             friendId = segments[1]
         }
     }
 
     private fun setupTextfields(){
-        usernameInput = findViewById(R.id.username_textfield)
-        usernameInput.addTextChangedListener(object : TextWatcher {
+        username_textfield.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                usernameInput.setError(null)
+                username_textfield.error = null
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -113,10 +104,9 @@ class SignInActivity : FragmentActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
         })
-        passwordInput = findViewById(R.id.password_textfield)
-        passwordInput.addTextChangedListener(object : TextWatcher {
+        password_textfield.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                passwordInput.setError(null)
+                password_textfield.error = null
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -128,7 +118,7 @@ class SignInActivity : FragmentActivity() {
 
     private fun signUp(){
         setLoading(true)
-        auth.createUserWithEmailAndPassword(usernameInput.text.toString(), passwordInput.text.toString())
+        auth.createUserWithEmailAndPassword(username_textfield.text.toString(), password_textfield.text.toString())
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     proceedToLogin()
@@ -140,13 +130,13 @@ class SignInActivity : FragmentActivity() {
 
     private fun checkLocationPermission(): Boolean
     {
-        var permission = android.Manifest.permission.ACCESS_FINE_LOCATION;
-        var res = checkCallingOrSelfPermission(permission);
+        val permission = android.Manifest.permission.ACCESS_FINE_LOCATION;
+        val res = checkCallingOrSelfPermission(permission);
         return (res == PackageManager.PERMISSION_GRANTED);
     }
 
     private fun signIn(){
-        auth.signInWithEmailAndPassword(usernameInput.text.toString(), passwordInput.text.toString())
+        auth.signInWithEmailAndPassword(username_textfield.text.toString(), password_textfield.text.toString())
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     proceedToLogin()
@@ -164,12 +154,12 @@ class SignInActivity : FragmentActivity() {
     private fun onError(errorMessage: String?){
         var messageToDisplay = errorMessage
         if (messageToDisplay == null){
-            messageToDisplay = "Something went wrong"
+            messageToDisplay = getString(R.string.sign_in_something_went_wrong)
         }
         setLoading(false)
         val dialogBuilder = AlertDialog.Builder(this)
         dialogBuilder.setMessage(messageToDisplay)
-            .setPositiveButton("OK", null)
+            .setPositiveButton(getString(R.string.sign_in_error_ok), null)
         val alert = dialogBuilder.create()
         alert.show()
     }
@@ -195,7 +185,7 @@ class SignInActivity : FragmentActivity() {
     private fun transitionScreen(){
         val intent = Intent(this, MainActivity::class.java)
         if (friendId != null){
-            intent.putExtra("friendId", friendId)
+            intent.putExtra(Keys.friendId, friendId)
         }
         startActivity(intent)
         setLoading(false)
@@ -203,17 +193,17 @@ class SignInActivity : FragmentActivity() {
 
     private fun setLoading(loading: Boolean){
         if (loading){
-            loader.visibility = View.VISIBLE
-            usernameInput.isEnabled = false
-            passwordInput.isEnabled = false
-            signInButton.visibility = View.GONE
-            signUpButton.visibility = View.GONE
+            sign_in_loader.visibility = View.VISIBLE
+            username_textfield.isEnabled = false
+            password_textfield.isEnabled = false
+            sign_in_button.visibility = View.GONE
+            sign_up_button.visibility = View.GONE
         } else {
-            loader.visibility = View.GONE
-            usernameInput.isEnabled = true
-            passwordInput.isEnabled = true
-            signInButton.visibility = View.VISIBLE
-            signUpButton.visibility = View.VISIBLE
+            sign_in_loader.visibility = View.GONE
+            username_textfield.isEnabled = true
+            password_textfield.isEnabled = true
+            sign_in_button.visibility = View.VISIBLE
+            sign_up_button.visibility = View.VISIBLE
         }
     }
 }

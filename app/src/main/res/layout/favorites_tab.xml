@@ -7,7 +7,7 @@
     android:background="@color/white">
 
     <LinearLayout
-        android:id="@+id/loading_container"
+        android:id="@+id/favorite_loading_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"

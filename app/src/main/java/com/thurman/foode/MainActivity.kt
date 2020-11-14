@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         }
         favoritesFragment = FavoritesFragment()
         if (friendId != null){
-            var bundle = Bundle()
+            val bundle = Bundle()
             bundle.putString(Keys.friendId, friendId)
             favoritesFragment.arguments = bundle
         }

@@ -16,17 +16,16 @@ import com.google.firebase.database.ValueEventListener
 import com.thurman.foode.R
 import com.thurman.foode.Utility.FireBaseKeys
 import com.thurman.foode.Utility.FirebaseUtil
+import com.thurman.foode.Utility.Keys
 import com.thurman.foode.models.Restaurant
+import kotlinx.android.synthetic.main.share_restaurants_fragment.*
 import java.util.*
 
 class ShareRestaurantsFragment : Fragment() {
 
-    lateinit var thisView: View
     var restaurants = ArrayList<Restaurant>()
-    lateinit var checkboxLayout: LinearLayout
     var checkboxList = ArrayList<CheckBox>()
     var checkboxToRestaurant: HashMap<CheckBox, Restaurant> = HashMap()
-    lateinit var includeFoodItemsSwitch: Switch
     var specifiedRestaurantUuid: String? = null
 
     override fun onCreateView(
@@ -34,17 +33,16 @@ class ShareRestaurantsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        thisView = inflater!!.inflate(R.layout.share_restaurants_fragment, container, false)
-        if (arguments != null && arguments!!.getString(FireBaseKeys.restUUID) != null){
-            specifiedRestaurantUuid = arguments!!.getString(FireBaseKeys.restUUID)!!
+        return inflater.inflate(R.layout.share_restaurants_fragment, container, false)
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        arguments?.let {
+            specifiedRestaurantUuid = it.getString(FireBaseKeys.restUUID)
         }
-        checkboxLayout = thisView.findViewById<LinearLayout>(R.id.checkbox_layout)
-        includeFoodItemsSwitch = thisView.findViewById(R.id.include_food_items_switch)
-        var shareButton = thisView.findViewById<Button>(R.id.share_button)
-        shareButton.setOnClickListener { onShareClicked() }
+        share_button.setOnClickListener { onShareClicked() }
         getRestaurants()
-        return thisView
     }
 
     private fun getRestaurants(){
@@ -68,32 +66,32 @@ class ShareRestaurantsFragment : Fragment() {
             override fun onCancelled(databaseError: DatabaseError) {}
 
         }
-        FirebaseDatabase.getInstance().reference.child("users").child(FirebaseAuth.getInstance().currentUser!!.uid).child("restaurants").addListenerForSingleValueEvent(restaurantsListener)
+        FirebaseDatabase.getInstance().reference.child(FireBaseKeys.users).child(FirebaseAuth.getInstance().currentUser!!.uid).child(FireBaseKeys.restaurants).addListenerForSingleValueEvent(restaurantsListener)
     }
 
     private fun addCheckbox(restaurant: Restaurant){
-        var checkBox: CheckBox = LayoutInflater.from(context!!).inflate(resources.getLayout(R.layout.share_restaurant_checkbox_view), null) as CheckBox
+        val checkBox: CheckBox = LayoutInflater.from(context!!).inflate(resources.getLayout(R.layout.share_restaurant_checkbox_view), null) as CheckBox
         checkBox.text = restaurant.name
         if (specifiedRestaurantUuid != null && specifiedRestaurantUuid == restaurant.uuid){
             checkBox.isChecked = true
         }
-        checkboxLayout.addView(checkBox)
+        checkbox_layout.addView(checkBox)
         checkboxList.add(checkBox)
-        checkboxToRestaurant.put(checkBox, restaurant)
+        checkboxToRestaurant[checkBox] = restaurant
     }
 
     private fun getCheckAllBox(){
-        var checkBox: CheckBox = LayoutInflater.from(context!!).inflate(resources.getLayout(R.layout.share_restaurant_checkbox_all_view), null) as CheckBox
-        checkBox.text = "Check all"
-        checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
+        val checkBox: CheckBox = LayoutInflater.from(context!!).inflate(resources.getLayout(R.layout.share_restaurant_checkbox_all_view), null) as CheckBox
+        checkBox.text = getString(R.string.share_restaurants_check_all)
+        checkBox.setOnCheckedChangeListener { _, isChecked ->
             checkOrUncheckAll(isChecked)
             if (isChecked){
-                checkBox.text = "Uncheck all"
+                checkBox.text = getString(R.string.share_restaurants_uncheck_all)
             } else {
-                checkBox.text = "Check all"
+                checkBox.text = getString(R.string.share_restaurants_check_all)
             }
         }
-        checkboxLayout.addView(checkBox)
+        checkbox_layout.addView(checkBox)
         addDividerLiner()
     }
 
@@ -104,9 +102,9 @@ class ShareRestaurantsFragment : Fragment() {
     }
 
     private fun onShareClicked(){
-        var sendIntent = Intent(Intent.ACTION_VIEW)
-        sendIntent.data = Uri.parse("sms:")
-        sendIntent.putExtra("sms_body", getShareMessage())
+        val sendIntent = Intent(Intent.ACTION_VIEW)
+        sendIntent.data = Uri.parse(Keys.smsUriKey)
+        sendIntent.putExtra(Keys.smsBody, getShareMessage())
         startActivity(sendIntent)
     }
 
@@ -116,20 +114,20 @@ class ShareRestaurantsFragment : Fragment() {
         for (checkbox in checkboxList){
             if (checkbox.isChecked){
                 if (checkboxToRestaurant.contains(checkbox)){
-                    var restaurant = checkboxToRestaurant.get(checkbox)!!
+                    val restaurant = checkboxToRestaurant.get(checkbox)!!
                     shareMessage += (checkbox.text.toString()) + ": " + restaurant.rating + "/5"
                     if (index != (checkboxList.size - 1)){
                         shareMessage += "\n"
                         index ++
                     }
-                    if (includeFoodItemsSwitch.isChecked){
+                    if (include_food_items_switch.isChecked){
                         shareMessage = getFoodItemsText(shareMessage, restaurant)
                     }
                 }
             }
         }
         shareMessage += "\n"
-        shareMessage += "Check out all of my favorite restaurants from the Savor app: http://www.savor.com/id=" + FirebaseAuth.getInstance().currentUser!!.uid
+        shareMessage += String.format(getString(R.string.share_restuarants_checkOutMyRestaurants, FirebaseAuth.getInstance().currentUser!!.uid))
         return shareMessage
     }
 
@@ -144,10 +142,10 @@ class ShareRestaurantsFragment : Fragment() {
     }
 
     private fun addDividerLiner(){
-        var dividerView = View(context!!)
+        val dividerView = View(context!!)
         dividerView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1)
         dividerView.setBackgroundColor(resources.getColor(R.color.black))
-        checkboxLayout.addView(dividerView)
+        checkbox_layout.addView(dividerView)
     }
 
 }

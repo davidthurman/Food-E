@@ -32,8 +32,8 @@ class FavoriteRestaurantListAdapter(val items: ArrayList<Restaurant>, val contex
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        var restaurantViewHolder = holder as RestaurantViewHolder
-        var restaurant = items.get(position)
+        val restaurantViewHolder = holder as RestaurantViewHolder
+        val restaurant = items[position]
         holder.itemView.isSelected = (position == selectedPos)
         restaurantViewHolder.restaurantNameTextView.text = restaurant.name
         restaurantViewHolder.restaurantAddressTextView.text = restaurant.address
@@ -41,7 +41,7 @@ class FavoriteRestaurantListAdapter(val items: ArrayList<Restaurant>, val contex
         restaurantViewHolder.mapIcon.setOnClickListener {
             GoogleUtil.openGoogleMaps(restaurant, context)
         }
-        if (!restaurant.googlePhotoReference.equals("")){
+        if (restaurant.googlePhotoReference != ""){
             PicassoUtil.loadGoogleImageIntoImageview(context, restaurant.googlePhotoReference, restaurantViewHolder.imageView, restaurantViewHolder.imageLoader)
         } else if (restaurant.imageUri != null){
             Picasso.with(context).load(restaurant.imageUri).into(restaurantViewHolder.imageView, object: com.squareup.picasso.Callback {
@@ -95,8 +95,8 @@ class FavoriteRestaurantListAdapter(val items: ArrayList<Restaurant>, val contex
     }
 
     fun highlightRestaurant(restaurantUuid: String){
-        if (restUuidToPosHash.get(restaurantUuid) != null){
-            selectedPos = restUuidToPosHash.get(restaurantUuid)!!
+        restUuidToPosHash[restaurantUuid]?.let {
+            selectedPos = it
             notifyItemChanged(selectedPos)
             if (previouslySelectedPosition != -1){
                 notifyItemChanged(previouslySelectedPosition)
@@ -106,8 +106,8 @@ class FavoriteRestaurantListAdapter(val items: ArrayList<Restaurant>, val contex
     }
 
     fun getPositionForUuid(restaurantUuid: String): Int{
-        if (restUuidToPosHash.get(restaurantUuid) != null){
-            return restUuidToPosHash.get(restaurantUuid)!!
+        restUuidToPosHash[restaurantUuid]?.let {
+            return it
         }
         return -1
     }

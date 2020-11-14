@@ -18,6 +18,7 @@ data class Restaurant(
     constructor() : this("","",0,"")
 
     var imageUri: Uri? = null
+    //TODO This needs to be a hash map <String, FoodItem>
     var foodItems: List<FoodItem>? = null
     var comments: String = ""
     var lat: Double = 0.0

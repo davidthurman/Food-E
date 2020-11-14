@@ -39,6 +39,7 @@ import com.thurman.foode.Manifest
 import com.thurman.foode.R
 import com.thurman.foode.Utility.FireBaseKeys
 import com.thurman.foode.Utility.FirebaseUtil
+import com.thurman.foode.Utility.Keys
 import com.thurman.foode.add_restaurant.AddRestaurantActivity
 import com.thurman.foode.add_restaurant.ShareRestaurantsActivity
 import com.thurman.foode.models.FoodItem
@@ -49,10 +50,7 @@ import kotlinx.android.synthetic.main.sponsored_restaurant_view.*
 
 class FavoritesFragment : Fragment(), OnMapReadyCallback{
 
-    lateinit var mapView: MapView
     lateinit var map: GoogleMap
-    lateinit var fragment: FavoritesFragment
-    lateinit var favRestaurantsList: RecyclerView
     var markerToIdHashmap: HashMap<Marker, String> = HashMap()
     var restaurants = ArrayList<Restaurant>()
     lateinit var recyclerAdapter: FavoriteRestaurantListAdapter
@@ -76,50 +74,47 @@ class FavoritesFragment : Fragment(), OnMapReadyCallback{
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        var view = inflater!!.inflate(R.layout.favorites_tab, container, false)
-        fragment = this
-        if (arguments != null && arguments!!.containsKey("friendId")){
-            friendId = arguments!!.getString("friendId")
+        return inflater.inflate(R.layout.favorites_tab, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        arguments?.let {
+            friendId = arguments!!.getString(Keys.friendId)
         }
 
-        var addButton: FloatingActionButton = view.findViewById(R.id.add_icon)
-
-        addButton.setOnClickListener(View.OnClickListener {
+        add_icon.setOnClickListener {
             val intent = Intent(activity, AddRestaurantActivity::class.java)
             startActivityForResult(intent, 200)
-        })
-        var logoutButton: ImageButton = view.findViewById(R.id.logout_button)
-        logoutButton.setOnClickListener {
+        }
+        logout_button.setOnClickListener {
             FirebaseAuth.getInstance().signOut()
             val intent = Intent(activity, SignInActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }
 
-        var shareButton: ImageButton = view.findViewById(R.id.share_button)
-        shareButton.setOnClickListener{
+        share_button.setOnClickListener{
             onShareClicked()
         }
         if (friendId != null){
-            addButton.hide()
-            shareButton.visibility = View.GONE
-            logoutButton.visibility = View.GONE
-            setupHomeButton(view)
+            add_icon.hide()
+            share_button.visibility = View.GONE
+            logout_button.visibility = View.GONE
+            setupHomeButton()
         }
-        setupRecyclerView(view)
+        setupRecyclerView()
         onLocationEstablished()
-        mapView = view.findViewById(R.id.mapview)
-        mapView.onCreate(savedInstanceState)
+        mapview.onCreate(savedInstanceState)
         if (!checkLocationPermission()){
-            mapView.visibility = View.GONE
+            mapview.visibility = View.GONE
         }
-        return view
     }
 
     private fun checkLocationPermission(): Boolean
     {
-        var permission = android.Manifest.permission.ACCESS_FINE_LOCATION;
-        var res = activity!!.checkCallingOrSelfPermission(permission);
+        val permission = android.Manifest.permission.ACCESS_FINE_LOCATION;
+        val res = activity!!.checkCallingOrSelfPermission(permission);
         return (res == PackageManager.PERMISSION_GRANTED);
     }
 
@@ -130,53 +125,51 @@ class FavoritesFragment : Fragment(), OnMapReadyCallback{
                 if (location != null){
                     latLng = LatLng(location.latitude, location.longitude)
                 }
-                mapView.getMapAsync(fragment)
+                mapview.getMapAsync(this)
             }
 
     }
 
     override fun onResume() {
         super.onResume()
-        mapView.onResume()
+        mapview.onResume()
         getUserRestaurantData(recyclerAdapter)
     }
 
     override fun onPause() {
         super.onPause()
-        mapView.onPause();
+        mapview.onPause();
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mapView.onDestroy()
+        mapview.onDestroy()
     }
 
     override fun onLowMemory() {
         super.onLowMemory()
-        mapView.onLowMemory()
+        mapview.onLowMemory()
     }
 
-    private fun setupRecyclerView(view: View){
+    private fun setupRecyclerView(){
         recyclerAdapter = FavoriteRestaurantListAdapter(restaurants, context!!)
-        favRestaurantsList = view.findViewById<RecyclerView>(R.id.favorite_restaurants_list)
-        favRestaurantsList.layoutManager = LinearLayoutManager(activity)
-        favRestaurantsList.adapter = recyclerAdapter
-        favRestaurantsList.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+        favorite_restaurants_list.layoutManager = LinearLayoutManager(activity)
+        favorite_restaurants_list.adapter = recyclerAdapter
+        favorite_restaurants_list.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         recyclerAdapter.onItemClick = {restaurant -> onRestaurantClicked(restaurant)}
     }
 
-    private fun setupHomeButton(view: View){
-        var homeButton: ImageButton = view.findViewById(R.id.home_button)
-        homeButton.visibility = View.VISIBLE
-        homeButton.setOnClickListener { (activity as MainActivity).onHomeClicked() }
+    private fun setupHomeButton(){
+        home_button.visibility = View.VISIBLE
+        home_button.setOnClickListener { (activity as MainActivity).onHomeClicked() }
     }
 
     private fun onRestaurantClicked(restaurant: Restaurant){
-        var restaurantDetailActivity = RestaurantDetailActivity()
+        val restaurantDetailActivity = RestaurantDetailActivity()
         val intent = Intent(activity, restaurantDetailActivity.javaClass)
         intent.putExtra(FireBaseKeys.restUUID, restaurant.uuid)
         if (friendId != null){
-            intent.putExtra("friendId", friendId)
+            intent.putExtra(Keys.friendId, friendId)
         }
         startActivity(intent)
     }
@@ -201,23 +194,21 @@ class FavoritesFragment : Fragment(), OnMapReadyCallback{
                     }
                     restaurants.sortBy { it.name }
                     for (restaurant in restaurants){
-                        if (restaurant.googlePhotoReference.equals("")){
+                        if (restaurant.googlePhotoReference == ""){
                             FirebaseUtil.getRestaurantImage(restaurant, recyclerAdapter)
                         }
                         if (::map.isInitialized){
                             if (restaurant.lat != 0.0){
-                                var restaurantLatLng = LatLng(restaurant.lat, restaurant.lng)
-                                var marker = map.addMarker(MarkerOptions().position(restaurantLatLng).title(restaurant.name))
-                                map.setOnMarkerClickListener(GoogleMap.OnMarkerClickListener {marker ->
-                                    System.out.println(marker.title)
-                                    var restaurantId = markerToIdHashmap.get(marker)
-                                    System.out.println(restaurantId)
+                                val restaurantLatLng = LatLng(restaurant.lat, restaurant.lng)
+                                val marker = map.addMarker(MarkerOptions().position(restaurantLatLng).title(restaurant.name))
+                                map.setOnMarkerClickListener { marker ->
+                                    val restaurantId = markerToIdHashmap[marker]
                                     recyclerAdapter.highlightRestaurant(restaurantId!!)
-                                    if (recyclerAdapter.getPositionForUuid(restaurantId!!) != -1){
-                                        favRestaurantsList.scrollToPosition(recyclerAdapter.getPositionForUuid(restaurantId!!))
+                                    if (recyclerAdapter.getPositionForUuid(restaurantId) != -1){
+                                        favorite_restaurants_list.scrollToPosition(recyclerAdapter.getPositionForUuid(restaurantId))
                                     }
                                     false
-                                })
+                                }
                                 markerToIdHashmap.put(marker, restaurant.uuid)
                             }
                         }
@@ -241,16 +232,14 @@ class FavoritesFragment : Fragment(), OnMapReadyCallback{
     }
 
     fun setLoading(loading: Boolean){
-        var loadingContainer = view!!.findViewById<LinearLayout>(R.id.loading_container)
-        var contentContainer = view!!.findViewById<FrameLayout>(R.id.content_container)
         if (!loading){
-            loadingContainer.visibility = View.GONE
-            contentContainer.visibility = View.VISIBLE
+            favorite_loading_container.visibility = View.GONE
+            content_container.visibility = View.VISIBLE
         }
     }
 
     private fun onShareClicked(){
-        var shareRestaurantActivity = ShareRestaurantsActivity()
+        val shareRestaurantActivity = ShareRestaurantsActivity()
         val intent = Intent(activity, shareRestaurantActivity.javaClass)
         startActivity(intent)
     }

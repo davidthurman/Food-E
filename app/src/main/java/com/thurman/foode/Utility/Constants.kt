@@ -9,6 +9,8 @@ object Keys {
     //FLAGS
     const val editingFlag = "editing"
     const val fromSearchFlag = "fromSearch"
+    const val smsBody = "sms_body"
+    const val smsUriKey = "sms:"
 
     //VALUES
     const val restUUID = "restUUID"

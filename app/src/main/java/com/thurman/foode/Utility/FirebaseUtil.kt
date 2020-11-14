@@ -123,6 +123,7 @@ class FirebaseUtil {
         fun updateRestaurant(restaurant: Restaurant, restaurantUri: Uri?, activity: Activity){
             val userID = FirebaseAuth.getInstance().currentUser?.uid ?: ""
             val ref = FirebaseDatabase.getInstance().getReference(FireBaseKeys.users).child(userID).child(FireBaseKeys.restaurants)
+            restaurant.foodItems = null
             ref.child(restaurant.uuid).setValue(restaurant).addOnCompleteListener{
                 if (restaurantUri != null){
                     uploadRestaurantImage(userID, false, restaurant.uuid, restaurantUri, activity, true)
@@ -193,7 +194,7 @@ class FirebaseUtil {
         fun submitFoodItemToRestaurant(restaurantUuid: String, name: String, rating: Int, comments: String, foodUri: Uri?, activity: Activity, fragment: AddOrEditFoodItemFragment, editing: Boolean, foodItemUuid: String){
             val userID = FirebaseAuth.getInstance().getCurrentUser()!!.uid
             val ref = FirebaseDatabase.getInstance().getReference(FireBaseKeys.users).child(userID).child(FireBaseKeys.restaurants).child(restaurantUuid).child(FireBaseKeys.foodItems)
-            var foodKeyId: String?
+            val foodKeyId: String?
             if (editing){
                 foodKeyId = foodItemUuid
             } else {
@@ -209,7 +210,9 @@ class FirebaseUtil {
                     } else {
                         fragment.setLoading(false)
                         if (editing){
-                            (activity as RestaurantDetailActivity).onEditFinished()
+                            activity.finish()
+                            //TODO resolve this
+                            //(activity as RestaurantDetailActivity).onEditFinished()
                         } else {
                             activity.finish()
                         }
@@ -220,7 +223,7 @@ class FirebaseUtil {
 
         fun setFoodItemImage(restaurant: Restaurant, foodItem: FoodItem, imageView: ImageView, imageLoader: MKLoader, context: Context){
             val userID = FirebaseAuth.getInstance().currentUser?.uid ?: ""
-            var storageReference = FirebaseStorage.getInstance().reference
+            val storageReference = FirebaseStorage.getInstance().reference
 
             storageReference.child("images/users/" + userID + "/" + restaurant.uuid + "/" + foodItem.uuid +  ".jpg").downloadUrl.addOnSuccessListener  {
                     uri ->
@@ -236,16 +239,18 @@ class FirebaseUtil {
         }
 
         private fun uploadFoodItemImage(userID: String, restaurantUuid: String, foodKeyId: String, restaurantUri: Uri, activity: Activity, editing: Boolean){
-            var storageReference = FirebaseStorage.getInstance().reference.child("images/users/" + userID + "/" + restaurantUuid + "/" + foodKeyId + ".jpg")
+            val storageReference = FirebaseStorage.getInstance().reference.child("images/users/" + userID + "/" + restaurantUuid + "/" + foodKeyId + ".jpg")
             storageReference.putFile(restaurantUri).addOnSuccessListener {
                 if (editing){
-                    (activity as RestaurantDetailActivity).onEditFinished()
+                    activity.finish()
+                    //(activity as RestaurantDetailActivity).onEditFinished()
                 } else {
                     activity.finish()
                 }
             }.addOnFailureListener{
                 if (editing){
-                    (activity as RestaurantDetailActivity).onEditFinished()
+                    activity.finish()
+                    //(activity as RestaurantDetailActivity).onEditFinished()
                 } else {
                     activity.finish()
                 }
