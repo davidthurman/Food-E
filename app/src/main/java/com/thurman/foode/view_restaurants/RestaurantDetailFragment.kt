@@ -46,17 +46,17 @@ class RestaurantDetailFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val currentView = inflater.inflate(R.layout.restaurant_detail_fragment,container,false)
-
-        return currentView
+        return inflater.inflate(R.layout.restaurant_detail_fragment,container,false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         restaurantUuid = arguments?.getString(FireBaseKeys.restUUID) ?: ""
-        arguments?.containsKey(Keys.friendId).let {
-            friendId = arguments?.getString(Keys.friendId)
-            setupFriendLink()
+        arguments?.let {
+            if (it.containsKey(Keys.friendId)){
+                friendId = arguments?.getString(Keys.friendId)
+                setupFriendLink()
+            }
         }
         getRestaurantFromUuid()
     }
@@ -71,17 +71,19 @@ class RestaurantDetailFragment : Fragment() {
 
             override fun onDataChange(restaurantSnapshot: DataSnapshot) {
                 restaurant = FirebaseUtil.getRestaurantFromSnapshot(restaurantSnapshot)
-                setupFields(restaurant!!)
+                restaurant?.let {
+                    setupFields(it)
+                }
                 setLoading(false)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {}
 
         }
-        if (friendId == null){
-            FirebaseDatabase.getInstance().reference.child(FireBaseKeys.users).child(FirebaseAuth.getInstance().currentUser!!.uid).child(FireBaseKeys.restaurants).child(restaurantUuid).addListenerForSingleValueEvent(restaurantListener)
-        } else {
-            FirebaseDatabase.getInstance().reference.child(FireBaseKeys.users).child(friendId!!).child(FireBaseKeys.restaurants).child(restaurantUuid).addListenerForSingleValueEvent(restaurantListener)
+        friendId?.let { friendId ->
+            FirebaseDatabase.getInstance().reference.child(FireBaseKeys.users).child(friendId).child(FireBaseKeys.restaurants).child(restaurantUuid).addListenerForSingleValueEvent(restaurantListener)
+        } ?: FirebaseAuth.getInstance().currentUser?.let {currentUser ->
+            FirebaseDatabase.getInstance().reference.child(FireBaseKeys.users).child(currentUser.uid).child(FireBaseKeys.restaurants).child(restaurantUuid).addListenerForSingleValueEvent(restaurantListener)
         }
     }
 
@@ -101,7 +103,7 @@ class RestaurantDetailFragment : Fragment() {
         collapsing_toolbar_layout.setCollapsedTitleTextColor(resources.getColor(R.color.white))
         appbar_layout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { barLayout, verticalOffset ->
             if (scrollRange == -1){
-                scrollRange = barLayout?.totalScrollRange!!
+                scrollRange = barLayout?.totalScrollRange ?: 0
             }
             if (scrollRange + verticalOffset == 0){
                 collapsing_toolbar_layout.title = restaurantName
@@ -128,19 +130,19 @@ class RestaurantDetailFragment : Fragment() {
     }
 
     private fun onEditClicked(){
-        if (restaurant != null){
-            (activity as RestaurantDetailActivity).editRestaurant(restaurant!!)
+        restaurant?.let {
+            (activity as RestaurantDetailActivity).editRestaurant(it)
         }
     }
 
     private fun onMapClicked(){
-        if (restaurant != null && context != null){
-            GoogleUtil.openGoogleMaps(restaurant!!, context!!)
+        restaurant?.let {
+            GoogleUtil.openGoogleMaps(it, requireContext())
         }
     }
 
     private fun onRemoveClicked(){
-        val dialogBuilder = AlertDialog.Builder(context!!)
+        val dialogBuilder = AlertDialog.Builder(context)
         dialogBuilder.setMessage(getString(R.string.restaurant_detail_delete_confirmation_message))
             .setCancelable(true)
             .setPositiveButton(getString(R.string.restaurant_detail_delete_confirmation_confirm)) { _, _ -> removeRestaurant() }
@@ -151,7 +153,7 @@ class RestaurantDetailFragment : Fragment() {
     }
 
     private fun removeRestaurant(){
-        FirebaseUtil.removeRestaurant(restaurantUuid, activity!!)
+        FirebaseUtil.removeRestaurant(restaurantUuid, requireActivity())
     }
 
     private fun setupAddFoodItemBtn(restaurant: Restaurant){
@@ -164,7 +166,7 @@ class RestaurantDetailFragment : Fragment() {
     }
 
     private fun setupRestaurantImage(restaurant: Restaurant){
-        FirebaseUtil.getRestaurantDetailImage(restaurant, image_view, res_detail_loader_container, context!!)
+        FirebaseUtil.getRestaurantDetailImage(restaurant, image_view, res_detail_loader_container, requireContext())
     }
 
     private fun setupRestaurantTextFields(restaurant: Restaurant){
@@ -194,7 +196,7 @@ class RestaurantDetailFragment : Fragment() {
     }
 
     private fun addFoodItemToListview(foodItem: FoodItem, restaurant: Restaurant, foodRatingsList: LinearLayout, dividerBar: Boolean){
-        val foodItemLayout = LayoutInflater.from(context!!).inflate(resources.getLayout(R.layout.food_item_layout), null)
+        val foodItemLayout = LayoutInflater.from(requireContext()).inflate(resources.getLayout(R.layout.food_item_layout), null)
         val foodItemName = foodItemLayout.findViewById<TextView>(R.id.food_item_name)
         val foodItemRatingBar = foodItemLayout.findViewById<RatingBar>(R.id.rating_bar)
         foodItemName.text = foodItem.name
@@ -207,7 +209,7 @@ class RestaurantDetailFragment : Fragment() {
         foodItemLayout.setOnClickListener { onFoodItemClick(foodItem) }
         val foodItemImage = foodItemLayout.findViewById<ImageView>(R.id.food_item_image)
         val foodItemLoader = foodItemLayout.findViewById<MKLoader>(R.id.image_loader)
-        FirebaseUtil.setFoodItemImage(restaurant, foodItem, foodItemImage, foodItemLoader, context!!)
+        FirebaseUtil.setFoodItemImage(restaurant, foodItem, foodItemImage, foodItemLoader, requireContext())
         foodRatingsList.addView(foodItemLayout)
         if (dividerBar){
             addDividerBar(foodRatingsList)
@@ -215,7 +217,7 @@ class RestaurantDetailFragment : Fragment() {
     }
 
     private fun addDividerBar(foodRatingsList: LinearLayout){
-        val dividerBar = LayoutInflater.from(context!!).inflate(resources.getLayout(R.layout.divider_bar), null)
+        val dividerBar = LayoutInflater.from(requireContext()).inflate(resources.getLayout(R.layout.divider_bar), null)
         foodRatingsList.addView(dividerBar)
     }
 

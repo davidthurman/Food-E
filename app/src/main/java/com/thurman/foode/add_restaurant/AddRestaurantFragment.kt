@@ -76,15 +76,16 @@ class AddRestaurantFragment : Fragment() {
             }
             override fun onCancelled(databaseError: DatabaseError) {}
         }
-        val userID = FirebaseAuth.getInstance().getCurrentUser()!!.uid
-        FirebaseDatabase.getInstance().reference.child("users").child(userID).child("city").addListenerForSingleValueEvent(cityListener)
+        FirebaseAuth.getInstance().currentUser?.uid?.let {userID ->
+            FirebaseDatabase.getInstance().reference.child("users").child(userID).child("city").addListenerForSingleValueEvent(cityListener)
+        }
     }
 
     private fun setupButtons(view: View){
         var searchButton = view.findViewById<ImageButton>(R.id.search_btn)
         searchButton.setOnClickListener{
             city_title.setTextColor(resources.getColor(R.color.black, null))
-            if (restaurantSearchBar.text!!.count() == 0){
+            if (restaurantSearchBar.text.count() == 0){
                 restaurantSearchBar.error = "Please enter a restaurant name"
             } else {
                 transitionScreen()
@@ -129,7 +130,7 @@ class AddRestaurantFragment : Fragment() {
     }
 
     private fun addSponsorView(restaurant: Restaurant, addDivider: Boolean){
-        val sponsoredRestaurantView = LayoutInflater.from(context!!).inflate(resources.getLayout(R.layout.sponsored_restaurant_view), null)
+        val sponsoredRestaurantView = LayoutInflater.from(context).inflate(resources.getLayout(R.layout.sponsored_restaurant_view), null)
         val restName = sponsoredRestaurantView.findViewById<TextView>(R.id.name)
         restName.text = restaurant.name
         val restRatingBar = sponsoredRestaurantView.findViewById<RatingBar>(R.id.rating_bar)
@@ -138,9 +139,9 @@ class AddRestaurantFragment : Fragment() {
         sponsoredRestaurantsLayout.addView(sponsoredRestaurantView)
         val loadingContainer = sponsoredRestaurantView.findViewById<LinearLayout>(R.id.loading_container)
         val imageView = sponsoredRestaurantView.findViewById<ImageView>(R.id.image)
-        FirebaseUtil.getRestaurantDetailImage(restaurant, imageView, loadingContainer, context!!)
+        FirebaseUtil.getRestaurantDetailImage(restaurant, imageView, loadingContainer, requireContext())
         if (addDivider){
-            val dividerView = View(context!!)
+            val dividerView = View(context)
             dividerView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 5)
             sponsoredRestaurantsLayout.addView(dividerView)
         }

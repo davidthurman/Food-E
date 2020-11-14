@@ -80,7 +80,7 @@ class FavoritesFragment : Fragment(), OnMapReadyCallback{
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         arguments?.let {
-            friendId = arguments!!.getString(Keys.friendId)
+            friendId = arguments?.getString(Keys.friendId)
         }
 
         add_icon.setOnClickListener {
@@ -113,21 +113,22 @@ class FavoritesFragment : Fragment(), OnMapReadyCallback{
 
     private fun checkLocationPermission(): Boolean
     {
-        val permission = android.Manifest.permission.ACCESS_FINE_LOCATION;
-        val res = activity!!.checkCallingOrSelfPermission(permission);
-        return (res == PackageManager.PERMISSION_GRANTED);
+        val permission = android.Manifest.permission.ACCESS_FINE_LOCATION
+        val res = activity?.checkCallingOrSelfPermission(permission)
+        return (res == PackageManager.PERMISSION_GRANTED)
     }
 
     private fun onLocationEstablished(){
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity!!)
-        fusedLocationClient.lastLocation
-            .addOnSuccessListener { location : Location? ->
-                if (location != null){
-                    latLng = LatLng(location.latitude, location.longitude)
+        activity?.let {
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(it)
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location : Location? ->
+                    location?.let {
+                        latLng = LatLng(location.latitude, location.longitude)
+                    }
+                    mapview.getMapAsync(this)
                 }
-                mapview.getMapAsync(this)
-            }
-
+        }
     }
 
     override fun onResume() {
@@ -152,7 +153,7 @@ class FavoritesFragment : Fragment(), OnMapReadyCallback{
     }
 
     private fun setupRecyclerView(){
-        recyclerAdapter = FavoriteRestaurantListAdapter(restaurants, context!!)
+        recyclerAdapter = FavoriteRestaurantListAdapter(restaurants, this.requireContext())
         favorite_restaurants_list.layoutManager = LinearLayoutManager(activity)
         favorite_restaurants_list.adapter = recyclerAdapter
         favorite_restaurants_list.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
@@ -197,21 +198,7 @@ class FavoritesFragment : Fragment(), OnMapReadyCallback{
                         if (restaurant.googlePhotoReference == ""){
                             FirebaseUtil.getRestaurantImage(restaurant, recyclerAdapter)
                         }
-                        if (::map.isInitialized){
-                            if (restaurant.lat != 0.0){
-                                val restaurantLatLng = LatLng(restaurant.lat, restaurant.lng)
-                                val marker = map.addMarker(MarkerOptions().position(restaurantLatLng).title(restaurant.name))
-                                map.setOnMarkerClickListener { marker ->
-                                    val restaurantId = markerToIdHashmap[marker]
-                                    recyclerAdapter.highlightRestaurant(restaurantId!!)
-                                    if (recyclerAdapter.getPositionForUuid(restaurantId) != -1){
-                                        favorite_restaurants_list.scrollToPosition(recyclerAdapter.getPositionForUuid(restaurantId))
-                                    }
-                                    false
-                                }
-                                markerToIdHashmap.put(marker, restaurant.uuid)
-                            }
-                        }
+                        addRestaurantToMap(restaurant)
                     }
                 }
                 recyclerAdapter.notifyRestaurantsHaveChanged()
@@ -224,10 +211,31 @@ class FavoritesFragment : Fragment(), OnMapReadyCallback{
             }
 
         }
-        if (friendId == null){
-            FirebaseDatabase.getInstance().reference.child("users").child(FirebaseAuth.getInstance().currentUser!!.uid).child("restaurants").addListenerForSingleValueEvent(restaurantsListener)
-        } else {
-            FirebaseDatabase.getInstance().reference.child("users").child(friendId!!).child("restaurants").addListenerForSingleValueEvent(restaurantsListener)
+        friendId?.let { friendId ->
+            FirebaseDatabase.getInstance().reference.child("users").child(friendId).child("restaurants").addListenerForSingleValueEvent(restaurantsListener)
+        } ?: FirebaseAuth.getInstance().currentUser?.let {currentUser ->
+            FirebaseDatabase.getInstance().reference.child("users").child(currentUser.uid).child("restaurants").addListenerForSingleValueEvent(restaurantsListener)
+        }
+    }
+
+    private fun addRestaurantToMap(restaurant: Restaurant){
+        if (::map.isInitialized) {
+            if (restaurant.lat != 0.0) {
+                val restaurantLatLng = LatLng(restaurant.lat, restaurant.lng)
+                val marker = map.addMarker(MarkerOptions().position(restaurantLatLng).title(restaurant.name))
+                map.setOnMarkerClickListener { marker ->
+                    markerToIdHashmap[marker]?.let { restId ->
+                        recyclerAdapter.highlightRestaurant(restId)
+                        if (recyclerAdapter.getPositionForUuid(restId) != -1) {
+                            favorite_restaurants_list.scrollToPosition(
+                                recyclerAdapter.getPositionForUuid(restId)
+                            )
+                        }
+                    }
+                    false
+                }
+                markerToIdHashmap[marker] = restaurant.uuid
+            }
         }
     }
 

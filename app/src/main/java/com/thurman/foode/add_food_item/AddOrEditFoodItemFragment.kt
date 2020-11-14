@@ -51,7 +51,9 @@ class AddOrEditFoodItemFragment : Fragment() {
 
     private fun submit(){
         setLoading(true)
-        FirebaseUtil.submitFoodItemToRestaurant(restaurantUuid, name_textfield.text.toString(), rating_bar.rating.toInt(), comments_textfield.text.toString(), currentUri, activity!!, this, editing, editingFoodItemUuid)
+        activity?.let {
+            FirebaseUtil.submitFoodItemToRestaurant(restaurantUuid, name_textfield.text.toString(), rating_bar.rating.toInt(), comments_textfield.text.toString(), currentUri, it, this, editing, editingFoodItemUuid)
+        }
 
     }
 
@@ -65,9 +67,9 @@ class AddOrEditFoodItemFragment : Fragment() {
                     //Image Uri will not be null for RESULT_OK
                     val fileUri = data?.data
                     image_view.setImageURI(fileUri)
-
-                    val file: File = ImagePicker.getFile(data)!!
-                    currentUri = Uri.fromFile(file)
+                    ImagePicker.getFile(data)?.let {
+                        currentUri = Uri.fromFile(it)
+                    }
                 } else if (resultCode == ImagePicker.RESULT_ERROR) {
                     Toast.makeText(context, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
                 }
@@ -85,16 +87,17 @@ class AddOrEditFoodItemFragment : Fragment() {
     }
 
     private fun setupEditing(){
-        var foodItem = (activity as RestaurantDetailActivity).foodItemToEdit!!
-        remove_button.visibility = View.VISIBLE
-        remove_button.setOnClickListener{ FirebaseUtil.removeFoodItem(restaurantUuid, foodItem.uuid, activity!!) }
-        name_textfield.setText(foodItem.name)
-        comments_textfield.setText(foodItem.comments)
-        rating_bar.rating = foodItem.rating.toFloat()
-        foodItem.imageUri?.let {
-            Picasso.with(context).load(it).into(image_view)
-            currentUri = it
-        } ?: image_view.setImageDrawable(resources.getDrawable(R.drawable.question_mark_icon_square, null))
+        (activity as RestaurantDetailActivity).foodItemToEdit?.let {foodItem ->
+            remove_button.visibility = View.VISIBLE
+            remove_button.setOnClickListener{ FirebaseUtil.removeFoodItem(restaurantUuid, foodItem.uuid, requireActivity()) }
+            name_textfield.setText(foodItem.name)
+            comments_textfield.setText(foodItem.comments)
+            rating_bar.rating = foodItem.rating.toFloat()
+            foodItem.imageUri?.let {
+                Picasso.with(context).load(it).into(image_view)
+                currentUri = it
+            } ?: image_view.setImageDrawable(resources.getDrawable(R.drawable.question_mark_icon_square, null))
+        }
     }
 
 }

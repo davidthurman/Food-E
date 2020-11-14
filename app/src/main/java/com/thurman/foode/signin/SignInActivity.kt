@@ -56,11 +56,11 @@ class SignInActivity : FragmentActivity() {
 
     private fun validLoginFields(): Boolean{
         var isValid = true
-        if (username_textfield.text == null || username_textfield.text!!.toString() == ""){
+        if (username_textfield.text.isNullOrEmpty()){
             isValid = false
             username_textfield.error = getString(R.string.sign_in_username_error)
         }
-        if (password_textfield.text == null || password_textfield.text!!.toString() == ""){
+        if (password_textfield.text.isNullOrEmpty()){
             isValid = false
             password_textfield.error = getString(R.string.sign_in_password_error)
         }
@@ -87,7 +87,7 @@ class SignInActivity : FragmentActivity() {
 
     private fun checkForFriendLink(){
         if (intent.action == Intent.ACTION_VIEW){
-            val url: String = intent.data!!.path!!
+            val url: String = intent.data?.path ?: ""
             val segments = url.split("id=")
             friendId = segments[1]
         }

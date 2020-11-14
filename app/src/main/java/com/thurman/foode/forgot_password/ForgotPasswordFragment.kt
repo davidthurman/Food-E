@@ -30,9 +30,14 @@ class ForgotPasswordFragment : Fragment() {
 
     private fun validEmail(): Boolean{
         var isValid = true
-        if (email_textfield.text == null || email_textfield.text!!.toString() == "" || !email_textfield.text!!.contains("@")){
+        email_textfield.text?.let {email ->
+            if (email.isNullOrEmpty() || !email.contains("@")){
+                isValid = false
+                email_textfield.error = "Please enter a valid email"
+            }
+        } ?: run {
             isValid = false
-            email_textfield.error = "Please enter a valid email"
+            email_textfield.error = "Please enter an email"
         }
         return isValid
     }
@@ -41,13 +46,13 @@ class ForgotPasswordFragment : Fragment() {
     private fun resetPassword(){
         if (validEmail()){
             setLoading(true)
-            FirebaseAuth.getInstance().sendPasswordResetEmail(email_textfield.text!!.toString())
+            FirebaseAuth.getInstance().sendPasswordResetEmail(email_textfield.text.toString())
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         transitionToPasswordResetFragment()
                     } else {
                         setLoading(false)
-                        AlertUtil.StandardAlert(null, "Something went wrong. Please try again.", "OK", context!!)
+                        AlertUtil.StandardAlert(null, "Something went wrong. Please try again.", "OK", requireContext())
                     }
                 }
         }
@@ -64,9 +69,10 @@ class ForgotPasswordFragment : Fragment() {
     }
 
     private fun transitionToPasswordResetFragment(){
-        val fragmentTransaction = fragmentManager!!.beginTransaction()
-        fragmentTransaction.replace(android.R.id.content, PasswordSuccessfullyResetFragment())
-        fragmentTransaction.commit()
+        fragmentManager?.beginTransaction()?.let {
+            it.replace(android.R.id.content, PasswordSuccessfullyResetFragment())
+            it.commit()
+        }
     }
 
 }

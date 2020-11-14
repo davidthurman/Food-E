@@ -26,7 +26,7 @@ class PasswordSuccessfullyResetFragment : Fragment() {
     }
 
     private fun returnHome(){
-        activity!!.finish()
+        activity?.finish()
     }
 
 }

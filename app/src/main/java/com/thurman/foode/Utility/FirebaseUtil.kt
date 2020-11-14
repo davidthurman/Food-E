@@ -100,23 +100,24 @@ class FirebaseUtil {
 
         fun getRestaurantDetailImage(restaurant: Restaurant, imageView: ImageView, loaderContainer: LinearLayout, context: Context){
             if (!restaurant.googlePhotoReference.equals("")){
-                PicassoUtil.loadGoogleImageIntoImageview(context!!, restaurant.googlePhotoReference, imageView, loaderContainer)
+                PicassoUtil.loadGoogleImageIntoImageview(context, restaurant.googlePhotoReference, imageView, loaderContainer)
             } else {
-                val userID = FirebaseAuth.getInstance().getCurrentUser()!!.uid
-                val storageReference = FirebaseStorage.getInstance().reference
+                FirebaseAuth.getInstance().getCurrentUser()?.uid.let {userID ->
+                    val storageReference = FirebaseStorage.getInstance().reference
 
-                storageReference.child("images/users/" + userID + "/" + restaurant.uuid + ".jpg").downloadUrl.addOnSuccessListener  {
-                        uri -> run {
-                    restaurant.imageUri = uri
-                    PicassoUtil.loadUriIntoImageview(restaurant.imageUri, imageView, loaderContainer, context)
-                    imageView.visibility = View.VISIBLE
-                    loaderContainer.visibility = View.GONE
+                    storageReference.child("images/users/" + userID + "/" + restaurant.uuid + ".jpg").downloadUrl.addOnSuccessListener  {
+                            uri -> run {
+                        restaurant.imageUri = uri
+                        PicassoUtil.loadUriIntoImageview(restaurant.imageUri, imageView, loaderContainer, context)
+                        imageView.visibility = View.VISIBLE
+                        loaderContainer.visibility = View.GONE
+                    }
+                    }.addOnFailureListener{ exception -> run {
+                        imageView.setImageDrawable(context.resources.getDrawable(R.drawable.question_mark_icon_square))
+                        imageView.visibility = View.VISIBLE
+                        loaderContainer.visibility = View.GONE
+                    } }
                 }
-                }.addOnFailureListener{ exception -> run {
-                    imageView.setImageDrawable(context.resources.getDrawable(R.drawable.question_mark_icon_square))
-                    imageView.visibility = View.VISIBLE
-                    loaderContainer.visibility = View.GONE
-                } }
             }
         }
 
@@ -152,7 +153,7 @@ class FirebaseUtil {
             if (searchImage){
                 val bitmap = getBitmapFromURL(restUri.toString())
                 bitmap?.let {
-                    restUri = getImageUri(activity.applicationContext!!, bitmap)
+                    restUri = getImageUri(activity.applicationContext, bitmap)
                 }
             }
             storageReference.putFile(restUri).addOnSuccessListener {
@@ -192,29 +193,30 @@ class FirebaseUtil {
         }
 
         fun submitFoodItemToRestaurant(restaurantUuid: String, name: String, rating: Int, comments: String, foodUri: Uri?, activity: Activity, fragment: AddOrEditFoodItemFragment, editing: Boolean, foodItemUuid: String){
-            val userID = FirebaseAuth.getInstance().getCurrentUser()!!.uid
-            val ref = FirebaseDatabase.getInstance().getReference(FireBaseKeys.users).child(userID).child(FireBaseKeys.restaurants).child(restaurantUuid).child(FireBaseKeys.foodItems)
-            val foodKeyId: String?
-            if (editing){
-                foodKeyId = foodItemUuid
-            } else {
-                foodKeyId = ref.push().key
-            }
-            if (foodKeyId != null){
-                val foodItem = FoodItem(name, rating, foodKeyId)
-                foodItem.comments = comments
-                ref.child(foodKeyId).setValue(foodItem).addOnCompleteListener{
-                    if (foodUri != null){
-                        uploadFoodItemImage(userID, restaurantUuid, foodKeyId, foodUri, activity, editing)
-                        fragment.setLoading(false)
-                    } else {
-                        fragment.setLoading(false)
-                        if (editing){
-                            activity.finish()
-                            //TODO resolve this
-                            //(activity as RestaurantDetailActivity).onEditFinished()
+            FirebaseAuth.getInstance().getCurrentUser()?.uid?.let {userID ->
+                val ref = FirebaseDatabase.getInstance().getReference(FireBaseKeys.users).child(userID).child(FireBaseKeys.restaurants).child(restaurantUuid).child(FireBaseKeys.foodItems)
+                val foodKeyId: String?
+                if (editing){
+                    foodKeyId = foodItemUuid
+                } else {
+                    foodKeyId = ref.push().key
+                }
+                if (foodKeyId != null){
+                    val foodItem = FoodItem(name, rating, foodKeyId)
+                    foodItem.comments = comments
+                    ref.child(foodKeyId).setValue(foodItem).addOnCompleteListener{
+                        if (foodUri != null){
+                            uploadFoodItemImage(userID, restaurantUuid, foodKeyId, foodUri, activity, editing)
+                            fragment.setLoading(false)
                         } else {
-                            activity.finish()
+                            fragment.setLoading(false)
+                            if (editing){
+                                activity.finish()
+                                //TODO resolve this
+                                //(activity as RestaurantDetailActivity).onEditFinished()
+                            } else {
+                                activity.finish()
+                            }
                         }
                     }
                 }

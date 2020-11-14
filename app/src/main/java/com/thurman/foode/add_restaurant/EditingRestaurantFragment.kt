@@ -88,29 +88,35 @@ class EditingRestaurantFragment : Fragment() {
     }
 
     private fun setupLayoutFromSearchResults(){
-        val restaurant = (activity as AddRestaurantActivity).tempRestaurant!!
-        nameTextfield.setText(restaurant.name)
-        addressTextfield.setText(restaurant.address)
-        ratingBar.rating = restaurant.rating.toFloat()
-        if (restaurant.googlePhotoReference != ""){
-            PicassoUtil.loadGoogleImageIntoImageview(context!!, restaurant.googlePhotoReference, imageView, imageLoader!!)
+        (activity as AddRestaurantActivity).tempRestaurant?.let {restaurant ->
+            nameTextfield.setText(restaurant.name)
+            addressTextfield.setText(restaurant.address)
+            ratingBar.rating = restaurant.rating.toFloat()
+            if (restaurant.googlePhotoReference != ""){
+                imageLoader?.let {
+                    PicassoUtil.loadGoogleImageIntoImageview(requireContext(), restaurant.googlePhotoReference, imageView, it)
+                }
+            }
         }
     }
 
     private fun setupEditing(){
-        val restaurant = (activity as RestaurantDetailActivity).restaurantToEdit!!
-        nameTextfield.setText(restaurant.name)
-        addressTextfield.setText(restaurant.address)
-        ratingBar.rating = restaurant.rating.toFloat()
-        commentTextfield.setText(restaurant.comments)
+        (activity as RestaurantDetailActivity).restaurantToEdit?.let {restaurant ->
+            nameTextfield.setText(restaurant.name)
+            addressTextfield.setText(restaurant.address)
+            ratingBar.rating = restaurant.rating.toFloat()
+            commentTextfield.setText(restaurant.comments)
 
-        if (restaurant.googlePhotoReference != ""){
-            PicassoUtil.loadGoogleImageIntoImageview(context!!, restaurant.googlePhotoReference, imageView, imageLoader!!)
-        } else if (restaurant.imageUri != null){
-            Picasso.with(context).load(restaurant.imageUri).into(imageView)
-            currentUri = restaurant.imageUri
-        } else {
-            imageView.setImageDrawable(resources.getDrawable(R.drawable.question_mark_icon_square))
+            if (restaurant.googlePhotoReference != ""){
+                imageLoader?.let {
+                    PicassoUtil.loadGoogleImageIntoImageview(requireContext(), restaurant.googlePhotoReference, imageView, it)
+                }
+            } else if (restaurant.imageUri != null){
+                Picasso.with(context).load(restaurant.imageUri).into(imageView)
+                currentUri = restaurant.imageUri
+            } else {
+                imageView.setImageDrawable(resources.getDrawable(R.drawable.question_mark_icon_square))
+            }
         }
     }
 
@@ -124,14 +130,16 @@ class EditingRestaurantFragment : Fragment() {
 
     private fun submit(){
         if (fromSearch){
-            val restaurantToSend = getRestaurantFromFields((activity as AddRestaurantActivity).tempRestaurant!!)
-            FirebaseUtil.submitRestaurantWithRestaurantObject(restaurantToSend, activity!!)
+            (activity as AddRestaurantActivity).tempRestaurant?.let {tempRestaurant ->
+                val restaurantToSend = getRestaurantFromFields(tempRestaurant)
+                FirebaseUtil.submitRestaurantWithRestaurantObject(restaurantToSend, requireActivity())
+            }
         } else {
-            val restaurant = getRestaurantFromFields((activity as RestaurantDetailActivity).restaurantToEdit!!)
-            FirebaseUtil.updateRestaurant(restaurant,
-                currentUri,
-                activity!!
-            )
+            (activity as RestaurantDetailActivity).restaurantToEdit?.let {restaurantToEdit ->
+                val restaurant = getRestaurantFromFields(restaurantToEdit)
+                FirebaseUtil.updateRestaurant(restaurant, currentUri, requireActivity())
+            }
+
         }
     }
 
@@ -145,8 +153,9 @@ class EditingRestaurantFragment : Fragment() {
                     val fileUri = data?.data
                     imageView.setImageURI(fileUri)
                     imageFromSearchResults = false
-                    val file: File = ImagePicker.getFile(data)!!
-                    currentUri = Uri.fromFile(file)
+                    ImagePicker.getFile(data)?.let {file ->
+                        currentUri = Uri.fromFile(file)
+                    }
                 } else if (resultCode == ImagePicker.RESULT_ERROR) {
                     Toast.makeText(context, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
                 } else {

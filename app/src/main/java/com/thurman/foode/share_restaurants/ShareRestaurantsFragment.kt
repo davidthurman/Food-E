@@ -66,11 +66,13 @@ class ShareRestaurantsFragment : Fragment() {
             override fun onCancelled(databaseError: DatabaseError) {}
 
         }
-        FirebaseDatabase.getInstance().reference.child(FireBaseKeys.users).child(FirebaseAuth.getInstance().currentUser!!.uid).child(FireBaseKeys.restaurants).addListenerForSingleValueEvent(restaurantsListener)
+        FirebaseAuth.getInstance().currentUser?.uid?.let { userId ->
+            FirebaseDatabase.getInstance().reference.child(FireBaseKeys.users).child(userId).child(FireBaseKeys.restaurants).addListenerForSingleValueEvent(restaurantsListener)
+        }
     }
 
     private fun addCheckbox(restaurant: Restaurant){
-        val checkBox: CheckBox = LayoutInflater.from(context!!).inflate(resources.getLayout(R.layout.share_restaurant_checkbox_view), null) as CheckBox
+        val checkBox: CheckBox = LayoutInflater.from(context).inflate(resources.getLayout(R.layout.share_restaurant_checkbox_view), null) as CheckBox
         checkBox.text = restaurant.name
         if (specifiedRestaurantUuid != null && specifiedRestaurantUuid == restaurant.uuid){
             checkBox.isChecked = true
@@ -81,7 +83,7 @@ class ShareRestaurantsFragment : Fragment() {
     }
 
     private fun getCheckAllBox(){
-        val checkBox: CheckBox = LayoutInflater.from(context!!).inflate(resources.getLayout(R.layout.share_restaurant_checkbox_all_view), null) as CheckBox
+        val checkBox: CheckBox = LayoutInflater.from(context).inflate(resources.getLayout(R.layout.share_restaurant_checkbox_all_view), null) as CheckBox
         checkBox.text = getString(R.string.share_restaurants_check_all)
         checkBox.setOnCheckedChangeListener { _, isChecked ->
             checkOrUncheckAll(isChecked)
@@ -114,27 +116,30 @@ class ShareRestaurantsFragment : Fragment() {
         for (checkbox in checkboxList){
             if (checkbox.isChecked){
                 if (checkboxToRestaurant.contains(checkbox)){
-                    val restaurant = checkboxToRestaurant.get(checkbox)!!
-                    shareMessage += (checkbox.text.toString()) + ": " + restaurant.rating + "/5"
-                    if (index != (checkboxList.size - 1)){
-                        shareMessage += "\n"
-                        index ++
-                    }
-                    if (include_food_items_switch.isChecked){
-                        shareMessage = getFoodItemsText(shareMessage, restaurant)
+                    checkboxToRestaurant[checkbox]?.let { restaurant ->
+                        shareMessage += (checkbox.text.toString()) + ": " + restaurant.rating + "/5"
+                        if (index != (checkboxList.size - 1)){
+                            shareMessage += "\n"
+                            index ++
+                        }
+                        if (include_food_items_switch.isChecked){
+                            shareMessage = getFoodItemsText(shareMessage, restaurant)
+                        }
                     }
                 }
             }
         }
         shareMessage += "\n"
-        shareMessage += String.format(getString(R.string.share_restuarants_checkOutMyRestaurants, FirebaseAuth.getInstance().currentUser!!.uid))
+        FirebaseAuth.getInstance().currentUser?.uid?.let {userId ->
+            shareMessage += String.format(getString(R.string.share_restuarants_checkOutMyRestaurants, userId))
+        }
         return shareMessage
     }
 
     private fun getFoodItemsText(_shareMessage: String, restaurant: Restaurant): String {
         var shareMessage = _shareMessage
-        if (restaurant.foodItems != null && !restaurant.foodItems!!.isEmpty()){
-            for (foodItem in restaurant.foodItems!!){
+        restaurant.foodItems?.let {foodItems ->
+            for (foodItem in foodItems){
                 shareMessage += "      -" + foodItem.name + ": " + foodItem.rating + "/5\n"
             }
         }
@@ -142,7 +147,7 @@ class ShareRestaurantsFragment : Fragment() {
     }
 
     private fun addDividerLiner(){
-        val dividerView = View(context!!)
+        val dividerView = View(requireContext())
         dividerView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1)
         dividerView.setBackgroundColor(resources.getColor(R.color.black))
         checkbox_layout.addView(dividerView)

@@ -30,9 +30,9 @@ class RestaurantSearchFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.restaurant_search_fragment, container, false)
-        val searchString = arguments!!.getString(Keys.searchText)!!
-        val searchLat = arguments!!.getDouble(Keys.latId)
-        val searchLng = arguments!!.getDouble(Keys.lngId)
+        val searchString = arguments?.getString(Keys.searchText) ?: ""
+        val searchLat = arguments?.getDouble(Keys.latId) ?: 0.0
+        val searchLng = arguments?.getDouble(Keys.lngId) ?: 0.0
         getSearchResults(view, searchString, searchLat, searchLng)
         return view
     }
@@ -75,7 +75,7 @@ class RestaurantSearchFragment : Fragment() {
     }
 
     private fun setupRecyclerView(view: View, restaurants: ArrayList<Restaurant>){
-        val recyclerAdapter = SearchRestaurantListAdapter(restaurants, context!!)
+        val recyclerAdapter = SearchRestaurantListAdapter(restaurants, requireContext())
         val favRestaurantsList = view.findViewById<RecyclerView>(R.id.restaurants_search_list)
         favRestaurantsList.layoutManager = LinearLayoutManager(activity)
         favRestaurantsList.adapter = recyclerAdapter

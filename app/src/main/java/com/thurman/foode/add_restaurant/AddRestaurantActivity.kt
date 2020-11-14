@@ -63,7 +63,7 @@ class AddRestaurantActivity : FragmentActivity() {
         if (!Places.isInitialized()) {
             Places.initialize(applicationContext, getString(R.string.my_google_api_key), Locale.US);
         }
-        val fields: List<Place.Field> = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
+        val fields: List<Place.Field> = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
         val intent: Intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields).build(this)
         startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
     }
@@ -72,18 +72,15 @@ class AddRestaurantActivity : FragmentActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == AutocompleteActivity.RESULT_OK) {
-                val place = Autocomplete.getPlaceFromIntent(data!!)
-                locationLat = place.latLng?.latitude ?: 0.0
-                locationLng = place.latLng?.longitude ?: 0.0
-                if (cityTextview != null){
-                    cityTextview!!.text = place.name.toString()
-                    FirebaseUtil.changeUserLocation(place.name!!, locationLat!!, locationLng!!)
+                data?.let{
+                    val place = Autocomplete.getPlaceFromIntent(it)
+                    locationLat = place.latLng?.latitude ?: 0.0
+                    locationLng = place.latLng?.longitude ?: 0.0
+                    cityTextview?.let {
+                        it.text = place.name.toString()
+                        FirebaseUtil.changeUserLocation(place.name ?: "", locationLat, locationLng)
+                    }
                 }
-            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-                // TODO: Handle the error.
-                val status = Autocomplete.getStatusFromIntent(data!!)
-            } else if (resultCode == AutocompleteActivity.RESULT_CANCELED) {
-                // The user canceled the operation.
             }
         }
     }
